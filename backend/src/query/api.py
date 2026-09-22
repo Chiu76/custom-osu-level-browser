@@ -12,7 +12,9 @@ router = APIRouter(prefix='/api/beatmaps')
 
 
 @router.get('/query/')
-async def query():
+async def query(value: int):
+    test_mapping = ['monstrata', 'Skystar', 'irre']
+
     core_specs = CoreSpecs(
         star_rating_spec=StarRatingSpec(),
         attached_score_spec=AttachedScoreSpec(),
@@ -20,7 +22,7 @@ async def query():
         source_spec=LocalBeatmapsIdentifier(type='local_beatmaps'),
         filter_spec=FilterSpec(
             filters=[
-                Filter(field='owner', op='=', value='monstrata'),
+                Filter(field='owner', op='=', value=test_mapping[value % len(test_mapping)]),
                 Filter(field='bpm', op='>', value='65'),
             ]
         ),

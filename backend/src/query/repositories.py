@@ -18,7 +18,7 @@ class QueryRepository:
         beatmap_query_stmt = cls.get_beatmap_query_stmt(request.core_specs, request.presentation_specs)
 
         beatmap_query_stmt = beatmap_query_stmt.limit(50)
-        print(beatmap_query_stmt)
+        # print(beatmap_query_stmt)
 
         results = session.execute(beatmap_query_stmt).mappings().all()     
 

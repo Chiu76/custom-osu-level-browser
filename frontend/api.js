@@ -1,5 +1,5 @@
 async function beatmapsQuery(request) {
-    const res = await fetch("http://127.0.0.1:8000/api/beatmaps/query", {
+    const res = await fetch(`http://127.0.0.1:8000/api/beatmaps/query?value=${request}`, {
         method: "GET",
         headers: {
             "Content-type": "application/json",
