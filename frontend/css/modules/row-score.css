@@ -1,0 +1,48 @@
+@layer modules {
+  @scope (li.row-score) {
+    :scope {
+      display: grid;
+      grid-template-columns: 0.5fr [one] 1fr [two] auto [three] 1fr [four] 2fr [five] 0.5fr;
+      grid-template-rows: repeat(5, 1fr);
+    }
+    .grade {
+      grid-column: one/two;
+      grid-row: 1/5;
+      align-content: center;
+    }
+    .player {
+      grid-column: two/three;
+      grid-row: 2/3;
+    }
+    .score {
+      grid-column: two/three;
+      grid-row: 3/4;
+    }
+    .pp {
+      grid-column: two/three;
+      grid-row: 4/5;
+    }
+    .combo {
+      grid-column: three/four;
+      grid-row: 3/4;
+      justify-self: left;
+    }
+    .mods {
+      grid-column: four/five;
+      grid-row: 2/3;
+      justify-self: right;
+    }
+    .accuracy {
+      grid-column: four/five;
+      grid-row: 3/4;
+      justify-self: right;
+    }
+    .played-at {
+      grid-column: four/five;
+      grid-row: 4/5;
+      justify-self: right;
+    }
+  }
+}
+
+/*# sourceMappingURL=row-score.css.map */

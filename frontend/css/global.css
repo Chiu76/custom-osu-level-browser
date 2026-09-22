@@ -1,0 +1,14 @@
+@layer global {
+  :root {
+    font-size: 1em;
+  }
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: darkcyan;
+  }
+  /* .stack > * + * {
+      margin-block-start: 1.5em;
+  } */
+}
+
+/*# sourceMappingURL=global.css.map */

@@ -1,0 +1,16 @@
+[project]
+name = "backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.141.1",
+    "ingestion-pipelines-orchestrator",
+    "osu-db-tools",
+]
+
+[tool.uv.sources]
+ingestion-pipelines-orchestrator = { git = "https://github.com/Chiu76/ingestion-pipelines-orchestrator.git" }
+osu-db-tools = { git = "https://github.com/Chiu76/osu-db-tools.git" }
+
+[tool.fastapi]
+entrypoint = "src.common.main:app"

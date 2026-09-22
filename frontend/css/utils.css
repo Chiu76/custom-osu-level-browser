@@ -1,0 +1,18 @@
+@layer utils {
+  .hidden {
+    display: none;
+  }
+  .active {
+    display: unset;
+  }
+  .highlighted {
+    background-color: rgb(210, 149, 16);
+  }
+  .selected {
+    border: unset;
+    outline: 5px double rgb(255, 0, 0);
+    outline-offset: -5px;
+  }
+}
+
+/*# sourceMappingURL=utils.css.map */

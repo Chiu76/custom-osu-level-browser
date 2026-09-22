@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<link href="css/base.css" rel="stylesheet" type="text/css" />
+<script src="./index.js" type="module"></script>
+</head>
+<body>
+    <main class="level-browser-layout">
+        <div class="filters-settings">
+            <h2>Filters & Settings</h2>
+            <div class="scores-settings">
+                <div>
+                    <span>Score summary criteria: </span>
+                    <select name="selected-score-summary-type">
+                        <option value="score">Score</option>
+                        <option value="pp">PP</option>
+                        <option value="miss-count">Miss Count</option>
+                        <option value="latest">Latest</option>
+                    </select>
+                </div>
+            </div>
+            <div class="beatmaps-settings">
+                <div>
+                    <span>Query (filter/sort): </span>
+                    <input
+                        placeholder="Query beatmaps.."
+                    />
+                    <button type="button" onclick="">Clear</button>
+                </div>
+                <div>
+                    <span>Search: </span>
+                    <input
+                        placeholder="Search beatmaps.."
+                    />
+                    <button type="button" onclick="">Clear</button>
+                </div>
+            </div>
+            <div class="sources-groupings-settings">
+                <div>
+                    <div>
+                        <span>Selected source: </span>
+                        <span id="active-source">(none)</span>
+                        <button type="button" onload="" onclick="clearActiveSource()">Clear</button>
+                    </div>
+                    <div>
+                        <span>Selected grouping: </span>
+                        <span id="active-grouping">(none)</span>
+                        <button type="button" onclick="clearActiveGrouping()">Clear</button>
+                    </div>
+                </div>
+                <div>
+                    <input
+                        placeholder="Search groupings.."
+                    />
+                    <select name="selected-grouping-type" id="selected-grouping-type">
+                        <option value="collections">Collections</option>
+                        <option value="packs">Packs</option>
+                        <option value="beatmaps-ranked-by-year">Ranked by Year</option>
+                        <option value="beatmaps-ranked-by-month">Ranked by Month</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="scores">
+            <h2>Scores</h2>
+            <ul class="list">
+                <li onclick="scoreOnClick(this)" id="score-id-0" class="row-score">
+                    <div class="grade">Grade</div>
+                    <div class="player">Player</div>
+                    <div class="score">Score: 123,456 &ThinSpace;</div>
+                    <div class="pp">PP</div>
+                    <div class="combo">(789x)</div>
+                    <div class="mods">Mods</div>
+                    <div class="accuracy">Accuracy</div>
+                    <div class="played-at">Date</div>
+                </li>
+            </ul>
+        </div>
+        <div class="beatmaps">
+            <h2>Beatmaps</h2>
+            <ul class="list">
+                <li class="row-beatmap-set">
+                    <div class="set-marker">Set</div>
+                    <div class="title">Title</div>
+                    <div class="artist">Artist</div>
+                    <div class="bpm">BPM</div>
+                    <div class="beatmap-set-id">Set ID</div>
+                    <div class="owner-id">Owner ID</div>
+                    <div class="owner">Owner</div>
+                </li>
+                <li class="row-beatmap">
+                    <div class="grade">A</div>
+                    <div class="accuracy">99.08%</div>
+                    <div class="title">From Under Cover (Caught Up In A Love Song)</div>
+                    <div class="artist">Foreground Eclipse</div>
+                    <div class="difficulty">[I've Stopped Time and Everything is at My Mercy]</div>
+                    <div class="star-rating">7.23*</div>
+                    <div class="bpm">200BPM</div>
+                    <div class="combo">1,499x/</div>
+                    <div class="max-combo">1,593x</div>
+                    <div class="beatmap-id">#1115737</div>
+                    <div class="creator-id">4830261</div>
+                    <div class="creator">Seni</div>
+                </li>
+            </ul>
+        </div>
+        <div class="sources-groupings">
+            <h2>Sources / Groupings</h2>
+            <ul class="list">
+                <li oncontextmenu="setActiveSource(this)" onclick="setActiveGrouping(this)" id="source-grouping-id-0" class="row-source-grouping">
+                    <div class="grouping-marker hidden">Grouping</div>
+                    <div class="source-marker hidden">Source</div>
+                    <div class="name">Grouping 1</div>
+                    <div class="count">(X maps)</div>
+                </li>
+            </ul>
+        </div>
+    </main>
+    <script>
+        let rowSourceGroupingElements = document.getElementsByClassName("row-source-grouping");
+        for (element of rowSourceGroupingElements) {
+            element.addEventListener('contextmenu', (event) => { event.preventDefault(); });
+        } 
+    </script>
+</body>
+</html>

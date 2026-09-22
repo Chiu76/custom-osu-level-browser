@@ -1,0 +1,19 @@
+@layer utils {
+    .hidden {
+        display: none;
+    }
+    
+    .active {
+        display: unset;
+    }
+
+    .highlighted {
+        background-color: rgba(210, 149, 16, 1);
+    }
+
+    .selected {
+        border: unset;
+        outline: 5px double rgb(255 0 0 / 1);
+        outline-offset: -5px;
+    }
+}

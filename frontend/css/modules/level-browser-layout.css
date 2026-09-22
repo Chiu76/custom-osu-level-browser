@@ -1,0 +1,44 @@
+@layer modules {
+  .level-browser-layout {
+    inline-size: 100vw;
+    block-size: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1.75fr 1fr;
+    grid-template-rows: auto 1fr 2fr 2fr 2fr;
+    column-gap: 0.1em;
+  }
+  .level-browser-layout .filters-settings {
+    grid-column: 1/4;
+    grid-row: span 2;
+    border: 1px solid #000;
+  }
+  .level-browser-layout .scores {
+    grid-column: 1/2;
+    grid-row: 3/6;
+    border: 1px solid #000;
+    overflow: auto;
+  }
+  .level-browser-layout .beatmaps {
+    grid-column: 2/3;
+    grid-row: 3/6;
+    border: 1px solid #000;
+    overflow: auto;
+  }
+  .level-browser-layout .sources-groupings {
+    grid-column: 3/4;
+    grid-row: 3/6;
+    border: 1px solid #000;
+    overflow: auto;
+  }
+  .level-browser-layout h2 {
+    position: sticky;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    border: 1px dashed black;
+    background-color: deepskyblue;
+  }
+}
+
+/*# sourceMappingURL=level-browser-layout.css.map */

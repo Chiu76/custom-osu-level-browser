@@ -1,0 +1,62 @@
+@layer modules {
+    @scope (li.row-beatmap) {
+        :scope {
+            display: grid;
+            grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 2fr 0.5fr;
+            grid-template-rows: repeat(6, 1fr);
+        }
+        .grade {
+            grid-column: 2 / 3;
+            grid-row: 1 / 5;
+            align-content: center;
+        }
+        .accuracy {
+            grid-column: 2 / 3;
+            grid-row: 5 / 6;
+        }
+        .title {
+            grid-column: 3 / 7;
+            grid-row: 2 / 3;
+        }
+        .artist {
+            grid-column: 3 / 7;
+            grid-row: 3 / 4;
+        }
+        .difficulty-name {
+            grid-column: 3 / 7;
+            grid-row: 4 / 5;
+        }
+        .star-rating {
+            grid-column: 3 / 4;
+            grid-row: 5 / 6;
+        }
+        .bpm {
+            grid-column: 4 / 5;
+            grid-row: 5 / 6;
+        }
+        .combo {
+            grid-column: 5 / 6;
+            grid-row: 5 / 6;
+            justify-self: right;
+        }
+        .max-combo {
+            grid-column: 6 / 7;
+            grid-row: 5 / 6;
+        }
+        .beatmap-id {
+            grid-column: 7 / 8;
+            grid-row: 2 / 3;
+            justify-self: right;
+        }
+        .mapper-id {
+            grid-column: 7 / 8;
+            grid-row: 4 / 5;
+            justify-self: right;
+        }
+        .mapper {
+            grid-column: 7 / 8;
+            grid-row: 5 / 6;
+            justify-self: right;
+        }
+    }
+}

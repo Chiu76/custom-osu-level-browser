@@ -1,0 +1,33 @@
+@layer modules {
+  @scope (li.row-source-grouping) {
+    :scope {
+      display: grid;
+      grid-template-columns: 1em 1em 4fr;
+      grid-template-rows: repeat(4, 1fr);
+    }
+    .source-marker {
+      grid-column: span 1;
+      grid-row: span 4;
+      writing-mode: vertical-rl;
+      background-color: rgb(0, 0, 192);
+    }
+    .grouping-marker {
+      grid-column: span 1;
+      grid-row: span 4;
+      writing-mode: vertical-lr;
+      background-color: rgb(192, 0, 0);
+    }
+    .name {
+      grid-column: 3/4;
+      grid-row: 2/3;
+      padding-inline: 1em;
+    }
+    .count {
+      grid-column: 3/4;
+      grid-row: 3/4;
+      padding-inline: 1em;
+    }
+  }
+}
+
+/*# sourceMappingURL=row-source-grouping.css.map */
