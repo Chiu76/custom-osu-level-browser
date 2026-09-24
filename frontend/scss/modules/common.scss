@@ -1,6 +1,8 @@
 @layer modules {
     @scope (ul.list) to (li > *) {
         :scope {
+            block-size: calc(100% - 2em);
+            overflow: auto;
             margin: 0;
             padding: 0;
             list-style-type: none;

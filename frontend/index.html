@@ -2,6 +2,7 @@
 <html lang="en-US">
 <head>
 <link href="css/base.css" rel="stylesheet" type="text/css" />
+<script src="./vendor/virtualized-list/virtualized-list.js"></script>
 <script src="./index.js" type="module"></script>
 </head>
 <body>
@@ -25,7 +26,7 @@
                     <input
                         placeholder="Query beatmaps.."
                     />
-                    <button type="button" onclick="">Clear</button>
+                    <button type="button" onclick="updateRequest()">Clear</button>
                 </div>
                 <div>
                     <span>Search: </span>
@@ -78,31 +79,7 @@
         </div>
         <div class="beatmaps">
             <h2>Beatmaps</h2>
-            <ul class="list">
-                <li class="row-beatmap-set">
-                    <div class="set-marker">Set</div>
-                    <div class="title">Title</div>
-                    <div class="artist">Artist</div>
-                    <div class="bpm">BPM</div>
-                    <div class="beatmap-set-id">Set ID</div>
-                    <div class="owner-id">Owner ID</div>
-                    <div class="owner">Owner</div>
-                </li>
-                <li class="row-beatmap">
-                    <div class="grade">A</div>
-                    <div class="accuracy">99.08%</div>
-                    <div class="title">From Under Cover (Caught Up In A Love Song)</div>
-                    <div class="artist">Foreground Eclipse</div>
-                    <div class="difficulty">[I've Stopped Time and Everything is at My Mercy]</div>
-                    <div class="star-rating">7.23*</div>
-                    <div class="bpm">200BPM</div>
-                    <div class="combo">1,499x/</div>
-                    <div class="max-combo">1,593x</div>
-                    <div class="beatmap-id">#1115737</div>
-                    <div class="creator-id">4830261</div>
-                    <div class="creator">Seni</div>
-                </li>
-            </ul>
+            <ul class="list" id="beatmaps-list-container"></ul>
         </div>
         <div class="sources-groupings">
             <h2>Sources / Groupings</h2>

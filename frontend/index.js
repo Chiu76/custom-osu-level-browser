@@ -1,5 +1,9 @@
 import { createSignal, createEffect, createMemo } from "./reactive.js";
 
+import { beatmapsQuery } from "./api.js";
+import { RowBeatmapSet } from "./components/RowBeatmapSet.js";
+import { RowBeatmap } from "./components/RowBeatmap.js";
+
 
 let selectedScoreId = undefined;
 
@@ -25,11 +29,6 @@ const scoreOnClick = (element) => {
 const [getSelectedSourceId, setSelectedSourceId] = createSignal(undefined);
 
 const setActiveSource = (element) => {
-    // todo: this eventlistener should be either active by default, or somehow triggered before the right click
-    // first right click will still have a context menu, only subsequent ones are blocked
-    // console.log(element)
-    // console.log(typeof element)
-    // document.getElementById(element.id).addEventListener('contextmenu', (event) => { event.preventDefault(); console.log("pulog"); });
     const prevSelected = document.getElementById(getSelectedSourceId());
     if (prevSelected == undefined) {
         element.querySelector(".source-marker").classList.toggle("hidden");
@@ -112,5 +111,34 @@ createEffect(() => {
         document.getElementById("active-grouping").innerHTML = "(none)";
     }
 });
+
+
+async function updateRequest() {
+    setRequest(request() + 1);
+}
+window.updateRequest = updateRequest;
+
+const [request, setRequest] = createSignal(0);
+
+var VirtualizedList = window.VirtualizedList.default;
+
+createEffect(async () => {
+    const beatmapsQueryResult = await beatmapsQuery(request());
+    const beatmapsListContainer = document.getElementById("beatmaps-list-container");
+    
+    // to empty previous content
+    beatmapsListContainer.replaceChildren();
+
+    const virtualizedList = new VirtualizedList(beatmapsListContainer, {
+        height: 800,
+        rowCount: beatmapsQueryResult.length,
+        renderRow: (index) => RowBeatmap(beatmapsQueryResult[index]),
+        rowHeight: 100,
+        overscanCount: 4,
+    });
+
+    virtualizedList.scrollToIndex(0, 'start');
+});
+
 
 export { getSelectedSourceId, getSelectedGroupingId };
