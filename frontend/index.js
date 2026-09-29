@@ -3,7 +3,7 @@ import { createSignal, createEffect, createMemo } from "./reactive.js";
 import { beatmapsQuery } from "./api.js";
 import { RowBeatmapSet } from "./components/RowBeatmapSet.js";
 import { RowBeatmap } from "./components/RowBeatmap.js";
-import { getRequest } from "./utils.js";
+import { buildRequest } from "./utils.js";
 
 
 let selectedScoreId = undefined;
@@ -118,17 +118,18 @@ const [q, setQ] = createSignal("");
 const [filters, setFilters] = createSignal([]);
 const [sortings, setSortings] = createSignal([]);
 
-const [request, setRequest] = createSignal(getRequest(q(), filters(), sortings()));
+const [request, setRequest] = createSignal(buildRequest(q(), filters(), sortings()));
+
+createEffect(() => {
+    setRequest(buildRequest(q(), filters(), sortings()));
+    console.log(request());
+});
 
 function onInputSearch(event) {
     setQ(event.value);
 }
-window.onInputTest = onInputSearch;
 
-createEffect(() => {
-    setRequest(getRequest(q(), filters(), sortings()));
-    console.log(request());
-});
+window.onInputSearch = onInputSearch;
 
 var VirtualizedList = window.VirtualizedList.default;
 
@@ -139,15 +140,16 @@ createEffect(async () => {
     // to empty previous content
     beatmapsListContainer.replaceChildren();
 
-    const virtualizedList = new VirtualizedList(beatmapsListContainer, {
-        height: 800,
-        rowCount: beatmapsQueryResult.length - 1,
-        renderRow: (index) => RowBeatmap(beatmapsQueryResult[index]),
-        rowHeight: 100,
-        overscanCount: 4,
-    });
-
-    virtualizedList.scrollToIndex(0, 'start');
+    if (beatmapsQueryResult.length > 0) {
+        const virtualizedList = new VirtualizedList(beatmapsListContainer, {
+            height: 800,
+            rowCount: beatmapsQueryResult.length - 1,
+            renderRow: (index) => RowBeatmap(beatmapsQueryResult[index]),
+            rowHeight: 100,
+            overscanCount: 4,
+        });
+        virtualizedList.scrollToIndex(0, 'start');
+    }
 });
 
 

@@ -5,7 +5,7 @@ function createElementClassContent(type, className, content="") {
     return element;
 }
 
-function getRequest(q, filters, sortings) {
+function buildRequest(q, filters, sortings) {
     return {
         core_specs: {
             star_rating_spec: {},
@@ -22,4 +22,4 @@ function getRequest(q, filters, sortings) {
     }
 }
 
-export { createElementClassContent, getRequest };
+export { createElementClassContent, buildRequest };
