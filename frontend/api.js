@@ -1,10 +1,10 @@
 async function beatmapsQuery(request) {
-    const res = await fetch(`http://127.0.0.1:8000/api/beatmaps/query?value=${request}`, {
-        method: "GET",
+    const res = await fetch(`http://127.0.0.1:8000/api/beatmaps/query`, {
+        method: "POST",
         headers: {
             "Content-type": "application/json",
         },
-        // body: JSON.stringify(request),
+        body: JSON.stringify(request),
     });
     if (!res.ok) {
         throw Error("Failed to query beatmaps");

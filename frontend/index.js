@@ -3,6 +3,7 @@ import { createSignal, createEffect, createMemo } from "./reactive.js";
 import { beatmapsQuery } from "./api.js";
 import { RowBeatmapSet } from "./components/RowBeatmapSet.js";
 import { RowBeatmap } from "./components/RowBeatmap.js";
+import { getRequest } from "./utils.js";
 
 
 let selectedScoreId = undefined;
@@ -113,12 +114,21 @@ createEffect(() => {
 });
 
 
-async function updateRequest() {
-    setRequest(request() + 1);
-}
-window.updateRequest = updateRequest;
+const [q, setQ] = createSignal("");
+const [filters, setFilters] = createSignal([]);
+const [sortings, setSortings] = createSignal([]);
 
-const [request, setRequest] = createSignal(0);
+const [request, setRequest] = createSignal(getRequest(q(), filters(), sortings()));
+
+function onInputSearch(event) {
+    setQ(event.value);
+}
+window.onInputTest = onInputSearch;
+
+createEffect(() => {
+    setRequest(getRequest(q(), filters(), sortings()));
+    console.log(request());
+});
 
 var VirtualizedList = window.VirtualizedList.default;
 
@@ -131,7 +141,7 @@ createEffect(async () => {
 
     const virtualizedList = new VirtualizedList(beatmapsListContainer, {
         height: 800,
-        rowCount: beatmapsQueryResult.length,
+        rowCount: beatmapsQueryResult.length - 1,
         renderRow: (index) => RowBeatmap(beatmapsQueryResult[index]),
         rowHeight: 100,
         overscanCount: 4,

@@ -41,7 +41,7 @@
     block-size: 100vh;
     display: grid;
     grid-template-columns: 1fr 1.75fr 1fr;
-    grid-template-rows: auto 1fr 2fr 2fr 2fr;
+    grid-template-rows: auto 1.5fr 2fr 2fr 2fr;
     column-gap: 0.1em;
   }
   .level-browser-layout .filters-settings {
@@ -81,7 +81,7 @@
   .filters-settings {
     display: grid;
     grid-template-columns: subgrid;
-    grid-template-rows: 2em 4fr;
+    grid-template-rows: 2em 6fr;
   }
   .filters-settings h2 {
     grid-column: 1/4;
@@ -106,7 +106,7 @@
       list-style-type: none;
     }
     li {
-      height: 100px;
+      height: 6em;
       border: 1px dashed black;
     }
   }

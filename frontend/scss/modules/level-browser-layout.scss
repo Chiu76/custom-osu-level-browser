@@ -5,7 +5,7 @@
 
         display: grid;
         grid-template-columns: 1fr 1.75fr 1fr;
-        grid-template-rows: auto 1fr 2fr 2fr 2fr;
+        grid-template-rows: auto 1.5fr 2fr 2fr 2fr;
         column-gap: 0.1em;
 
         .filters-settings {

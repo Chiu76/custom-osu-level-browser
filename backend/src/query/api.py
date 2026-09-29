@@ -11,9 +11,9 @@ from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineD
 router = APIRouter(prefix='/api/beatmaps')
 
 
-@router.get('/query/')
-async def query(value: int):
-    test_mapping = ['monstrata', 'Skystar', 'irre']
+@router.post('/query/')
+async def query(request: BeatmapQueryRequest):
+    print(request)
 
     core_specs = CoreSpecs(
         star_rating_spec=StarRatingSpec(),
@@ -22,7 +22,6 @@ async def query(value: int):
         source_spec=LocalBeatmapsIdentifier(type='local_beatmaps'),
         filter_spec=FilterSpec(
             filters=[
-                Filter(field='owner', op='=', value=test_mapping[value % len(test_mapping)]),
                 Filter(field='bpm', op='>', value='65'),
             ]
         ),
@@ -36,7 +35,7 @@ async def query(value: int):
             ]
         ),
     )
-    request = BeatmapQueryRequest(core_specs=core_specs, presentation_specs=presentation_specs)
+    r = BeatmapQueryRequest(core_specs=core_specs, presentation_specs=presentation_specs)
     
     with SessionMaker() as session:
         results = await QueryRepository.query(request, session)

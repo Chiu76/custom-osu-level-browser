@@ -22,18 +22,26 @@
             </div>
             <div class="beatmaps-settings">
                 <div>
-                    <span>Query (filter/sort): </span>
+                    <span>Filter: </span>
                     <input
-                        placeholder="Query beatmaps.."
+                        id="input-beatmaps-filter"
+                        placeholder="Filter beatmaps.."
                     />
-                    <button type="button" onclick="updateRequest()">Clear</button>
+                </div>
+                <div>
+                    <span>Sort: </span>
+                    <input
+                        id="input-beatmaps-sort"
+                        placeholder="Sort beatmaps.."
+                    />
                 </div>
                 <div>
                     <span>Search: </span>
                     <input
+                        id="input-beatmaps-search"
                         placeholder="Search beatmaps.."
+                        onInput="onInputSearch(this)"
                     />
-                    <button type="button" onclick="">Clear</button>
                 </div>
             </div>
             <div class="sources-groupings-settings">
