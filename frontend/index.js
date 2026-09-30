@@ -3,7 +3,7 @@ import { createSignal, createEffect, createMemo } from "./reactive.js";
 import { beatmapsQuery } from "./api.js";
 import { RowBeatmapSet } from "./components/RowBeatmapSet.js";
 import { RowBeatmap } from "./components/RowBeatmap.js";
-import { buildRequest } from "./utils.js";
+import { buildRequest, parseFilterUserInput } from "./utils.js";
 
 
 let selectedScoreId = undefined;
@@ -116,20 +116,40 @@ createEffect(() => {
 
 const [q, setQ] = createSignal("");
 const [filters, setFilters] = createSignal([]);
-const [sortings, setSortings] = createSignal([]);
+const [sortings, setSortings] = createSignal("");
 
 const [request, setRequest] = createSignal(buildRequest(q(), filters(), sortings()));
 
 createEffect(() => {
     setRequest(buildRequest(q(), filters(), sortings()));
-    console.log(request());
+    console.log("setRequest(buildRequest(q(), filters(), sortings())): ", request());
 });
+
 
 function onInputSearch(event) {
     setQ(event.value);
 }
 
+function onInputFilter(event) {
+    const filterParsingResult = parseFilterUserInput(event.value);
+    
+    if (!filterParsingResult.successful) {
+        // todo: create and set some signals to show the error in the interface
+        console.log("filterParsingResult: ", filterParsingResult.reason);
+        return;
+    }
+
+    setFilters(filterParsingResult.result);
+}
+
+function onInputSort(event) {
+    setSortings(event.value);
+}
+
 window.onInputSearch = onInputSearch;
+window.onInputFilter = onInputFilter;
+window.onInputSort = onInputSort;
+
 
 var VirtualizedList = window.VirtualizedList.default;
 
