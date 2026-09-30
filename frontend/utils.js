@@ -1,3 +1,7 @@
+import { openapiSchemas } from "../api.js";
+
+const schemas = await openapiSchemas();
+
 function createElementClassContent(type, className, content="") {
     const element = document.createElement(type);
     element.className = className;
@@ -5,4 +9,4 @@ function createElementClassContent(type, className, content="") {
     return element;
 }
 
-export { createElementClassContent };
+export { createElementClassContent, schemas };

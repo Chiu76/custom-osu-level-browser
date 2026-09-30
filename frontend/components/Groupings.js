@@ -57,12 +57,6 @@ const clearActiveGrouping = () => {
     setSelectedGroupingId(undefined)
 };
 
-window.setActiveSource = setActiveSource;
-window.clearActiveSource = clearActiveSource;
-window.setActiveGrouping = setActiveGrouping;
-window.clearActiveGrouping = clearActiveGrouping;
-
-
 const getGroupingNameFromId = (id) => {
     return document.getElementById(id).querySelector(".name").innerHTML;
 };
@@ -84,5 +78,10 @@ createEffect(() => {
         document.getElementById("active-grouping").innerHTML = "(none)";
     }
 });
+
+window.setActiveSource = setActiveSource;
+window.clearActiveSource = clearActiveSource;
+window.setActiveGrouping = setActiveGrouping;
+window.clearActiveGrouping = clearActiveGrouping;
 
 export { getSelectedSourceId, getSelectedGroupingId };

@@ -1,8 +1,7 @@
-import { openapiSchemas } from "../api.js";
+import { schemas } from "../utils.js";
 
-const schemas = await openapiSchemas();
 
-export function useFilterParser() {
+export function useFilterHandler() {
     const fieldValues = schemas["Filter"]["properties"]["field"]["enum"];
     const fieldValuesRegex = new RegExp(fieldValues.join("|"), "g");
 
@@ -59,7 +58,22 @@ export function useFilterParser() {
         return parseFilters(filters.split(" "));
     }
 
+    function onInput(value, setFilters) {
+        const filterParsedResult = parseUserInput(value);
+        if (!filterParsedResult.successful) {
+            // todo: create and set some signals to show the error in the interface
+            console.log("filterParsedResult: ", filterParsedResult.reason);
+            return;
+        }
+        setFilters(filterParsedResult.result);
+    }
+
+    function init(setFilters) {
+        const filterInputElement = document.getElementById("beatmap-query-filter");
+        filterInputElement.addEventListener("input", (event) => onInput(event.target.value, setFilters));
+    }
+
     return {
-        parseUserInput,
+        init,
     }
 }

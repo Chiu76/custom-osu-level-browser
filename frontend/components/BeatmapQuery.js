@@ -4,11 +4,11 @@ import { beatmapsQuery } from "../api.js";
 import { RowBeatmapSet } from "./RowBeatmapSet.js";
 import { RowBeatmap } from "./RowBeatmap.js";
 
-import { q, filters, sortings } from "./Settings.js";
+import { q, filters, sortPrimary, sortSecondary } from "./Settings.js";
 
 
-function buildRequest(q, filters, sortings) {
-    // console.log("buildRequest: ", q, filters, sortings);
+function buildRequest(q, filters, sortPrimary, sortSecondary) {
+    // console.log("buildRequest: ", q, filters, sort);
     return {
         core_specs: {
             star_rating_spec: {},
@@ -20,16 +20,16 @@ function buildRequest(q, filters, sortings) {
         presentation_specs: {
             search_spec: { q },
             grouping_spec: { type: "none"},
-            sorting_spec: { },
+            sorting_spec: { sortings: [sortPrimary, sortSecondary] },
         }
     }
 }
 
-const [request, setRequest] = createSignal(buildRequest(q(), filters(), sortings()));
+const [request, setRequest] = createSignal(buildRequest(q(), filters(), sortPrimary(), sortSecondary()));
 
 createEffect(() => {
-    setRequest(buildRequest(q(), filters(), sortings()));
-    console.log("setRequest(buildRequest(q(), filters(), sortings())): ", request());
+    setRequest(buildRequest(q(), filters(), sortPrimary(), sortSecondary()));
+    console.log("setRequest(buildRequest(q(), filters(), sortPrimary(), sortSecondary())): ", request());
 });
 
 var VirtualizedList = window.VirtualizedList.default;

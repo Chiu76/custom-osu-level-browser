@@ -24,8 +24,8 @@
                 <div>
                     <span>Filters: </span>
                     <input
+                        id="beatmap-query-filter"
                         placeholder="Filter beatmaps.."
-                        onInput="onInputFilter(this)"
                     />
                 </div>
                 <div>
@@ -36,12 +36,9 @@
                     />
                 </div>
                 <span>
-                    <span>Sort By: </span>
-                    <select name="selected-sorting-field" id="selected-sorting-field">
-                        <option value="artist">Artist</option>
-                        <option value="title">Title</option>
-                        <option value="creator">Creator</option>
-                    </select>
+                    <span>Sort: </span>
+                    <select name="sort-select-primary" id="sort-select-primary"></select>
+                    <select name="sort-select-secondary" id="sort-select-secondary"></select>
                 </span>
             </div>
             <div class="grouping-settings">
@@ -102,10 +99,10 @@
         </div>
     </main>
     <script>
-        let rowGroupingElements = document.getElementsByClassName("row-grouping");
+        const rowGroupingElements = document.getElementsByClassName("row-grouping");
         for (element of rowGroupingElements) {
-            element.addEventListener('contextmenu', (event) => { event.preventDefault(); });
-        } 
+            element.addEventListener("contextmenu", (event) => { event.preventDefault(); });
+        }
     </script>
 </body>
 </html>
