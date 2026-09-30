@@ -1,15 +1,15 @@
 <!doctype html>
 <html lang="en-US">
 <head>
-<link href="css/base.css" rel="stylesheet" type="text/css" />
+<link href="css/styles.css" rel="stylesheet" type="text/css" />
 <script src="./vendor/virtualized-list/virtualized-list.js"></script>
 <script src="./index.js" type="module"></script>
 </head>
 <body>
-    <main class="level-browser-layout">
-        <div class="filters-settings">
-            <h2>Filters & Settings</h2>
-            <div class="scores-settings">
+    <main class="app-layout">
+        <div class="settings">
+            <h2>Settings</h2>
+            <div class="score-settings">
                 <div>
                     <span>Score summary criteria: </span>
                     <select name="selected-score-summary-type">
@@ -20,33 +20,31 @@
                     </select>
                 </div>
             </div>
-            <div class="beatmaps-settings">
+            <div class="beatmap-query-settings">
                 <div>
-                    <span>Filter: </span>
+                    <span>Filters: </span>
                     <input
-                        id="input-beatmaps-filter"
                         placeholder="Filter beatmaps.."
                         onInput="onInputFilter(this)"
                     />
                 </div>
                 <div>
-                    <span>Sort: </span>
-                    <input
-                        id="input-beatmaps-sort"
-                        placeholder="Sort beatmaps.."
-                        onInput="onInputSort(this)"
-                    />
-                </div>
-                <div>
                     <span>Search: </span>
                     <input
-                        id="input-beatmaps-search"
                         placeholder="Search beatmaps.."
                         onInput="onInputSearch(this)"
                     />
                 </div>
+                <span>
+                    <span>Sort By: </span>
+                    <select name="selected-sorting-field" id="selected-sorting-field">
+                        <option value="artist">Artist</option>
+                        <option value="title">Title</option>
+                        <option value="creator">Creator</option>
+                    </select>
+                </span>
             </div>
-            <div class="sources-groupings-settings">
+            <div class="grouping-settings">
                 <div>
                     <div>
                         <span>Selected source: </span>
@@ -91,10 +89,10 @@
             <h2>Beatmaps</h2>
             <ul class="list" id="beatmaps-list-container"></ul>
         </div>
-        <div class="sources-groupings">
-            <h2>Sources / Groupings</h2>
+        <div class="groupings">
+            <h2>Groupings</h2>
             <ul class="list">
-                <li oncontextmenu="setActiveSource(this)" onclick="setActiveGrouping(this)" id="source-grouping-id-0" class="row-source-grouping">
+                <li oncontextmenu="setActiveSource(this)" onclick="setActiveGrouping(this)" id="grouping-id-0" class="row-grouping">
                     <div class="grouping-marker hidden">Grouping</div>
                     <div class="source-marker hidden">Source</div>
                     <div class="name">Grouping 1</div>
@@ -104,8 +102,8 @@
         </div>
     </main>
     <script>
-        let rowSourceGroupingElements = document.getElementsByClassName("row-source-grouping");
-        for (element of rowSourceGroupingElements) {
+        let rowGroupingElements = document.getElementsByClassName("row-grouping");
+        for (element of rowGroupingElements) {
             element.addEventListener('contextmenu', (event) => { event.preventDefault(); });
         } 
     </script>

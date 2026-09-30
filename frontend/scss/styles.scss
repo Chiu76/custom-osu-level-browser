@@ -2,13 +2,13 @@
 @use 'reset.scss';
 @use 'global.scss';
 
-@use 'modules/level-browser-layout.scss';
-@use 'modules/filters-settings.scss';
+@use 'modules/app-layout.scss';
+@use 'modules/settings.scss';
 
 @use 'modules/common.scss';
 @use 'modules/row-beatmap-set.scss';
 @use 'modules/row-beatmap.scss';
 @use 'modules/row-score.scss';
-@use 'modules/row-source-grouping.scss';
+@use 'modules/row-grouping.scss';
 
 @use 'utils.scss';

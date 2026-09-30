@@ -1,22 +1,22 @@
 @layer modules {
-    .filters-settings {
+    .settings {
         display: grid;
         grid-template-columns: subgrid;
-        grid-template-rows: 2em 6fr;
+        grid-template-rows: 2em auto;
         
         h2 {
             grid-column: 1 / 4;
         }
         
-        .scores-settings {
+        .score-settings {
             grid-column: 1 / 2;
         }
 
-        .beatmaps-settings {
+        .beatmap-query-settings {
             grid-column: 2 / 3;
         }
         
-        .sources-groupings-settings {
+        .grouping-settings {
             grid-column: 3 / 4;
         }
     }
