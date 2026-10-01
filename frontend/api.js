@@ -11,7 +11,7 @@ async function openapiSchemas() {
     );  
 }
 
-async function beatmapsQuery(request) {
+async function beatmapQuery(request) {
     const res = await fetch(`http://127.0.0.1:8000/api/beatmap_query`, {
         method: "POST",
         headers: {
@@ -25,4 +25,4 @@ async function beatmapsQuery(request) {
     return res.json();
 }
 
-export { beatmapsQuery, openapiSchemas };
+export { beatmapQuery, openapiSchemas };

@@ -2,6 +2,9 @@ import { schemas } from "../utils.js";
 
 
 export function FilterHandler() {
+    let getFilterSignalRef;
+    let setFilterSignalRef;
+
     const fieldValues = schemas["Filter"]["properties"]["field"]["enum"];
     // const fieldValuesRegex = new RegExp(fieldValues.join("|"), "g");
 
@@ -52,24 +55,33 @@ export function FilterHandler() {
     }
 
     function parseUserInput(filters) {
-        if (filters === "") return [];
+        if (filters === "") return { successful: true, reason: "", result: [] };
         if (filters === filters.split(" ")) return parseFilters([filters]);
         return parseFilters(filters.split(" "));
     }
 
-    function onInput(value, setFilters) {
+    function onInput(value) {
         const filterParsedResult = parseUserInput(value);
         if (!filterParsedResult.successful) {
             // todo: create and set some signals to show the error in the interface
-            console.log("filterParsedResult: ", filterParsedResult.reason);
+            console.log("filterParsedResult: ", filterParsedResult.reason, filterParsedResult);
             return;
         }
-        setFilters(filterParsedResult.result);
+        setFilterSignalRef(filterParsedResult.result);
     }
 
-    function init(setFilters) {
-        const filterInputElement = document.getElementById("beatmap-query-filter");
-        filterInputElement.addEventListener("input", (event) => onInput(event.target.value, setFilters));
+    function init(filter, setFilter) {
+        getFilterSignalRef = filter;
+        setFilterSignalRef = setFilter;
+
+        const filterParent = document.getElementById("filter");
+        const filterInput = filterParent.getElementsByTagName("input")[0];
+        
+        let timeout;
+        filterInput.addEventListener("input", (event) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => onInput(event.target.value), 250);
+        });
     }
 
     return {

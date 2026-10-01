@@ -2,20 +2,19 @@ import { createSignal, createEffect, createMemo } from "../reactive.js";
 
 import { FilterHandler } from "../components/FilterHandler.js";
 import { SortHandler } from "../components/SortHandler.js";
+import { SearchHandler } from "../components/SearchHandler.js";
 
-const [q, setQ] = createSignal("");
-const [filters, setFilters] = createSignal([]);
+const [search, setSearch] = createSignal("");
+const [filter, setFilter] = createSignal([]);
 const [sort, setSort] = createSignal([]);
 
-function onInputSearch(event) {
-    setQ(event.value);
-}
-window.onInputSearch = onInputSearch;
+const searchHandler = SearchHandler();
+searchHandler.init(search, setSearch);
 
 const filterHandler = FilterHandler();
-filterHandler.init(setFilters);
+filterHandler.init(filter, setFilter);
 
 const sortHandler = SortHandler();
 sortHandler.init(sort, setSort);
 
-export { q, setQ , filters, setFilters, sort, setSort };
+export { search, setSearch, filter, setFilter, sort, setSort };

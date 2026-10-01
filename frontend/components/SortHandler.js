@@ -5,6 +5,7 @@ export function SortHandler() {
     let setSortSignalRef;
 
     const fieldValues = schemas["Sorting"]["properties"]["field"]["enum"].sort();
+    // const fieldValuesRegex = new RegExp(fieldValues.join("|"), "g");
     
     function updateSortSelect(parentId, value) {
         const sortSelect = document.getElementById(parentId).getElementsByTagName("select")[0];
