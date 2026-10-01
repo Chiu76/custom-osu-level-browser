@@ -50,8 +50,8 @@ export function SortHandler() {
         const sortSelect = sortParent.getElementsByTagName("select")[0];
         const sortDir = sortParent.getElementsByClassName("dir")[0];
 
-        instantiateSortDir(sortSelect, sortDir);
         instantiateSortSelect(sortSelect, sortDir, index);
+        instantiateSortDir(sortSelect, sortDir);
     }
 
     function init(sort, setSort) {

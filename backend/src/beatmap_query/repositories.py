@@ -8,11 +8,11 @@ from src.common.models.beatmaps import Beatmap, BeatmapSet
 from .schemas.requests import BeatmapQueryRequest, BeatmapQueryResult
 from .schemas.specs import CoreSpecs, PresentationSpecs
 
-import src.query.core as core
-import src.query.presentation as presentation
+import src.beatmap_query.zzz_core as zzz_core
+import src.beatmap_query.zzz_presentation as zzz_presentation
 
 
-class QueryRepository:
+class BeatmapQueryRepository:
     @classmethod
     async def query(cls, request: BeatmapQueryRequest, session: AsyncSession):
         beatmap_query_stmt = cls.get_beatmap_query_stmt(request.core_specs, request.presentation_specs)
@@ -28,8 +28,8 @@ class QueryRepository:
     @classmethod
     def get_beatmap_query_stmt(cls, core_specs: CoreSpecs, presentation_specs: PresentationSpecs):
         initial_stmt = cls.get_initial_stmt()
-        core_stmt = core.apply_core_specs(initial_stmt, core_specs)
-        beatmap_query_stmt = presentation.apply_presentation_specs(core_stmt, presentation_specs)
+        core_stmt = zzz_core.apply_core_specs(initial_stmt, core_specs)
+        beatmap_query_stmt = zzz_presentation.apply_presentation_specs(core_stmt, presentation_specs)
 
         return beatmap_query_stmt
 

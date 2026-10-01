@@ -2,7 +2,7 @@ from typing import Literal, Annotated
 from pydantic import BaseModel, Field
 
 from .identifiers import NoneIdentifier, LocalBeatmapsIdentifier
-from ..filter_sort_fields import FILTER_SORT_FIELD
+from ..yyy_filter_sort_fields import FILTER_SORT_FIELD
 
 
 SourceSpec = Annotated[

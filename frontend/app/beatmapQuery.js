@@ -43,10 +43,10 @@ createEffect(async () => {
 
     if (beatmapsQueryResult.length > 0) {
         const virtualizedList = new VirtualizedList(beatmapsListContainer, {
-            height: 800,
+            height: 576,
             rowCount: beatmapsQueryResult.length - 1,
             renderRow: (index) => RowBeatmap(beatmapsQueryResult[index]),
-            rowHeight: 100,
+            rowHeight: 96,
             overscanCount: 4,
         });
         virtualizedList.scrollToIndex(0, 'start');

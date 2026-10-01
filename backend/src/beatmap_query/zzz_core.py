@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, Filter, FilterSpec
 
-from .filter_sort_fields import get_column__filter_sort_field
+from .yyy_filter_sort_fields import get_column__filter_sort_field
 
 from src.common.models.beatmaps import Beatmap, BeatmapSet
 

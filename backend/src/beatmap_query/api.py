@@ -1,20 +1,27 @@
 from fastapi import APIRouter, Path
 
 from src.common.db import SessionMaker
-from .repositories import QueryRepository
+from .repositories import BeatmapQueryRepository
 
 from .schemas.requests import BeatmapQueryRequest
 from .schemas.identifiers import NoneIdentifier, LocalBeatmapsIdentifier
 from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, PresentationSpecs, GroupingSpec, SearchSpec, Filter, FilterSpec, Sorting, SortingSpec
 
 
-router = APIRouter(prefix='/api/beatmaps')
+router = APIRouter()
 
 
-@router.post('/query/')
+@router.post('/api/beatmap_query/')
 async def query(request: BeatmapQueryRequest):
-    print(request)
+    # print(request)
 
+    with SessionMaker() as session:
+        results = await BeatmapQueryRepository.query(request, session)
+    
+    return results
+
+
+def get_dummy_beatmap_query_request():
     core_specs = CoreSpecs(
         star_rating_spec=StarRatingSpec(),
         attached_score_spec=AttachedScoreSpec(),
@@ -35,9 +42,4 @@ async def query(request: BeatmapQueryRequest):
             ]
         ),
     )
-    r = BeatmapQueryRequest(core_specs=core_specs, presentation_specs=presentation_specs)
-    
-    with SessionMaker() as session:
-        results = await QueryRepository.query(request, session)
-    
-    return results
+    return BeatmapQueryRequest(core_specs=core_specs, presentation_specs=presentation_specs)
