@@ -21,6 +21,21 @@
                 </div>
             </div>
             <div class="beatmap-query-settings">
+                <div class="sort-selects">
+                    <span>Sort by: </span>
+                    <span id="sort-primary">
+                        <select></select>
+                        <span class="dir"></span>
+                    </span>
+                    <span id="sort-secondary">
+                        <select></select>
+                        <span class="dir"></span>
+                    </span>
+                    <span id="sort-third">
+                        <select></select>
+                        <span class="dir"></span>
+                    </span>
+                </div>
                 <div>
                     <span>Filters: </span>
                     <input
@@ -35,11 +50,6 @@
                         onInput="onInputSearch(this)"
                     />
                 </div>
-                <span>
-                    <span>Sort: </span>
-                    <select name="sort-select-primary" id="sort-select-primary"></select>
-                    <select name="sort-select-secondary" id="sort-select-secondary"></select>
-                </span>
             </div>
             <div class="grouping-settings">
                 <div>

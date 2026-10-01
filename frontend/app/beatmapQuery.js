@@ -1,13 +1,13 @@
 import { createSignal, createEffect, createMemo } from "../reactive.js";
 
 import { beatmapsQuery } from "../api.js";
-import { RowBeatmapSet } from "./RowBeatmapSet.js";
-import { RowBeatmap } from "./RowBeatmap.js";
+import { RowBeatmapSet } from "../components/RowBeatmapSet.js";
+import { RowBeatmap } from "../components/RowBeatmap.js";
 
-import { q, filters, sortPrimary, sortSecondary } from "./Settings.js";
+import { q, filters, sort } from "./settings.js";
 
 
-function buildRequest(q, filters, sortPrimary, sortSecondary) {
+function buildRequest(q, filters, sort) {
     // console.log("buildRequest: ", q, filters, sort);
     return {
         core_specs: {
@@ -20,16 +20,16 @@ function buildRequest(q, filters, sortPrimary, sortSecondary) {
         presentation_specs: {
             search_spec: { q },
             grouping_spec: { type: "none"},
-            sorting_spec: { sortings: [sortPrimary, sortSecondary] },
+            sorting_spec: { sortings: sort },
         }
     }
 }
 
-const [request, setRequest] = createSignal(buildRequest(q(), filters(), sortPrimary(), sortSecondary()));
+const [request, setRequest] = createSignal(buildRequest(q(), filters(), sort()));
 
 createEffect(() => {
-    setRequest(buildRequest(q(), filters(), sortPrimary(), sortSecondary()));
-    console.log("setRequest(buildRequest(q(), filters(), sortPrimary(), sortSecondary())): ", request());
+    setRequest(buildRequest(q(), filters(), sort()));
+    console.log("setRequest(buildRequest(q(), filters(), sort())): ", request());
 });
 
 var VirtualizedList = window.VirtualizedList.default;

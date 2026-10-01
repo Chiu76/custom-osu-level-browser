@@ -1,4 +1,4 @@
-import "./components/BeatmapQuery.js";
-import "./components/Settings.js";
-import "./components/Scores.js";
-import "./components/Groupings.js";
+import "./app/beatmapQuery.js";
+import "./app/settings.js";
+import "./app/scores.js";
+import "./app/groupings.js";

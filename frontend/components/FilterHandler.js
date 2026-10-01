@@ -1,9 +1,9 @@
 import { schemas } from "../utils.js";
 
 
-export function useFilterHandler() {
+export function FilterHandler() {
     const fieldValues = schemas["Filter"]["properties"]["field"]["enum"];
-    const fieldValuesRegex = new RegExp(fieldValues.join("|"), "g");
+    // const fieldValuesRegex = new RegExp(fieldValues.join("|"), "g");
 
     const opValues = schemas["Filter"]["properties"]["op"]["enum"];
     const opValuesRegex = new RegExp(opValues.join("|"), "g");
@@ -18,7 +18,6 @@ export function useFilterHandler() {
     }
 
     function parseFilters(filters) {
-        // used internally
         // assumes input is an array of filter strings, such as:
         // ["artist=demetori", "owner=monstrata", "bpm>67"]
         const result = [];
