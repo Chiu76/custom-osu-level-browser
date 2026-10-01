@@ -1,7 +1,9 @@
 import { createElementClassContent } from "../utils.js";
 
 
-function RowBeatmapSet(beatmapSet) {
+function RowBeatmapSet(beatmaps) {
+    // first beatmap in the set used for its set values
+    const beatmapSet = beatmaps[0];
     const li = createElementClassContent("li", "row-beatmap-set");
     li.appendChild(createElementClassContent("div", "set-marker", "Set"));
     li.appendChild(createElementClassContent("div", "title", beatmapSet.title));
