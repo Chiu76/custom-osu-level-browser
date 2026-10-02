@@ -1,8 +1,8 @@
 import { createElementClassContent } from "../utils.js";
 
-
 function RowBeatmap(beatmap) {
     const li = createElementClassContent("li", "row-beatmap");
+    
     li.appendChild(createElementClassContent("div", "grade", beatmap.grade ?? ""));
     li.appendChild(createElementClassContent("div", "accuracy", beatmap.accuracy ?? ""));
     li.appendChild(createElementClassContent("div", "title", beatmap.title));
@@ -15,6 +15,9 @@ function RowBeatmap(beatmap) {
     li.appendChild(createElementClassContent("div", "beatmap-id", beatmap.beatmap_id));
     li.appendChild(createElementClassContent("div", "mapper-id", beatmap.mapper_id ?? ""));
     li.appendChild(createElementClassContent("div", "mapper", beatmap.mapper ?? ""));
+
+    li.appendChild(createElementClassContent("div", "beatmap-set-id", beatmap.beatmap_set_id));
+    
     return li;
 }
 

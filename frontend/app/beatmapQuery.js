@@ -29,23 +29,23 @@ createEffect(() => {
 
 const beatmapHandler = BeatmapHandler();
 
+const beatmapListContainer = document.getElementById("beatmaps-list-container");
+beatmapListContainer.addEventListener("click", (event) => beatmapHandler.onClickBeatmapRow(event));
+
 var VirtualizedList = window.VirtualizedList.default;
 
 createEffect(async () => {
     const displayRows = await beatmapHandler.getDisplayRows(request());
-    const beatmapListContainer = document.getElementById("beatmaps-list-container");
-    
-    // empty previous content
     beatmapListContainer.replaceChildren();
-
     if (displayRows.length > 0) {
         const virtualizedList = new VirtualizedList(beatmapListContainer, {
-            height: 576,
+            height: 672,
             rowCount: displayRows.length - 1 || 1,
             renderRow: (index) => beatmapHandler.displayRowToElement(displayRows, index),
             rowHeight: 96,
-            // overscanCount: 1,
+            overScan: 0,
         });
         virtualizedList.scrollToIndex(0, 'start');
     }
 });
+ 

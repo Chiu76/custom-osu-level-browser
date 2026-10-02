@@ -5,7 +5,9 @@
             grid-template-columns: 0.5fr 1fr 1fr 3fr 2fr 0.5fr;
             grid-template-rows: repeat(6, 1fr);
         }
-
+        & * {
+            pointer-events: none;
+        }
         .set-marker {
             grid-column: 2 / 3;
             grid-row: 1 / 5;

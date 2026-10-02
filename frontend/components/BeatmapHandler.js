@@ -2,7 +2,40 @@ import { beatmapQuery } from "../api.js";
 import { RowBeatmapSet } from "../components/RowBeatmapSet.js";
 import { RowBeatmap } from "../components/RowBeatmap.js";
 
+import { 
+    selectedBeatmapSetId, setSelectedBeatmapSetId, 
+    selectedBeatmapId, setSelectedBeatmapId 
+} from "../app/settings.js";
+
 export function BeatmapHandler() {
+    function onClickBeatmapRow(event) {
+        const row = event.target;
+        if (row.className == "row-beatmap-set") {
+            const beatmapSetId = row.getElementsByClassName("beatmap-set-id")[0].innerHTML;
+            if (beatmapSetId == selectedBeatmapSetId()) {
+                setSelectedBeatmapSetId(undefined);
+                setSelectedBeatmapId(undefined);
+            }
+            else {
+                setSelectedBeatmapSetId(beatmapSetId);
+                setSelectedBeatmapId(undefined);
+            }
+        }
+        else if (row.className == "row-beatmap") {
+            const beatmapId = row.getElementsByClassName("beatmap-id")[0].innerHTML;;
+            const beatmapSetId = row.getElementsByClassName("beatmap-set-id")[0].innerHTML;;
+            if (beatmapId != selectedBeatmapId()) {
+                setSelectedBeatmapId(beatmapId);
+                if (beatmapSetId == selectedBeatmapSetId()) setSelectedBeatmapSetId(undefined);
+                else setSelectedBeatmapSetId(beatmapSetId);
+            }
+            else {
+                setSelectedBeatmapId(undefined);
+                setSelectedBeatmapSetId(undefined);
+            }
+        }
+    }
+
     async function queryBeatmaps(request) {
         return await beatmapQuery(request);
     }
@@ -18,7 +51,7 @@ export function BeatmapHandler() {
                 : { type: "beatmap", content: current[0] }
             );
             if (current.length > 1 && current[0].beatmap_set_id == selectedSetId) {
-                for (const beatmap of current) results.push({ type: "beatmap", content: beatmap });
+                for (const row of current) results.push({ type: "beatmap", content: row });
             }
             current = [];
         }
@@ -50,5 +83,6 @@ export function BeatmapHandler() {
     return {
         getDisplayRows,
         displayRowToElement,
+        onClickBeatmapRow,
     }
 }

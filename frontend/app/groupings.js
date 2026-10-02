@@ -1,10 +1,10 @@
 import { createSignal, createEffect } from "../reactive.js";
 
 
-const [getSelectedSourceId, setSelectedSourceId] = createSignal(undefined);
+const [selectedSourceId, setSelectedSourceId] = createSignal(undefined);
 
 const setActiveSource = (element) => {
-    const prevSelected = document.getElementById(getSelectedSourceId());
+    const prevSelected = document.getElementById(selectedSourceId());
     if (prevSelected == undefined) {
         element.querySelector(".source-marker").classList.toggle("hidden");
         setSelectedSourceId(element.id);
@@ -22,17 +22,17 @@ const setActiveSource = (element) => {
 };
 
 const clearActiveSource = () => {
-    const prevSelected = document.getElementById(getSelectedSourceId());
+    const prevSelected = document.getElementById(selectedSourceId());
     if (prevSelected != undefined) {
         prevSelected.querySelector(".source-marker").classList.toggle("hidden");
     }
     setSelectedSourceId(undefined)
 };
 
-const [getSelectedGroupingId, setSelectedGroupingId] = createSignal(undefined);
+const [selectedGroupingId, setSelectedGroupingId] = createSignal(undefined);
 
 const setActiveGrouping = (element) => {
-    const prevSelected = document.getElementById(getSelectedGroupingId());
+    const prevSelected = document.getElementById(selectedGroupingId());
     if (prevSelected == undefined) {
         element.querySelector(".grouping-marker").classList.toggle("hidden");
         setSelectedGroupingId(element.id);
@@ -50,7 +50,7 @@ const setActiveGrouping = (element) => {
 };
 
 const clearActiveGrouping = () => {
-    const prevSelected = document.getElementById(getSelectedGroupingId());
+    const prevSelected = document.getElementById(selectedGroupingId());
     if (prevSelected != undefined) {
         prevSelected.querySelector(".grouping-marker").classList.toggle("hidden");
     }
@@ -62,8 +62,8 @@ const getGroupingNameFromId = (id) => {
 };
 
 createEffect(() => {
-    if (getSelectedSourceId() != undefined) {
-        document.getElementById("active-source").innerHTML = getGroupingNameFromId(getSelectedSourceId());
+    if (selectedSourceId() != undefined) {
+        document.getElementById("active-source").innerHTML = getGroupingNameFromId(selectedSourceId());
     }
     else {
         document.getElementById("active-source").innerHTML = "(none)";
@@ -71,8 +71,8 @@ createEffect(() => {
 });
 
 createEffect(() => {
-    if (getSelectedGroupingId() != undefined) {
-        document.getElementById("active-grouping").innerHTML = getGroupingNameFromId(getSelectedGroupingId());
+    if (selectedGroupingId() != undefined) {
+        document.getElementById("active-grouping").innerHTML = getGroupingNameFromId(selectedGroupingId());
     }
     else {
         document.getElementById("active-grouping").innerHTML = "(none)";
@@ -83,5 +83,3 @@ window.setActiveSource = setActiveSource;
 window.clearActiveSource = clearActiveSource;
 window.setActiveGrouping = setActiveGrouping;
 window.clearActiveGrouping = clearActiveGrouping;
-
-export { getSelectedSourceId, getSelectedGroupingId };
