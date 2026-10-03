@@ -39,7 +39,11 @@ createEffect(() => {
     const req = request();
     const id = ++latestId;
     beatmapContentHandler.queryBeatmaps(req)
-        .then(rows => { if (id == latestId) setBeatmapQueryRows(rows)});
+        .then(rows => { 
+            if (id !== latestId) return;
+            setBeatmapQueryRows(rows);
+            virtualizedList?.scrollToIndex(0, "start");
+        });
 })
 
 const displayRows = createMemo(() => {
@@ -49,20 +53,21 @@ const displayRows = createMemo(() => {
 })
 
 var VirtualizedList = window.VirtualizedList.default;
-let virtualizedList;
+let virtualizedList = null;
 createEffect(() => {
     const rows = displayRows();
-    if (rows.length == 0) return;
-    
-    // beatmapContainer.replaceChildren();
-    if (virtualizedList) virtualizedList.destroy();
-
-    virtualizedList = new VirtualizedList(beatmapContainer, {
-        height: 672,
-        rowCount: rows.length - 1 || 1,
-        renderRow: (index) => beatmapContentHandler.displayRowToElement(rows, index),
-        rowHeight: 96,
-        overScan: 0,
-    });
-    virtualizedList.scrollToIndex(0, 'start');
+    if (rows.length === 0) {
+        virtualizedList?.destroy();
+        virtualizedList = null;
+        return;
+    }
+    if (!virtualizedList) {
+        virtualizedList = new VirtualizedList(beatmapContainer, {
+            height: 672, rowHeight: 96, rowCount: rows.length,
+            renderRow: (index) => beatmapContentHandler.displayRowToElement(displayRows(), index),
+        });
+    }
+    else {
+        virtualizedList.setRowCount(rows.length);
+    }
 });
