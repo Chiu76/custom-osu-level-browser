@@ -5,7 +5,7 @@ const schemas = await openapiSchemas();
 function createElementClassContent(type, className, content="") {
     const element = document.createElement(type);
     element.className = className;
-    element.innerHTML = content;
+    element.textContent = content;
     return element;
 }
 
