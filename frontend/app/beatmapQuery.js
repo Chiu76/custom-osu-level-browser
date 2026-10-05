@@ -2,7 +2,7 @@ import { createSignal, createEffect, createMemo } from "../reactive.js";
 
 import { BeatmapContentHandler } from "../components/BeatmapContentHandler.js";
 import { BeatmapContainerHandler } from "../components/BeatmapContainerHandler.js";
-import { search, filter, sort, selectedBeatmapSetId } from "./settings.js";
+import { search, filter, sort, selectedBeatmapId, selectedBeatmapSetId } from "./settings.js";
 
 function buildRequest(search, filters, sort) {
     return {
@@ -48,8 +48,9 @@ createEffect(() => {
 
 const displayRows = createMemo(() => {
     const beatmaps = beatmapQueryRows();
-    const selectedSetId = selectedBeatmapSetId();
-    return beatmapContentHandler.beatmapsToDisplayRows(beatmaps, selectedSetId);
+    const currentSelectBeatmapId = selectedBeatmapId();
+    const currentSelectedBeatmapSetId = selectedBeatmapSetId();
+    return beatmapContentHandler.beatmapsToDisplayRows(beatmaps, currentSelectedBeatmapSetId);
 })
 
 var VirtualizedList = window.VirtualizedList.default;

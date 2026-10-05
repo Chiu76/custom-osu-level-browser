@@ -1,5 +1,5 @@
 @layer modules {
-  @scope (li.row-beatmap-set) {
+  @scope (li.row.beatmap-set) {
     :scope {
       display: grid;
       grid-template-columns: 0.5fr 1fr 1fr 3fr 2fr 0.5fr;
@@ -43,4 +43,4 @@
   }
 }
 
-/*# sourceMappingURL=row-beatmap-set.css.map */
+/*# sourceMappingURL=row.beatmap-set.css.map */

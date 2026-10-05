@@ -1,5 +1,5 @@
 @layer modules {
-    @scope (li.row-grouping) {
+    @scope (li.row.grouping) {
         :scope {
             display: grid;
             grid-template-columns: 1em 1em 4fr;

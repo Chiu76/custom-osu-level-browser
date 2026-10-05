@@ -1,5 +1,5 @@
 @layer modules {
-  @scope (li.row-score) {
+  @scope (li.row.score) {
     :scope {
       display: grid;
       grid-template-columns: 0.5fr [one] 1fr [two] auto [three] 1fr [four] 2fr [five] 0.5fr;
@@ -45,4 +45,4 @@
   }
 }
 
-/*# sourceMappingURL=row-score.css.map */
+/*# sourceMappingURL=row.score.css.map */

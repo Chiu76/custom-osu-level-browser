@@ -1,7 +1,8 @@
 import { createElementClassContent } from "../utils.js";
+import { selectedBeatmapSetId, selectedBeatmapId } from "../app/settings.js";
 
 function RowBeatmap(beatmap) {
-    const li = createElementClassContent("li", "row-beatmap");
+    const li = createElementClassContent("li", "row beatmap");
     
     li.appendChild(createElementClassContent("div", "grade", beatmap.grade ?? ""));
     li.appendChild(createElementClassContent("div", "accuracy", beatmap.accuracy ?? ""));
@@ -16,7 +17,16 @@ function RowBeatmap(beatmap) {
     li.appendChild(createElementClassContent("div", "mapper-id", beatmap.mapper_id ?? ""));
     li.appendChild(createElementClassContent("div", "mapper", beatmap.mapper ?? ""));
 
-    li.appendChild(createElementClassContent("div", "beatmap-set-id", beatmap.beatmap_set_id));
+    li.appendChild(createElementClassContent("div", "beatmap-set-id", beatmap.beatmap_set_id, true));
+
+    if (beatmap.beatmap_set_id == selectedBeatmapSetId()) {
+        li.classList.add("highlighted");        
+    }
+
+    if (beatmap.beatmap_id == selectedBeatmapId()) {
+        li.classList.add("highlighted");
+        li.classList.add("inner-outline-red");
+    }
     
     return li;
 }

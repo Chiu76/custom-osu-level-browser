@@ -8,9 +8,14 @@
   .highlighted {
     background-color: rgb(210, 149, 16);
   }
-  .selected {
+  .inner-outline-red {
     border: unset;
-    outline: 5px double rgb(255, 0, 0);
+    outline: 2.5px solid rgb(255, 0, 0);
+    outline-offset: -2.5px;
+  }
+  .inner-outline-brown {
+    border: unset;
+    outline: 5px inset rgb(162, 42, 42);
     outline-offset: -5px;
   }
 }
