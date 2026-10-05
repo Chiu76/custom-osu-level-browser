@@ -1,13 +1,3 @@
-# from src.ingestion.jobs.full_import import run_job__full_import
-
-# from src.level_browser.db import Model, engine
-# from src.level_browser.models.beatmaps import BeatmapSet, Beatmap
-
-# Model.metadata.drop_all(engine)
-# Model.metadata.create_all(engine)
-
-# run_job__full_import()
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 

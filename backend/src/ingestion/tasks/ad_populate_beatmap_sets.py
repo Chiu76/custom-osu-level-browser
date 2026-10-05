@@ -35,11 +35,6 @@ log_messages = {
 }
     
 def fn(self: Task, session: Session, force_refresh: bool = False):
-    """
-        load parsed_osu_db_file.json
-
-    """
-
     self.log_info('start_task')
 
     self.vars = {
@@ -51,8 +46,8 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
         'force_refresh': None,
     }
 
-    osu_db_file_hash = utils.get_state__osu_db_file_hash(session)
-    beatmap_data = utils.load_json__osu_db_file(osu_db_file_hash)['beatmap_data']
+    osu_db_file_hash = utils.get_state__db_file_hash('osu!', session)
+    beatmap_data = utils.load_json__db_file("osu!", osu_db_file_hash)['beatmap_data']
 
     set_ids = set()
     beatmap_set_data = []

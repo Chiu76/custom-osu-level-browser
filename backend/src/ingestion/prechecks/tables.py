@@ -1,7 +1,7 @@
 from sqlalchemy import Engine, inspect, select
 from sqlalchemy.orm import Session
 
-from src.common.models.misc import State
+from src.common.models.state import State
 
 from orchestrator import Task, TaskStatus
 

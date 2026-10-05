@@ -480,7 +480,7 @@ wheels = [
 [[package]]
 name = "ingestion-pipelines-orchestrator"
 version = "1.0.0"
-source = { git = "https://github.com/Chiu76/ingestion-pipelines-orchestrator.git#8fc333342e4b02fc045fb7181a012885e21b216d" }
+source = { git = "https://github.com/Chiu76/ingestion-pipelines-orchestrator.git#f4cd2109e7e78ee1a905129abf10b3460fb9d33d" }
 dependencies = [
     { name = "sqlalchemy" },
 ]
