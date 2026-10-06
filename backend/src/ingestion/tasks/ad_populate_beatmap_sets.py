@@ -1,5 +1,3 @@
-import json
-
 from sqlalchemy import select, func
 from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy.orm import Session
@@ -50,12 +48,12 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     beatmap_data = utils.load_json__db_file("osu!", osu_db_file_hash)['beatmap_data']
 
     set_ids = set()
-    beatmap_set_data = []
-    for beatmap_db_content in beatmap_data:
-        set_id = beatmap_db_content['beatmap_set_id']
+    beatmap_set_rows = []
+    for beatmap in beatmap_data:
+        set_id = beatmap['beatmap_set_id']
         if set_id in set_ids: continue
-        mapping = get_beatmap_set_mapping(beatmap_db_content, import_source_hash=osu_db_file_hash)
-        beatmap_set_data.append(mapping)
+        mapping = get_beatmap_set_mapping(beatmap, import_source_hash=osu_db_file_hash)
+        beatmap_set_rows.append(mapping)
         set_ids.add(set_id)
 
     already_imported_count = session.scalar(
@@ -64,15 +62,15 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
         .where(BeatmapSet.import_source_hash == osu_db_file_hash)
     )
 
-    self.vars['to_import_items'] = already_imported_count != len(beatmap_set_data)
+    self.vars['to_import_items'] = already_imported_count != len(beatmap_set_rows)
     self.vars['force_refresh'] = force_refresh
 
     if self.vars['to_import_items'] or self.vars['force_refresh']:
         task_common.upsert_items(
             self=self,
-            row_contents=beatmap_set_data,
+            row_contents=beatmap_set_rows,
             target_table=BeatmapSet,
-            table_unique_key='beatmap_set_id',
+            table_unique_keys=['beatmap_set_id'],
             session=session,
         )
 
@@ -86,11 +84,11 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     self.log_info('end_task')
 
 
-def init_task__populate_beatmap_sets(force_refresh: bool = False, **kwargs):
+def init_task__populate_beatmap_sets(session: Session, force_refresh: bool = False):
     return Task(
         'task__populate_beatmap_sets',
         fn,
         log_messages,
-        **kwargs,
+        session,
         force_refresh=force_refresh,
     )

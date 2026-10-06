@@ -14,13 +14,15 @@ from ..tasks.generic_update_state_db_file import init_task__generic_update_state
 from ..tasks.generic_parse_imported_db_file import init_task__generic_parse_imported_db_file
 from ..tasks.ad_populate_beatmap_sets import init_task__populate_beatmap_sets
 from ..tasks.ae_populate_beatmaps import init_task__populate_beatmaps
+from ..tasks.afa_populate_collections import init_task__populate_collections
+from ..tasks.afb_populate_collection_items import init_task__populate_collection_items
 
 
-def run_job__full_import():
+def full_import():
     with SessionMaker() as session:
         run_job__osu_db_file_import(session)
         run_job__collection_db_file_import(session)
-        run_job__scores_db_file_import(session)
+        # run_job__scores_db_file_import(session)
 
 
 def run_job__osu_db_file_import(session: Session):
@@ -75,6 +77,8 @@ def run_job__collection_db_file_import(session: Session):
                 db_file_type=db_file_type,
                 force_refresh=False,
             ),
+            init_task__populate_collections(session, force_refresh=False),
+            init_task__populate_collection_items(session, force_refresh=False),
         ]
         job.run()
 

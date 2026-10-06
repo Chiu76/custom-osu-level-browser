@@ -66,19 +66,19 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
         'force_refresh': None,
     }
 
-    osu_db_file_hash = utils.get_state__db_file_hash('osu!', session)
-    beatmap_data = utils.load_json__db_file("osu!", osu_db_file_hash)['beatmap_data']
+    db_file_hash = utils.get_state__db_file_hash('osu!', session)
+    beatmap_data = utils.load_json__db_file("osu!", db_file_hash)['beatmap_data']
 
     beatmap_rows = []
     for beatmap in beatmap_data:
-        row = get_table_row__beatmaps(beatmap, import_source_hash=osu_db_file_hash)
+        row = get_table_row__beatmaps(beatmap, import_source_hash=db_file_hash)
         if row['ranked_status'] == 1: continue
         beatmap_rows.append(row)
 
     already_imported_count = session.scalar(
         select(func.count())
         .select_from(Beatmap)
-        .where(Beatmap.import_source_hash == osu_db_file_hash)
+        .where(Beatmap.import_source_hash == db_file_hash)
     )
 
     self.vars['to_import_items'] = already_imported_count != len(beatmap_rows)
@@ -89,7 +89,7 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
             self=self,
             row_contents=beatmap_rows,
             target_table=Beatmap,
-            table_unique_key='beatmap_id',
+            table_unique_keys=['beatmap_id'],
             session=session,
         )
 
@@ -103,11 +103,11 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     self.log_info('end_task')
 
 
-def init_task__populate_beatmaps(force_refresh: bool = False, **kwargs):
+def init_task__populate_beatmaps(session: Session, force_refresh: bool = False):
     return Task(
         'task__populate_beatmaps',
         fn,
         log_messages,
-        **kwargs,
+        session,
         force_refresh=force_refresh,
     )

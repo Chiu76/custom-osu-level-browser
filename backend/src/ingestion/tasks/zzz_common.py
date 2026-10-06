@@ -24,17 +24,17 @@ def get_on_conflict_set_(stmt: Insert) -> dict:
     }
 
 
-def execute_upsert(row_contents: list[dict], target_table: MappedClassProtocol, table_unique_key: str, session: Session):
+def execute_upsert(row_contents: list[dict], target_table: MappedClassProtocol, table_unique_keys: list[str], session: Session):
     stmt = insert(target_table).values(row_contents)
     stmt = stmt.on_conflict_do_update(
-        index_elements=[table_unique_key],
+        index_elements=table_unique_keys,
         set_=get_on_conflict_set_(stmt),
     )
     session.execute(stmt)
     session.commit()
 
 
-def upsert_items(self: Task, row_contents: list[dict], target_table: MappedClassProtocol, table_unique_key: str, session: Session):
+def upsert_items(self: Task, row_contents: list[dict], target_table: MappedClassProtocol, table_unique_keys: list[str], session: Session):
     """
     
     """
@@ -48,18 +48,18 @@ def upsert_items(self: Task, row_contents: list[dict], target_table: MappedClass
 
     for row_content_batch in batch(row_contents, BATCH_SIZE):
         try:
-            execute_upsert(row_content_batch, target_table, table_unique_key, session)
+            execute_upsert(row_content_batch, target_table, table_unique_keys, session)
             self.vars['num_items_did_import'] += len(row_content_batch)
         except:
             session.rollback()
             try:
                 for row_content in row_content_batch:
-                    execute_upsert(row_content, target_table, table_unique_key, session)
+                    execute_upsert(row_content, target_table, table_unique_keys, session)
                     self.vars['num_items_did_import'] += len(row_content)
             except Exception as e:
                 session.rollback()
                 self.vars['failed_imports'].append({
-                    table_unique_key: row_content[table_unique_key],
+                    # table_unique_key: row_content[table_unique_key],
                     'exception': str(e),
                     'content': row_content,
                 })
