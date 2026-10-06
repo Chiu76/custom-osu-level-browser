@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .schemas.specs import PresentationSpecs, GroupingSpec, SearchSpec, Sorting, SortingSpec, LocalBeatmapsIdentifier
 
 from .yyy_filter_sort_fields import get_column__filter_sort_field
+from .common import exists_in_collection
 
 from src.common.models.beatmaps import Beatmap, BeatmapSet
 
@@ -16,7 +17,7 @@ def apply_presentation_specs(core_stmt: Select, presentation_specs: Presentation
 
     beatmap_query_stmt = select(core_stmt_sq)
     beatmap_query_stmt = apply_search(beatmap_query_stmt, core_stmt_sq, presentation_specs.search_spec)
-    beatmap_query_stmt = apply_grouping(beatmap_query_stmt, presentation_specs.grouping_spec)
+    beatmap_query_stmt = apply_grouping(beatmap_query_stmt, core_stmt_sq, presentation_specs.grouping_spec)
     beatmap_query_stmt = apply_sorting(beatmap_query_stmt, core_stmt_sq, presentation_specs.sorting_spec)
 
     return beatmap_query_stmt
@@ -44,9 +45,16 @@ def apply_search(stmt: Select, core_stmt_sq: Subquery, search_spec: SearchSpec) 
     return stmt
 
 
-def apply_grouping(stmt: Select, grouping_spec: GroupingSpec) -> Select:
-    if grouping_spec.type == 'local_beatmaps':
+def apply_grouping(stmt: Select, core_stmt_sq: Subquery, grouping_spec: GroupingSpec) -> Select:
+    ## todo: unsure if 'none' can have any meaningful value here
+    if grouping_spec.type == 'none':
         pass
+    elif grouping_spec.type == 'local_beatmaps':
+        pass
+    elif grouping_spec.type == 'collection':
+        collection_id = grouping_spec.id
+        stmt = stmt.where(exists_in_collection(core_stmt_sq.c.beatmap_db_id, collection_id))
+
     return stmt
 
 
@@ -60,8 +68,7 @@ def _get_default_sorting_columns(core_stmt_sq: Subquery) -> list[InstrumentedAtt
 
 def _get_sorting_columns(sorting: Sorting, core_stmt_sq: Subquery):
     field_column = get_column__filter_sort_field(sorting.field, core_stmt_sq)
-    if sorting.dir == 'desc':
-        field_column = desc(field_column)
+    if sorting.dir == 'desc': field_column = desc(field_column)
     return field_column
 
 

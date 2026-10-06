@@ -4,10 +4,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, Filter, FilterSpec
 
-from .yyy_filter_sort_fields import get_column__filter_sort_field
+import src.beatmap_query.yyy_filter_sort_fields as filter_sort_fields
 
 from src.common.models.beatmaps import Beatmap, BeatmapSet
 
+from .common import exists_in_collection
 
 
 def apply_core_specs(initial_stmt: Select, core_specs: CoreSpecs):
@@ -37,11 +38,14 @@ def apply_online_details(stmt: Select, online_details_spec: OnlineDetailsSpec) -
 def apply_source(stmt: Select, source_spec: SourceSpec) -> Select:
     if source_spec.type == 'local_beatmaps':
         pass
+    elif source_spec.type == 'collection':
+        collection_id = source_spec.id
+        stmt = stmt.where(exists_in_collection(Beatmap.id, collection_id))
     return stmt
 
 
 def _get_filter_condition(filter: Filter):
-    field_column = get_column__filter_sort_field(filter.field)
+    field_column = filter_sort_fields.get_column__filter_sort_field(filter.field)
 
     if field_column is None:
         return None
@@ -68,6 +72,7 @@ def apply_filter(stmt: Select, filter_spec: FilterSpec) -> Select:
         return stmt
 
     conditions = [_get_filter_condition(f) for f in filter_spec.filters]
+    ## todo: eventually allow AND, OR, maybe parentheses within filter contents
     stmt = stmt.where(and_(*conditions))
 
     return stmt

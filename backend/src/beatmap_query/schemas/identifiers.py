@@ -8,3 +8,8 @@ class NoneIdentifier(BaseModel):
 
 class LocalBeatmapsIdentifier(BaseModel):
     type: Literal['local_beatmaps']
+
+
+class CollectionIdentifier(BaseModel):
+    type: Literal['collection']
+    id: int

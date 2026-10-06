@@ -15,7 +15,7 @@ function buildRequest(search, filters, sort) {
         },
         presentation_specs: {
             search_spec: { q: search },
-            grouping_spec: { type: "none"},
+            grouping_spec: { type: "none" },
             sorting_spec: { sortings: sort },
         }
     }
