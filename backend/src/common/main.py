@@ -2,11 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.beatmap_query.api import router as beatmap_query_router
+from src.collections.api import router as collections_router
 
 
 app = FastAPI()
 
 app.include_router(beatmap_query_router)
+app.include_router(collections_router)
 
 origins = [
     "http://localhost:3000",

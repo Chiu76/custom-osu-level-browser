@@ -1,15 +1,8 @@
 from typing import Literal
 from pydantic import BaseModel
 
-from .specs import CoreSpecs, PresentationSpecs
 
-
-class BeatmapQueryRequest(BaseModel):
-    core_specs: CoreSpecs
-    presentation_specs: PresentationSpecs
-
-
-class BeatmapQueryRow(BaseModel):
+class CollectionRow(BaseModel):
     beatmap_db_id: int
     beatmap_id: int
     beatmap_set_id: int
@@ -35,8 +28,3 @@ class BeatmapQueryRow(BaseModel):
     owner: str
     song_source: str
     song_tags: str
-
-
-class BeatmapQueryResponse(BaseModel):
-    rows: list[BeatmapQueryRow]
-    count: int

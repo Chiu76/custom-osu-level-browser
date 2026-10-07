@@ -1,4 +1,6 @@
 from typing import Literal
+from enum import StrEnum
+
 from pydantic import BaseModel
 
 
@@ -13,3 +15,8 @@ class LocalBeatmapsIdentifier(BaseModel):
 class CollectionIdentifier(BaseModel):
     type: Literal['collection']
     id: int
+
+
+class GroupingTypeIdentifier(StrEnum):
+    COLLECTIONS = 'collections',
+    ARTIST = 'artist',

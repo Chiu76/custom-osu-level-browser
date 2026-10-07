@@ -39,9 +39,9 @@ createEffect(() => {
     const req = request();
     const id = ++latestId;
     beatmapContentHandler.queryBeatmaps(req)
-        .then(rows => { 
+        .then(response => { 
             if (id !== latestId) return;
-            setBeatmapQueryRows(rows);
+            setBeatmapQueryRows(response.rows);
             virtualizedList?.scrollToIndex(0, "start");
         });
 })

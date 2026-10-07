@@ -1,5 +1,3 @@
-import json
-
 from sqlalchemy import Select, Subquery, select, or_, and_, desc
 from sqlalchemy.orm import InstrumentedAttribute
 from sqlalchemy.ext.asyncio import AsyncSession
