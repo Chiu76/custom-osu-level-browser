@@ -5,7 +5,7 @@ from src.common.models.beatmaps import Beatmap, BeatmapSet
 from src.common.models.collections import CollectionItem 
 
 
-def get_agg_count_stmt__collections(beatmap_query_stmt: Select):
+def get_aggregated_count_sq__collections(beatmap_query_stmt: Select):
     # to get inner FROM content of beatmap_query_stmt which contains the core_stmt_sq
     core_stmt_sq = beatmap_query_stmt.get_final_froms()[0]
     beatmap_query_sq = ( 
@@ -15,10 +15,10 @@ def get_agg_count_stmt__collections(beatmap_query_stmt: Select):
             .subquery('beatmap_query_sq')
     )
 
-    full_count_sq = (
+    total_count_sq = (
         select(CollectionItem.collection_id, func.count().label('count'))
         .group_by(CollectionItem.collection_id)
-        .subquery('full_count_sq')
+        .subquery('total_count_sq')
     )
     selected_count_sq = (
         select(beatmap_query_sq.c.collection_id, func.count().label('count'))
@@ -27,10 +27,11 @@ def get_agg_count_stmt__collections(beatmap_query_stmt: Select):
         .subquery('selected_count_sq')
     )
 
-    agg_count_stmt = (
-        select(full_count_sq.c.collection_id, func.coalesce(selected_count_sq.c.count, 0), full_count_sq.c.count)
-        .select_from(full_count_sq)
-        .outerjoin(selected_count_sq, selected_count_sq.c.collection_id == full_count_sq.c.collection_id)
-    )
+    aggregated_count_sq = (
+        select(total_count_sq.c.collection_id.label('grouping_id'), total_count_sq.c.count.label('total_count'), func.coalesce(selected_count_sq.c.count, 0).label('selected_count'))
+        .select_from(total_count_sq)
+        .outerjoin(selected_count_sq, selected_count_sq.c.collection_id == total_count_sq.c.collection_id)
+        .subquery('aggregated_count_sq')
+    )   
 
-    return agg_count_stmt
+    return aggregated_count_sq

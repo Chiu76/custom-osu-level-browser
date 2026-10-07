@@ -5,7 +5,7 @@ from src.common.models.beatmaps import Beatmap, BeatmapSet
 from src.common.models.collections import CollectionItem 
 
 from .schemas.identifiers import NoneIdentifier, LocalBeatmapsIdentifier, GroupingTypeIdentifier
-from .schemas.requests import BeatmapQueryRequest, BeatmapQueryRow, BeatmapQueryResponse
+from .schemas.requests import BeatmapQueryRequest, BeatmapQueryRow
 from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, PresentationSpecs, GroupingSpec, SearchSpec, Filter, FilterSpec, Sorting, SortingSpec
 
 
@@ -28,20 +28,13 @@ class BeatmapQueryRepository:
     
 
     @classmethod
-    async def query_agg_count(
-        cls, 
-        grouping_type: GroupingTypeIdentifier, 
-        request: BeatmapQueryRequest, 
-        session: AsyncSession
-    ) -> list[set[int, int, int]]:
+    async def get_aggregated_count_sq(cls, grouping_type: GroupingTypeIdentifier, request: BeatmapQueryRequest) -> Subquery:
         beatmap_query_stmt = cls.get_beatmap_query_stmt(request.core_specs, request.presentation_specs)
 
         if grouping_type == GroupingTypeIdentifier.COLLECTIONS:
-            agg_count_stmt = zzz_count.get_agg_count_stmt__collections(beatmap_query_stmt)
+            aggregated_count_sq = zzz_count.get_aggregated_count_sq__collections(beatmap_query_stmt)
         
-        results = session.execute(agg_count_stmt).all()
-        ## todo: have a response model, AggregatedCountResponse, grouping type and list of AggregatedCountRow, collection_id selected_count full_count
-        return results
+        return aggregated_count_sq
 
 
     @classmethod
