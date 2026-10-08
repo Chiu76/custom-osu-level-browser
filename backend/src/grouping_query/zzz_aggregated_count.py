@@ -1,11 +1,26 @@
 from sqlalchemy import Select, Subquery, select, func
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.common.models.beatmaps import Beatmap, BeatmapSet
-from src.common.models.collections import CollectionItem 
+from .schemas.identifiers import GroupingTypeIdentifier
+from .schemas.requests import GroupingQueryRequest
+
+from src.beatmap_query.repositories import BeatmapQueryRepository
+
+from src.common.models.collections import CollectionItem
 
 
-def get_aggregated_count_sq__collections(beatmap_query_stmt: Select):
+def get_aggregated_count_sq(request: GroupingQueryRequest) -> Subquery:
+    beatmap_query_stmt = BeatmapQueryRepository.get_beatmap_query_stmt(
+        request.beatmap_query_request.core_specs, 
+        request.beatmap_query_request.presentation_specs,
+    )
+
+    if request.grouping_type == GroupingTypeIdentifier.COLLECTIONS:
+        aggregated_count_sq = get_aggregated_count_sq__collections(beatmap_query_stmt)
+    
+    return aggregated_count_sq
+
+
+def get_aggregated_count_sq__collections(beatmap_query_stmt: Select) -> Subquery:
     # to get inner FROM content of beatmap_query_stmt which contains the core_stmt_sq
     core_stmt_sq = beatmap_query_stmt.get_final_froms()[0]
     beatmap_query_sq = ( 

@@ -32,7 +32,7 @@ export function BeatmapContainerHandler() {
     }
 
     function init() {
-        const beatmapListContainer = document.getElementById("beatmaps-list-container");
+        const beatmapListContainer = document.getElementById("beatmap-list-container");
         beatmapListContainer.addEventListener("click", (event) => onClickBeatmapRow(event));
         return beatmapListContainer;
     }

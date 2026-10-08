@@ -20,4 +20,15 @@ sortHandler.init(sort, setSort);
 const [selectedBeatmapSetId, setSelectedBeatmapSetId] = createSignal();
 const [selectedBeatmapId, setSelectedBeatmapId] = createSignal();
 
-export { search, setSearch, filter, setFilter, sort, setSort, selectedBeatmapSetId, setSelectedBeatmapSetId, selectedBeatmapId, setSelectedBeatmapId };
+const [selectedSourceId, setSelectedSourceId] = createSignal(undefined);
+const [selectedGroupingId, setSelectedGroupingId] = createSignal(undefined);
+
+export { 
+    search, setSearch, 
+    filter, setFilter, 
+    sort, setSort, 
+    selectedBeatmapSetId, setSelectedBeatmapSetId, 
+    selectedBeatmapId, setSelectedBeatmapId,
+    selectedSourceId, setSelectedSourceId,
+    selectedGroupingId, setSelectedGroupingId,
+};

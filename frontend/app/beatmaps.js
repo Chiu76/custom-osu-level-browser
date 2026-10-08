@@ -72,3 +72,5 @@ createEffect(() => {
         virtualizedList.setRowCount(rows.length);
     }
 });
+
+export { request };

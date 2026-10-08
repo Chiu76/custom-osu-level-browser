@@ -4,14 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.common.models.beatmaps import Beatmap, BeatmapSet
 from src.common.models.collections import CollectionItem 
 
-from .schemas.identifiers import NoneIdentifier, LocalBeatmapsIdentifier, GroupingTypeIdentifier
+from .schemas.identifiers import NoneIdentifier, LocalBeatmapsIdentifier
 from .schemas.requests import BeatmapQueryRequest, BeatmapQueryRow
 from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, PresentationSpecs, GroupingSpec, SearchSpec, Filter, FilterSpec, Sorting, SortingSpec
 
 
 import src.beatmap_query.zzz_core as zzz_core
 import src.beatmap_query.zzz_presentation as zzz_presentation
-import src.beatmap_query.zzz_count as zzz_count
 
 
 class BeatmapQueryRepository:
@@ -25,16 +24,6 @@ class BeatmapQueryRepository:
         results = session.execute(beatmap_query_stmt).mappings().all()
 
         return [BeatmapQueryRow.model_validate(dict(result)) for result in results]
-    
-
-    @classmethod
-    async def get_aggregated_count_sq(cls, grouping_type: GroupingTypeIdentifier, request: BeatmapQueryRequest) -> Subquery:
-        beatmap_query_stmt = cls.get_beatmap_query_stmt(request.core_specs, request.presentation_specs)
-
-        if grouping_type == GroupingTypeIdentifier.COLLECTIONS:
-            aggregated_count_sq = zzz_count.get_aggregated_count_sq__collections(beatmap_query_stmt)
-        
-        return aggregated_count_sq
 
 
     @classmethod
@@ -82,6 +71,7 @@ class BeatmapQueryRepository:
 
         return stmt
 
+    @staticmethod
     def generate_dummy_beatmap_query_request():
         core_specs = CoreSpecs(
             star_rating_spec=StarRatingSpec(),
@@ -94,6 +84,7 @@ class BeatmapQueryRepository:
                 ]
             ),
         )
+
         presentation_specs = PresentationSpecs(
             search_spec=SearchSpec(),
             grouping_spec=NoneIdentifier(type='none'),
@@ -103,4 +94,5 @@ class BeatmapQueryRepository:
                 ]
             ),
         )
+        
         return BeatmapQueryRequest(core_specs=core_specs, presentation_specs=presentation_specs)

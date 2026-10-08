@@ -25,4 +25,18 @@ async function beatmapQuery(request) {
     return res.json();
 }
 
-export { beatmapQuery, openapiSchemas };
+async function groupingQuery(request) {
+    const res = await fetch(`http://127.0.0.1:8000/api/grouping_query`, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(request),
+    });
+    if (!res.ok) {
+        throw Error("Failed to query collections");
+    }
+    return res.json();
+}
+
+export { openapiSchemas, beatmapQuery, groupingQuery };

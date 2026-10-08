@@ -15,8 +15,3 @@ class LocalBeatmapsIdentifier(BaseModel):
 class CollectionIdentifier(BaseModel):
     type: Literal['collection']
     id: int
-
-
-class GroupingTypeIdentifier(StrEnum):
-    COLLECTIONS = 'collections',
-    ARTIST = 'artist',
