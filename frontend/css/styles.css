@@ -242,6 +242,9 @@
       grid-template-columns: 0.5fr [one] 1fr [two] auto [three] 1fr [four] 2fr [five] 0.5fr;
       grid-template-rows: repeat(5, 1fr);
     }
+    & * {
+      pointer-events: none;
+    }
     .grade {
       grid-column: one/two;
       grid-row: 1/5;
@@ -287,6 +290,9 @@
       display: grid;
       grid-template-columns: 1em 1em 4fr;
       grid-template-rows: repeat(4, 1fr);
+    }
+    & * {
+      pointer-events: none;
     }
     .source-marker {
       grid-column: span 1;

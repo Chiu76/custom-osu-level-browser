@@ -5,6 +5,9 @@
       grid-template-columns: 0.5fr [one] 1fr [two] auto [three] 1fr [four] 2fr [five] 0.5fr;
       grid-template-rows: repeat(5, 1fr);
     }
+    & * {
+      pointer-events: none;
+    }
     .grade {
       grid-column: one/two;
       grid-row: 1/5;

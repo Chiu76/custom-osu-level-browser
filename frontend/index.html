@@ -36,13 +36,13 @@
                         <span class="dir"></span>
                     </span>
                 </div>
-                <div id="filter">
+                <div id="beatmap-filter">
                     <span>Filters: </span>
                     <input
                         placeholder="Filter beatmaps.."
                     />
                 </div>
-                <div id="search">
+                <div id="beatmap-search">
                     <span>Search: </span>
                     <input
                         placeholder="Search beatmaps.."
@@ -63,10 +63,12 @@
                     </div>
                 </div>
                 <div>
-                    <input
-                        placeholder="Search groupings.."
-                    />
-                    <select name="selected-grouping-type" id="selected-grouping-type">
+                    <span id="grouping-search">
+                        <input
+                            placeholder="Search groupings.."
+                        />
+                    </span>
+                    <select id="grouping-type-select">
                         <option value="collections">Collections</option>
                         <option value="packs">Packs</option>
                         <option value="beatmaps-ranked-by-year">Ranked by Year</option>
@@ -96,14 +98,7 @@
         </div>
         <div class="groupings">
             <h2>Groupings</h2>
-            <ul class="list" id="grouping-list-container">
-                <li oncontextmenu="setActiveSource(this)" onclick="setActiveGrouping(this)" id="grouping-id-0" class="row grouping">
-                    <div class="grouping-marker hidden">Grouping</div>
-                    <div class="source-marker hidden">Source</div>
-                    <div class="name">Grouping 1</div>
-                    <div class="count">(X maps)</div>
-                </li>
-            </ul>
+            <ul class="list" id="grouping-list-container"></ul>
         </div>
     </main>
     <script>

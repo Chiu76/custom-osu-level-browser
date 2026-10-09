@@ -2,31 +2,42 @@ import { createSignal, createEffect, createMemo } from "../reactive.js";
 
 import { BeatmapContentHandler } from "../components/BeatmapContentHandler.js";
 import { BeatmapContainerHandler } from "../components/BeatmapContainerHandler.js";
-import { search, filter, sort, selectedBeatmapId, selectedBeatmapSetId } from "./settings.js";
+import { 
+    search, filter, sort, 
+    selectedBeatmapId, selectedBeatmapSetId,
+    selectedGroupingId, selectedSourceId,
+    groupingType, groupingSpec,
+} from "./settings.js";
 
-function buildRequest(search, filters, sort) {
+function buildRequest(searchSpec, filterSpec, sortSpec, groupingSpec) {
     return {
         core_specs: {
             star_rating_spec: {},
             attached_score_spec: {},
             online_details_spec: {},
             source_spec: { type: "local_beatmaps" },
-            filter_spec: { filters: filters },
+            filter_spec: filterSpec,
         },
         presentation_specs: {
-            search_spec: { q: search },
-            grouping_spec: { type: "none" },
-            sorting_spec: { sortings: sort },
+            search_spec: searchSpec,
+            grouping_spec: groupingSpec,
+            sorting_spec: sortSpec,
         }
     }
 }
 
-const [request, setRequest] = createSignal(buildRequest(search(), filter(), sort()));
+const [request, setRequest] = createSignal();
 const [beatmapQueryRows, setBeatmapQueryRows] = createSignal([]);
 
 createEffect(() => {
-    setRequest(buildRequest(search(), filter(), sort()));
-    console.log(request());
+    const searchSpec = { q: search() };
+    const filterSpec = { filters: filter() };
+    const sortSpec = { sortings: sort() };
+    // const groupingSpec = { type: groupingType(), id: selectedGroupingId() };
+    const grouping_spec = groupingSpec();
+    const req = buildRequest(searchSpec, filterSpec, sortSpec, grouping_spec);
+    console.log("beatmaps: request-building effect: req:", req);
+    setRequest(req);
 });
 
 const beatmapContainerHandler = BeatmapContainerHandler();
@@ -50,6 +61,8 @@ const displayRows = createMemo(() => {
     const beatmaps = beatmapQueryRows();
     const currentSelectBeatmapId = selectedBeatmapId();
     const currentSelectedBeatmapSetId = selectedBeatmapSetId();
+    // const currentSelectedGroupingId = selectedGroupingId();
+    // const currentSelectedSourceId = selectedSourceId();
     return beatmapContentHandler.beatmapsToDisplayRows(beatmaps, currentSelectedBeatmapSetId);
 })
 
@@ -57,6 +70,7 @@ var VirtualizedList = window.VirtualizedList.default;
 let virtualizedList = null;
 createEffect(() => {
     const rows = displayRows();
+    
     if (rows.length === 0) {
         virtualizedList?.destroy();
         virtualizedList = null;

@@ -12,6 +12,7 @@ async function openapiSchemas() {
 }
 
 async function beatmapQuery(request) {
+    // console.log("api: beatmapQuery: request:", request);
     const res = await fetch(`http://127.0.0.1:8000/api/beatmap_query`, {
         method: "POST",
         headers: {
@@ -26,6 +27,7 @@ async function beatmapQuery(request) {
 }
 
 async function groupingQuery(request) {
+    // console.log("api: groupingQuery: request:", request);
     const res = await fetch(`http://127.0.0.1:8000/api/grouping_query`, {
         method: "POST",
         headers: {
@@ -34,7 +36,7 @@ async function groupingQuery(request) {
         body: JSON.stringify(request),
     });
     if (!res.ok) {
-        throw Error("Failed to query collections");
+        throw Error("Failed to query groupings");
     }
     return res.json();
 }

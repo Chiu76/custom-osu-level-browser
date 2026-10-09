@@ -1,0 +1,42 @@
+{
+  "beatmap_query_request": {
+    "core_specs": {
+      "star_rating_spec": {},
+      "attached_score_spec": {},
+      "online_details_spec": {},
+      "source_spec": {
+        "type": "local_beatmaps"
+      },
+      "filter_spec": {
+        "filters": []
+      }
+    },
+    "presentation_specs": {
+      "search_spec": {
+        "q": ""
+      },
+      "grouping_spec": {
+        "type": "collections",
+        "id": "1"
+      },
+      "sorting_spec": {
+        "sortings": [
+          {
+            "field": "artist",
+            "dir": "asc"
+          },
+          {
+            "field": "title",
+            "dir": "asc"
+          },
+          {
+            "field": "beatmap_set_id",
+            "dir": "asc"
+          }
+        ]
+      }
+    }
+  },
+  "grouping_type": "collections",
+  "q": ""
+}

@@ -13,34 +13,28 @@
             grid-row: 1 / 5;
             align-content: center;
         }
-
         .title {
             grid-column: 3 / 5;
             grid-row: 2 / 3;
         }
-
         .artist {
             grid-column: 3 / 5;
             grid-row: 3 / 4;
         }
-
         .bpm {
             grid-column: 4 / 5;
             grid-row: 5 / 6;
         }
-
         .beatmap-set-id {
             grid-column: 5 / 6;
             grid-row: 2 / 3;
             justify-self: right;
         }
-
         .owner-id {
             grid-column: 5 / 6;
             grid-row: 4 / 5;
             justify-self: right;
         }
-
         .owner {
             grid-column: 5 / 6;
             grid-row: 5 / 6;

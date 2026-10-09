@@ -13,8 +13,8 @@ router = APIRouter()
 async def query(request: GroupingQueryRequest) -> GroupingQueryResponse:
     with SessionMaker() as session:
         rows = await GroupingQueryRepository.query(request, session)
-    
+
     return GroupingQueryResponse(
         rows=rows,
-        type=request.type,
+        grouping_type=request.grouping_type,
     )

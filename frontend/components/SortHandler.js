@@ -1,8 +1,8 @@
 import { schemas } from "../utils.js";
 
 export function SortHandler() {
-    let getSortSignalRef;
-    let setSortSignalRef;
+    let getter;
+    let setter;
 
     const fieldValues = schemas["Sorting"]["properties"]["field"]["enum"].sort();
     // const fieldValuesRegex = new RegExp(fieldValues.join("|"), "g");
@@ -14,7 +14,7 @@ export function SortHandler() {
     }
 
     function updateSortAtIndex(index, field, dir) {
-        const sortContent = getSortSignalRef();
+        const sortContent = getter();
         sortContent[index] = { field: field, dir: dir };
         return sortContent;
     }
@@ -40,7 +40,7 @@ export function SortHandler() {
             sortSelect.appendChild(createElementOption(fieldValue));
         }
         sortSelect.addEventListener("change", (event) => { 
-            setSortSignalRef(
+            setter(
                 updateSortAtIndex(index, event.target.value, sortDir.innerText)
             ); 
         });        
@@ -56,8 +56,8 @@ export function SortHandler() {
     }
 
     function init(sort, setSort) {
-        getSortSignalRef = sort;
-        setSortSignalRef = setSort;
+        getter = sort;
+        setter = setSort;
 
         instantiateSort("sort-primary", 0);
         instantiateSort("sort-secondary", 1);

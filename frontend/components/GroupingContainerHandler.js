@@ -4,21 +4,35 @@ import {
 } from "../app/settings.js";
 
 export function GroupingContainerHandler() {
-    function setActiveSource(element) {
-        const prevSelected = document.getElementById(selectedSourceId());
-        if (prevSelected == undefined) {
-            element.querySelector(".source-marker").classList.toggle("hidden");
-            setSelectedSourceId(element.id);
+    function toggleActiveSource(event) {
+        const row = event.target.closest(".row");
+        const prevSelectedId = selectedSourceId();
+        if (prevSelectedId == undefined) {
+            setSelectedSourceId(row.id);
         }
         else {
-            if (prevSelected.id != element.id) {
-                prevSelected.querySelector(".source-marker").classList.toggle("hidden");
-                setSelectedSourceId(element.id);
+            if (prevSelectedId != row.id) {
+                setSelectedSourceId(row.id);
             }
             else {
                 setSelectedSourceId(undefined);
             }
-            element.querySelector(".source-marker").classList.toggle("hidden");
+        }
+    }
+
+    function toggleActiveGrouping(event) {
+        const row = event.target.closest(".row");
+        const prevSelectedId = selectedGroupingId();
+        if (prevSelectedId == undefined) {
+            setSelectedGroupingId(row.id);
+        }
+        else {
+            if (prevSelectedId != row.id) {
+                setSelectedGroupingId(row.id);
+            }
+            else {
+                setSelectedGroupingId(undefined);
+            }
         }
     }
 
@@ -30,24 +44,6 @@ export function GroupingContainerHandler() {
         setSelectedSourceId(undefined)
     }
 
-    function setActiveGrouping(element) {
-        const prevSelected = document.getElementById(selectedGroupingId());
-        if (prevSelected == undefined) {
-            element.querySelector(".grouping-marker").classList.toggle("hidden");
-            setSelectedGroupingId(element.id);
-        }
-        else {
-            if (prevSelected.id != element.id) {
-                prevSelected.querySelector(".grouping-marker").classList.toggle("hidden");
-                setSelectedGroupingId(element.id);
-            }
-            else {
-                setSelectedGroupingId(undefined);
-            }
-            element.querySelector(".grouping-marker").classList.toggle("hidden");
-        }
-    }
-
     function clearActiveGrouping() {
         const prevSelected = document.getElementById(selectedGroupingId());
         if (prevSelected != undefined) {
@@ -56,22 +52,16 @@ export function GroupingContainerHandler() {
         setSelectedGroupingId(undefined)
     }
 
-    function getGroupingNameFromId(id) {
-        return document.getElementById(id).querySelector(".name").innerHTML;
-    }
-
     function init() {
         const groupingListContainer = document.getElementById("grouping-list-container");
-        // groupingListContainer.addEventListener("click", (event) => onClickBeatmapRow(event));
+        groupingListContainer.addEventListener("click", (event) => toggleActiveGrouping(event));
+        groupingListContainer.addEventListener("contextmenu", (event) => { event.preventDefault(); toggleActiveSource(event); });
         return groupingListContainer;
     }
 
     return {
         init,
-        setActiveSource,
         clearActiveSource,
-        setActiveGrouping,
         clearActiveGrouping,
-        getGroupingNameFromId,
     }
 }

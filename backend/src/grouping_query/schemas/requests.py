@@ -6,12 +6,12 @@ from src.beatmap_query.schemas.requests import BeatmapQueryRequest
 
 class GroupingQueryRequest(BaseModel):
     beatmap_query_request: BeatmapQueryRequest
-    type: GroupingTypeIdentifier
+    grouping_type: GroupingTypeIdentifier
     q: str
     
 
 class GroupingQueryRow(BaseModel):
-    grouping_id: int
+    id: int
     name: str
     total_count: int
     selected_count: int
@@ -19,4 +19,4 @@ class GroupingQueryRow(BaseModel):
 
 class GroupingQueryResponse(BaseModel):
     rows: list[GroupingQueryRow]
-    type: GroupingTypeIdentifier
+    grouping_type: GroupingTypeIdentifier

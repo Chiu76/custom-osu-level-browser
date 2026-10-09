@@ -12,6 +12,6 @@ class LocalBeatmapsIdentifier(BaseModel):
     type: Literal['local_beatmaps']
 
 
-class CollectionIdentifier(BaseModel):
-    type: Literal['collection']
+class CollectionsIdentifier(BaseModel):
+    type: Literal['collections']
     id: int

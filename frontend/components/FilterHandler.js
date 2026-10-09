@@ -2,8 +2,8 @@ import { schemas } from "../utils.js";
 
 
 export function FilterHandler() {
-    let getFilterSignalRef;
-    let setFilterSignalRef;
+    let getter;
+    let setter;
 
     const fieldValues = schemas["Filter"]["properties"]["field"]["enum"];
     // const fieldValuesRegex = new RegExp(fieldValues.join("|"), "g");
@@ -67,14 +67,14 @@ export function FilterHandler() {
             console.log("filterParsedResult: ", filterParsedResult.reason, filterParsedResult);
             return;
         }
-        setFilterSignalRef(filterParsedResult.result);
+        setter(filterParsedResult.result);
     }
 
-    function init(filter, setFilter) {
-        getFilterSignalRef = filter;
-        setFilterSignalRef = setFilter;
+    function init(id, filter, setFilter) {
+        getter = filter;
+        setter = setFilter;
 
-        const filterParent = document.getElementById("filter");
+        const filterParent = document.getElementById(id);
         const filterInput = filterParent.getElementsByTagName("input")[0];
         
         let timeout;

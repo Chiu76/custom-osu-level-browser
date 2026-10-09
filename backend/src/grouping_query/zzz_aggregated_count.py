@@ -19,7 +19,7 @@ def get_aggregated_count_sq(request: GroupingQueryRequest) -> Subquery:
     
     return aggregated_count_sq
 
-
+## todo: try to isolate this function only and call it from the outside
 def get_aggregated_count_sq__collections(beatmap_query_stmt: Select) -> Subquery:
     # to get inner FROM content of beatmap_query_stmt which contains the core_stmt_sq
     core_stmt_sq = beatmap_query_stmt.get_final_froms()[0]
@@ -30,6 +30,10 @@ def get_aggregated_count_sq__collections(beatmap_query_stmt: Select) -> Subquery
             .subquery('beatmap_query_sq')
     )
 
+    print(f'hi from get_aggregated_count_sq__collections: {core_stmt_sq=}, {beatmap_query_sq=}')
+    print(core_stmt_sq)
+    print(beatmap_query_sq)
+    
     total_count_sq = (
         select(CollectionItem.collection_id, func.count().label('count'))
         .group_by(CollectionItem.collection_id)
@@ -43,10 +47,14 @@ def get_aggregated_count_sq__collections(beatmap_query_stmt: Select) -> Subquery
     )
 
     aggregated_count_sq = (
-        select(total_count_sq.c.collection_id.label('grouping_id'), total_count_sq.c.count.label('total_count'), func.coalesce(selected_count_sq.c.count, 0).label('selected_count'))
+        select(
+            total_count_sq.c.collection_id.label('grouping_id'), 
+            total_count_sq.c.count.label('total_count'), 
+            func.coalesce(selected_count_sq.c.count, 0).label('selected_count'),
+        )
         .select_from(total_count_sq)
         .outerjoin(selected_count_sq, selected_count_sq.c.collection_id == total_count_sq.c.collection_id)
         .subquery('aggregated_count_sq')
-    )   
+    )
 
     return aggregated_count_sq

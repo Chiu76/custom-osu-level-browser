@@ -16,7 +16,7 @@ def apply_presentation_specs(core_stmt: Select, presentation_specs: Presentation
     beatmap_query_stmt = select(core_stmt_sq)
     beatmap_query_stmt = apply_search(beatmap_query_stmt, core_stmt_sq, presentation_specs.search_spec)
     beatmap_query_stmt = apply_grouping(beatmap_query_stmt, core_stmt_sq, presentation_specs.grouping_spec)
-    beatmap_query_stmt = apply_sorting(beatmap_query_stmt, core_stmt_sq, presentation_specs.sorting_spec)
+    beatmap_query_stmt = apply_sort(beatmap_query_stmt, core_stmt_sq, presentation_specs.sorting_spec)
 
     return beatmap_query_stmt
 
@@ -45,18 +45,19 @@ def apply_search(stmt: Select, core_stmt_sq: Subquery, search_spec: SearchSpec) 
 
 def apply_grouping(stmt: Select, core_stmt_sq: Subquery, grouping_spec: GroupingSpec) -> Select:
     ## todo: unsure if 'none' can have any meaningful value here
+    ## todo: use the grouping type enum here 
     if grouping_spec.type == 'none':
         pass
     elif grouping_spec.type == 'local_beatmaps':
         pass
-    elif grouping_spec.type == 'collection':
+    elif grouping_spec.type == 'collections':
         collection_id = grouping_spec.id
         stmt = stmt.where(exists_in_collection(core_stmt_sq.c.beatmap_db_id, collection_id))
 
     return stmt
 
 
-def _get_default_sorting_columns(core_stmt_sq: Subquery) -> list[InstrumentedAttribute]:
+def _get_default_sort_columns(core_stmt_sq: Subquery) -> list[InstrumentedAttribute]:
     return [
         get_column__filter_sort_field('artist', core_stmt_sq),
         get_column__filter_sort_field('title', core_stmt_sq),
@@ -64,18 +65,18 @@ def _get_default_sorting_columns(core_stmt_sq: Subquery) -> list[InstrumentedAtt
     ]
 
 
-def _get_sorting_columns(sorting: Sorting, core_stmt_sq: Subquery):
+def _get_sort_columns(sorting: Sorting, core_stmt_sq: Subquery):
     field_column = get_column__filter_sort_field(sorting.field, core_stmt_sq)
     if sorting.dir == 'desc': field_column = desc(field_column)
     return field_column
 
 
-def apply_sorting(stmt: Select, core_stmt_sq: Subquery, sorting_spec: SortingSpec) -> Select:
-    sorting_columns = [_get_sorting_columns(s, core_stmt_sq) for s in sorting_spec.sortings]
+def apply_sort(stmt: Select, core_stmt_sq: Subquery, sorting_spec: SortingSpec) -> Select:
+    sorting_columns = [_get_sort_columns(s, core_stmt_sq) for s in sorting_spec.sortings]
     
     if sorting_columns:
         stmt = stmt.order_by(*sorting_columns)
     else:
-        stmt = stmt.order_by(*_get_default_sorting_columns(core_stmt_sq))
+        stmt = stmt.order_by(*_get_default_sort_columns(core_stmt_sq))
 
     return stmt
