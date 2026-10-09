@@ -6,6 +6,7 @@ from .db import Model, engine
 from .models.state import State
 from .models.beatmaps import BeatmapSet, Beatmap
 from .models.collections import Collection, CollectionItem
+from .models.scores import Score
 
 
 if __name__ == '__main__':

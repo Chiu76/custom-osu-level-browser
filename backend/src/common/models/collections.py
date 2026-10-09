@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Integer, BigInteger, Float, String, Unicode, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.common.db import Model
