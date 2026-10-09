@@ -8,6 +8,7 @@ import {
     groupingSearch, 
     groupingType, setGroupingType,
     groupingSpec, setGroupingSpec,
+    sourceSpec, setSourceSpec,
 } from "../app/settings.js";
 
 import * as beatmapQuery from "./beatmaps.js"
@@ -64,9 +65,11 @@ createEffect(() => {
         // todo: find a nicer way to do this, because having the grouping id (which is just an int) be the html element id seems very wrong
         const groupingName = document.getElementById(selectedSourceId()).name;
         document.getElementById("active-source").innerHTML = groupingName;
+        setSourceSpec({ type: "collections", id: selectedSourceId() });
     }
     else {
         document.getElementById("active-source").innerHTML = "(none)";
+        setSourceSpec({ type: "local_beatmaps" });
     }
 });
 
@@ -83,10 +86,6 @@ createEffect(() => {
         // setGroupingType("none")
         setGroupingSpec({ type: "none" });
     }
-});
-
-createEffect(() => {
-    // if there is a selected grouping, set also the signal of grouping_spec!! otherwise unselect
 });
 
 window.clearActiveSource = groupingContainerHandler.clearActiveSource;

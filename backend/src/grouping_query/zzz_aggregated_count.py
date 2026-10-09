@@ -1,4 +1,4 @@
-from sqlalchemy import Select, Subquery, select, func
+from sqlalchemy import Select, Subquery, select, func, alias
 
 from .schemas.identifiers import GroupingTypeIdentifier
 from .schemas.requests import GroupingQueryRequest
@@ -19,26 +19,26 @@ def get_aggregated_count_sq(request: GroupingQueryRequest) -> Subquery:
     
     return aggregated_count_sq
 
-## todo: try to isolate this function only and call it from the outside
+
 def get_aggregated_count_sq__collections(beatmap_query_stmt: Select) -> Subquery:
     # to get inner FROM content of beatmap_query_stmt which contains the core_stmt_sq
     core_stmt_sq = beatmap_query_stmt.get_final_froms()[0]
+    # alias is required when beatmap_query_stmt already uses CollectionItem (ie a collection grouping is active)
+    # so that the below outer reference to the table via join is treated as separate from the inner reference
+    aliasedCollectionItem = alias(CollectionItem)
     beatmap_query_sq = ( 
         beatmap_query_stmt
-            .add_columns(CollectionItem.collection_id)
-            .join(CollectionItem, core_stmt_sq.c.beatmap_db_id == CollectionItem.beatmap_db_id)
+            .add_columns(aliasedCollectionItem.c.collection_id)
+            .join(aliasedCollectionItem, core_stmt_sq.c.beatmap_db_id == aliasedCollectionItem.c.beatmap_db_id)
             .subquery('beatmap_query_sq')
     )
 
-    print(f'hi from get_aggregated_count_sq__collections: {core_stmt_sq=}, {beatmap_query_sq=}')
-    print(core_stmt_sq)
-    print(beatmap_query_sq)
-    
     total_count_sq = (
         select(CollectionItem.collection_id, func.count().label('count'))
         .group_by(CollectionItem.collection_id)
         .subquery('total_count_sq')
     )
+
     selected_count_sq = (
         select(beatmap_query_sq.c.collection_id, func.count().label('count'))
         .select_from(beatmap_query_sq)

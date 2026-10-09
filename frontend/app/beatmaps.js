@@ -6,16 +6,17 @@ import {
     search, filter, sort, 
     selectedBeatmapId, selectedBeatmapSetId,
     selectedGroupingId, selectedSourceId,
-    groupingType, groupingSpec,
+    groupingType,
+    sourceSpec, groupingSpec,
 } from "./settings.js";
 
-function buildRequest(searchSpec, filterSpec, sortSpec, groupingSpec) {
+function buildRequest(searchSpec, filterSpec, sortSpec, sourceSpec, groupingSpec) {
     return {
         core_specs: {
             star_rating_spec: {},
             attached_score_spec: {},
             online_details_spec: {},
-            source_spec: { type: "local_beatmaps" },
+            source_spec: sourceSpec,
             filter_spec: filterSpec,
         },
         presentation_specs: {
@@ -34,8 +35,9 @@ createEffect(() => {
     const filterSpec = { filters: filter() };
     const sortSpec = { sortings: sort() };
     // const groupingSpec = { type: groupingType(), id: selectedGroupingId() };
+    const source_spec = sourceSpec();
     const grouping_spec = groupingSpec();
-    const req = buildRequest(searchSpec, filterSpec, sortSpec, grouping_spec);
+    const req = buildRequest(searchSpec, filterSpec, sortSpec, source_spec, grouping_spec);
     console.log("beatmaps: request-building effect: req:", req);
     setRequest(req);
 });

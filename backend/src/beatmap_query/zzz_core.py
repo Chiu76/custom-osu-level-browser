@@ -38,7 +38,7 @@ def apply_online_details(stmt: Select, online_details_spec: OnlineDetailsSpec) -
 def apply_source(stmt: Select, source_spec: SourceSpec) -> Select:
     if source_spec.type == 'local_beatmaps':
         pass
-    elif source_spec.type == 'collection':
+    elif source_spec.type == 'collections':
         collection_id = source_spec.id
         stmt = stmt.where(exists_in_collection(Beatmap.id, collection_id))
     return stmt
