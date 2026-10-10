@@ -25,7 +25,7 @@ class OnlineDetailsSpec(BaseModel):
 
 class Filter(BaseModel):
     field: FILTER_SORT_FIELD
-    op: Literal['!=', '<', '<=', '>', '>=', '=']
+    op: Literal['!=', '<', '<=', '>', '>=', '=', '~']
     value: int | float | str
 
 

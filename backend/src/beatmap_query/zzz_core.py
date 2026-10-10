@@ -65,14 +65,27 @@ def _get_filter_condition(filter: Filter):
             return field_column >= filter.value
         case '=':
             return field_column.ilike(f'%{filter.value}%')
+        case '~':
+            try:
+                value = int(filter.value)
+                return and_(field_column >= value - 5, field_column <= value + 5)
+            except ValueError:
+                return None
+
 
 
 def apply_filter(stmt: Select, filter_spec: FilterSpec) -> Select:
     if not filter_spec.filters:
         return stmt
 
-    conditions = [_get_filter_condition(f) for f in filter_spec.filters]
-    ## todo: eventually allow AND, OR, maybe parentheses within filter contents
+    conditions = []
+    for f in filter_spec.filters:
+        condition = _get_filter_condition(f)
+        if condition is not None: 
+            conditions.append(condition)
+
+    ## todo: eventually allow either AND, OR, maybe parentheses within filter contents
     stmt = stmt.where(and_(*conditions))
+    print(stmt)
 
     return stmt
