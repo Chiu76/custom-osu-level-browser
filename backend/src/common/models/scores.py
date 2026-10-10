@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import Boolean, Integer, BigInteger, String, ForeignKey
+from sqlalchemy import UniqueConstraint, Boolean, Integer, BigInteger, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.common.db import Model
@@ -8,6 +8,10 @@ from src.common.db import Model
 
 class Score(Model):
     __tablename__ = 'scores'
+
+    __table_args__ = (
+        UniqueConstraint('beatmap_md5_hash', 'replay_md5_hash'),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
@@ -22,7 +26,7 @@ class Score(Model):
     player_name: Mapped[str] = mapped_column(String(255), nullable=False)
 
     beatmap_md5_hash: Mapped[int] = mapped_column(String(32), nullable=False, index=True)
-    replay_md5_hash: Mapped[int] = mapped_column(String(32), nullable=False, unique=True, index=True)
+    replay_md5_hash: Mapped[int] = mapped_column(String(32), nullable=False, index=True)
 
     num_300s: Mapped[int] = mapped_column(Integer, nullable=False)
     num_100s: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -30,6 +34,8 @@ class Score(Model):
     num_gekis: Mapped[int] = mapped_column(Integer, nullable=False)
     num_katus: Mapped[int] = mapped_column(Integer, nullable=False)
     num_misses: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    grade: Mapped[str] = mapped_column(String(4), nullable=False)
 
     replay_score: Mapped[int] = mapped_column(Integer, nullable=False)
 

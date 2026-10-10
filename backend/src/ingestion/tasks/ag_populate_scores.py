@@ -11,6 +11,35 @@ from src.common.models.scores import Score
 import src.ingestion.tasks.zzz_common as task_common
 
 
+def compute_grade(score: dict):
+    num_300s = score['num_300s']
+    num_100s = score['num_100s']
+    num_50s = score['num_50s']
+    num_misses = score['num_misses']
+
+    total_hits = num_300s + num_100s + num_50s + num_misses
+
+    all_300s = num_300s == total_hits
+    over_90_percent_300s = num_300s * 100 > total_hits * 90
+    over_80_percent_300s = num_300s * 100 > total_hits * 80
+    over_70_percent_300s = num_300s * 100 > total_hits * 70
+    over_60_percent_300s = num_300s * 100 > total_hits * 60
+    at_most_1_percent_50s = num_50s * 100 <= total_hits
+
+    if all_300s:
+        return 'SS'
+    elif over_90_percent_300s and at_most_1_percent_50s and num_misses == 0:
+        return 'S'
+    elif (over_80_percent_300s and num_misses == 0) or over_90_percent_300s:
+        return 'A'
+    elif (over_70_percent_300s and num_misses == 0) or over_80_percent_300s:
+        return 'B'
+    elif over_60_percent_300s:
+        return 'C'
+    else:
+        return 'D'
+
+
 def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) -> dict:
     return {
         'beatmap_db_id': beatmap_db_id,
@@ -25,6 +54,7 @@ def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) 
         'num_gekis': score['num_gekis'],
         'num_katus': score['num_katus'],
         'num_misses': score['num_misses'],
+        'grade': compute_grade(score),
         'replay_score': score['replay_score'],
         'max_combo': score['max_combo'],
         'perfect_combo': score['perfect_combo'],
@@ -94,7 +124,7 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
             self=self,
             row_contents=score_rows,
             target_table=Score,
-            table_unique_keys=['replay_md5_hash'],
+            table_unique_keys=['beatmap_md5_hash', 'replay_md5_hash'],
             session=session,
         )
 
