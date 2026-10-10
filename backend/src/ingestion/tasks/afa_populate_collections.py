@@ -1,14 +1,10 @@
-import json
-
 from sqlalchemy import select, func
-from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy.orm import Session
 
 from orchestrator import Task, TaskStatus
 
 import src.common.utils as utils
-from src.common.models.beatmaps import Beatmap
-from src.common.models.collections import Collection, CollectionItem
+from src.common.models.collections import Collection
 
 import src.ingestion.tasks.zzz_common as task_common
 

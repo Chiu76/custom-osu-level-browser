@@ -1,7 +1,4 @@
-import json
-
 from sqlalchemy import select, func
-from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy.orm import Session
 
 from orchestrator import Task, TaskStatus
@@ -12,8 +9,20 @@ from src.common.models.beatmaps import Beatmap
 import src.ingestion.tasks.zzz_common as task_common
 
 
-def compute_bpm(timing_points: dict) -> float:
-    return 67
+def compute_bpm(timing_points: list) -> float:
+    if len(timing_points) == 1:
+        return round(60_000 / timing_points[0]['beat_length'])
+    
+    bpm_counts = {}
+    for timing_point in timing_points:
+        bpm = round(60_000 / timing_point['beat_length'])
+        if bpm not in bpm_counts:
+            bpm_counts[bpm] = 1
+        else:
+            bpm_counts[bpm] += 1
+    bpm_counts_as_sorted_list = list(sorted(bpm_counts.items(), key=lambda item: item[1], reverse=True))
+    
+    return bpm_counts_as_sorted_list[0][0]
 
 
 def get_table_row__beatmaps(beatmap_db_content: dict, import_source_hash: str) -> dict:
