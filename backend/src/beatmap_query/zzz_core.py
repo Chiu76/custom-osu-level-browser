@@ -1,4 +1,4 @@
-from sqlalchemy import Select, select, or_, and_
+from sqlalchemy import Select, Subquery, select, or_, and_
 from sqlalchemy.orm import InstrumentedAttribute
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -6,7 +6,9 @@ from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineD
 
 import src.beatmap_query.yyy_filter_sort_fields as filter_sort_fields
 
-from src.common.models.beatmaps import Beatmap, BeatmapSet
+from src.common.models.beatmaps import Beatmap
+
+import src.score_query.zzz_scores_sq as zzz_scores_sq
 
 from .common import exists_in_collection
 
@@ -28,7 +30,12 @@ def apply_star_rating(stmt: Select, star_rating_spec: StarRatingSpec) -> Select:
 
 
 def apply_attached_score(stmt: Select, attached_score_spec: AttachedScoreSpec) -> Select:
-    return stmt
+    scores_sq = zzz_scores_sq.get_scores_sq()
+    return (
+        stmt
+            .add_columns(scores_sq.c.grade, scores_sq.c.accuracy)
+            .join(scores_sq, scores_sq.c.beatmap_db_id == Beatmap.id)
+    )
 
 
 def apply_online_details(stmt: Select, online_details_spec: OnlineDetailsSpec) -> Select:

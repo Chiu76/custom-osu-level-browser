@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import UniqueConstraint, Boolean, Integer, BigInteger, String, ForeignKey
+from sqlalchemy import UniqueConstraint, Boolean, Integer, BigInteger, Float, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.common.db import Model
@@ -36,6 +36,7 @@ class Score(Model):
     num_misses: Mapped[int] = mapped_column(Integer, nullable=False)
 
     grade: Mapped[str] = mapped_column(String(4), nullable=False)
+    accuracy: Mapped[float] = mapped_column(Float, nullable=False)
 
     replay_score: Mapped[int] = mapped_column(Integer, nullable=False)
 

@@ -36,6 +36,9 @@ class BeatmapQueryRow(BaseModel):
     song_source: str
     song_tags: str
 
+    grade: str | None
+    accuracy: float | None
+
 
 class BeatmapQueryResponse(BaseModel):
     rows: list[BeatmapQueryRow]

@@ -10,7 +10,8 @@ from src.common.models.scores import Score
 import src.ingestion.tasks.zzz_common as task_common
 
 
-def compute_grade(score: dict):
+## todo: create a type for possible grades and use it in compute_grade()
+def compute_grade(score: dict) -> str:
     num_300s = score['num_300s']
     num_100s = score['num_100s']
     num_50s = score['num_50s']
@@ -39,6 +40,16 @@ def compute_grade(score: dict):
         return 'D'
 
 
+def compute_accuracy(score: dict) -> float:
+    num_300s = score['num_300s']
+    num_100s = score['num_100s']
+    num_50s = score['num_50s']
+    num_misses = score['num_misses']
+    total_hits = num_300s + num_100s + num_50s + num_misses
+    accuracy_fractional = (num_300s * 300 + num_100s * 100 + num_50s) / (total_hits * 300)
+    return round(accuracy_fractional * 100, 2)
+
+
 def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) -> dict:
     return {
         'beatmap_db_id': beatmap_db_id,
@@ -54,6 +65,7 @@ def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) 
         'num_katus': score['num_katus'],
         'num_misses': score['num_misses'],
         'grade': compute_grade(score),
+        'accuracy': compute_accuracy(score),
         'replay_score': score['replay_score'],
         'max_combo': score['max_combo'],
         'perfect_combo': score['perfect_combo'],

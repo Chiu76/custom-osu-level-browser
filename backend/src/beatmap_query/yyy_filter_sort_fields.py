@@ -30,6 +30,10 @@ FILTER_SORT_FIELD = Literal[
     'song_source',
     'song_tags',
 
+    # score-related
+    'grade',
+    'accuracy',
+
     # alternatives
     'diff',
     'status',
@@ -71,6 +75,10 @@ def get_beatmap_fields(sq: Subquery = None) -> dict[str, InstrumentedAttribute]:
         'drain_time': table_or_query.drain_time,
         'total_time': table_or_query.total_time,
         'local_offset': table_or_query.local_offset,
+
+        # score-related
+        'grade': table_or_query.grade,
+        'accuracy': table_or_query.accuracy,
 
         # alternatives
         'diff': table_or_query.difficulty_name,
