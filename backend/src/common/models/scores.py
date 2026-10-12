@@ -40,12 +40,13 @@ class Score(Model):
 
     replay_score: Mapped[int] = mapped_column(Integer, nullable=False)
 
+    ## todo: add real max_combo
     max_combo: Mapped[int] = mapped_column(Integer, nullable=False)
     perfect_combo: Mapped[bool] = mapped_column(Boolean, nullable=False)
     
     mods: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    timestamp: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    played_at: Mapped[int] = mapped_column(Integer, nullable=False)
 
     online_score_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 

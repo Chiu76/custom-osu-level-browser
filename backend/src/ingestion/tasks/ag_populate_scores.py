@@ -70,7 +70,7 @@ def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) 
         'max_combo': score['max_combo'],
         'perfect_combo': score['perfect_combo'],
         'mods': score['mods'],
-        'timestamp': score['timestamp'],
+        'played_at': task_common.ticks_to_posix(score['timestamp']),
         'online_score_id': score['online_score_id'],
         'import_source_hash': import_source_hash,
     }

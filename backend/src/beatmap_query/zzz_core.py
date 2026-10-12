@@ -34,7 +34,7 @@ def apply_attached_score(stmt: Select, attached_score_spec: AttachedScoreSpec) -
     return (
         stmt
             .add_columns(scores_sq.c.grade, scores_sq.c.accuracy)
-            .join(scores_sq, scores_sq.c.beatmap_db_id == Beatmap.id)
+            .outerjoin(scores_sq, scores_sq.c.beatmap_db_id == Beatmap.id)
     )
 
 
@@ -51,34 +51,45 @@ def apply_source(stmt: Select, source_spec: SourceSpec) -> Select:
     return stmt
 
 
-def _get_filter_condition(filter: Filter):
-    field_column = filter_sort_fields.get_column__filter_sort_field(filter.field)
+def _get_filter_condition(stmt: Select, filter: Filter):
+    field_column = filter_sort_fields.get_column__filter_sort_field(field=filter.field, core_stmt=stmt)
 
     if field_column is None:
         return None
 
+    match filter.field:
+        case 'played_at':
+            value = 1
+        case _:
+            value = filter.value
+
     # case for each possible op
-    # since op is already validated by FastAPI, no default case or final return
+    # already validated by FastAPI, so no default case or final return
     match filter.op:
         case '!=':
-            return field_column.not_ilike(f'%{filter.value}%')
+            return field_column.not_ilike(f'%{value}%')
         case '<':
-            return field_column < filter.value
+            return field_column < value
         case '<=':
-            return field_column <= filter.value
+            return field_column <= value
         case '>':
-            return field_column > filter.value
+            return field_column > value
         case '>=':
-            return field_column >= filter.value
+            return field_column >= value
         case '=':
-            return field_column.ilike(f'%{filter.value}%')
+            return field_column.ilike(f'%{value}%')
         case '~':
             try:
-                value = int(filter.value)
+                value = int(value)
                 return and_(field_column >= value - 5, field_column <= value + 5)
             except ValueError:
                 return None
-
+        case '&':
+            try:
+                value = int(value)
+                return and_(field_column >= value - 1, field_column <= value + 1)
+            except ValueError:
+                return None
 
 
 def apply_filter(stmt: Select, filter_spec: FilterSpec) -> Select:
@@ -87,12 +98,11 @@ def apply_filter(stmt: Select, filter_spec: FilterSpec) -> Select:
 
     conditions = []
     for f in filter_spec.filters:
-        condition = _get_filter_condition(f)
+        condition = _get_filter_condition(stmt, f)
         if condition is not None: 
             conditions.append(condition)
 
     ## todo: eventually allow either AND, OR, maybe parentheses within filter contents
     stmt = stmt.where(and_(*conditions))
-    print(stmt)
 
     return stmt

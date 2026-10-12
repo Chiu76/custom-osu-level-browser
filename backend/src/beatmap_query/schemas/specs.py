@@ -2,7 +2,7 @@ from typing import Literal, Annotated
 from pydantic import BaseModel, Field
 
 from .identifiers import NoneIdentifier, LocalBeatmapsIdentifier, CollectionsIdentifier
-from ..yyy_filter_sort_fields import FILTER_SORT_FIELD
+from ..yyy_filter_sort_fields import FILTER_SORT_FIELD, FILTER_OPS
 
 
 SourceSpec = Annotated[
@@ -25,7 +25,7 @@ class OnlineDetailsSpec(BaseModel):
 
 class Filter(BaseModel):
     field: FILTER_SORT_FIELD
-    op: Literal['!=', '<', '<=', '>', '>=', '=', '~']
+    op: FILTER_OPS
     value: int | float | str
 
 

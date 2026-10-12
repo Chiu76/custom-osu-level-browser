@@ -1,12 +1,16 @@
 import { createElementClassContent } from "../utils.js";
 import { selectedBeatmapSetId, selectedBeatmapId } from "../app/settings.js";
 
+function accuracy(beatmap) {
+    if (beatmap.accuracy) return `${beatmap.accuracy}%`;
+    else return "";
+}
+
 function RowBeatmap(beatmap) {
-    console.log(beatmap);
     const li = createElementClassContent("li", "row beatmap");
     
     li.appendChild(createElementClassContent("div", "grade", beatmap.grade ?? ""));
-    li.appendChild(createElementClassContent("div", "accuracy", `${beatmap.accuracy}%` ?? ""));
+    li.appendChild(createElementClassContent("div", "accuracy", accuracy(beatmap)));
     li.appendChild(createElementClassContent("div", "title", beatmap.title));
     li.appendChild(createElementClassContent("div", "artist", beatmap.artist));
     li.appendChild(createElementClassContent("div", "difficulty-name", `[${beatmap.difficulty_name}]`));

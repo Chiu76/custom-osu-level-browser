@@ -1,8 +1,22 @@
+import datetime
+
 from sqlalchemy import Insert
 from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy.orm import Session, MappedClassProtocol
 
 from orchestrator import Task
+
+
+# https://gist.github.com/CarstenSchelp/b6fb490e8cc65e3ec7d62b950d1f3ad8
+def ticks_to_posix(dotnet_ticks):
+    if dotnet_ticks == 0: return 0
+    _epoch = datetime.date(1970, 1 , 1)
+    _dotnet_minvalue = datetime.date(1, 1, 1)
+    _offset = (_epoch - _dotnet_minvalue).total_seconds()
+    _ten_million = 10_000_000
+    seconds = dotnet_ticks / _ten_million;
+    posix =  seconds - _offset
+    return round(posix)
 
 
 def batch(items: list, size: int):

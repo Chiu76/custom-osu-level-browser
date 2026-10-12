@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
-from src.beatmap_query.schemas.requests import BeatmapQueryRequest
+# from src.beatmap_query.schemas.requests import BeatmapQueryRequest
 
 
 class ScoreQueryRequest(BaseModel):
-    beatmap_query_request: BeatmapQueryRequest
+    # beatmap_query_request: BeatmapQueryRequest
     q: str
     
 
