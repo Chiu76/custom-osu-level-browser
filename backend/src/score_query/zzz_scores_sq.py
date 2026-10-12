@@ -10,8 +10,9 @@ def get_scores_sq(request: ScoreQueryRequest = None) -> Subquery:
     scores_row_num_sq = (
         select(
             Score.grade, 
-            Score.accuracy, 
-            Score.beatmap_db_id, 
+            Score.accuracy,
+            Score.played_at,
+            Score.beatmap_db_id,
             _get_row_num_over(Score.accuracy).label('row_num'),
         )
         .subquery('scores_row_num_sq')
@@ -21,6 +22,7 @@ def get_scores_sq(request: ScoreQueryRequest = None) -> Subquery:
         select(
             scores_row_num_sq.c.grade,
             scores_row_num_sq.c.accuracy,
+            scores_row_num_sq.c.played_at,
             scores_row_num_sq.c.beatmap_db_id,
         )
         .select_from(scores_row_num_sq)

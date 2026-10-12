@@ -10,7 +10,7 @@ from src.common.models.beatmaps import Beatmap
 
 import src.score_query.zzz_scores_sq as zzz_scores_sq
 
-from .common import exists_in_collection
+from .yyy_common import exists_in_collection, date_input_to_posix
 
 
 def apply_core_specs(initial_stmt: Select, core_specs: CoreSpecs):
@@ -33,7 +33,7 @@ def apply_attached_score(stmt: Select, attached_score_spec: AttachedScoreSpec) -
     scores_sq = zzz_scores_sq.get_scores_sq()
     return (
         stmt
-            .add_columns(scores_sq.c.grade, scores_sq.c.accuracy)
+            .add_columns(scores_sq.c.grade, scores_sq.c.accuracy, scores_sq.c.played_at)
             .outerjoin(scores_sq, scores_sq.c.beatmap_db_id == Beatmap.id)
     )
 
@@ -52,14 +52,17 @@ def apply_source(stmt: Select, source_spec: SourceSpec) -> Select:
 
 
 def _get_filter_condition(stmt: Select, filter: Filter):
-    field_column = filter_sort_fields.get_column__filter_sort_field(field=filter.field, core_stmt=stmt)
+    field_column = filter_sort_fields.get_column__filter_field(field=filter.field, core_stmt=stmt)
 
     if field_column is None:
         return None
 
     match filter.field:
         case 'played_at':
-            value = 1
+            try:
+                value = date_input_to_posix(filter.value)
+            except ValueError as e:
+                return None
         case _:
             value = filter.value
 

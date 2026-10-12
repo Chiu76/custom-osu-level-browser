@@ -99,38 +99,38 @@ def get_beatmap_filter_fields() -> dict[str, InstrumentedAttribute]:
 
 def get_beatmap_sort_fields(core_sq: Subquery) -> dict[str, InstrumentedAttribute]:
     return {
-        'beatmap_id': core_sq.beatmap_id,
-        'beatmap_set_id': core_sq.beatmap_set_id,
-        'mode': core_sq.mode,
-        'bpm': core_sq.bpm,
-        'difficulty_name': core_sq.difficulty_name,
-        'ranked_status': core_sq.ranked_status,
-        'num_hitcircles': core_sq.num_hitcircles,
-        'num_sliders': core_sq.num_sliders,
-        'num_spinners': core_sq.num_spinners,
-        'approach_rate': core_sq.approach_rate,
-        'overall_difficulty': core_sq.overall_difficulty,
-        'circle_size': core_sq.circle_size,
-        'hp_drain': core_sq.hp_drain,
+        'beatmap_id': core_sq.c.beatmap_id,
+        'beatmap_set_id': core_sq.c.beatmap_set_id,
+        'mode': core_sq.c.mode,
+        'bpm': core_sq.c.bpm,
+        'difficulty_name': core_sq.c.difficulty_name,
+        'ranked_status': core_sq.c.ranked_status,
+        'num_hitcircles': core_sq.c.num_hitcircles,
+        'num_sliders': core_sq.c.num_sliders,
+        'num_spinners': core_sq.c.num_spinners,
+        'approach_rate': core_sq.c.approach_rate,
+        'overall_difficulty': core_sq.c.overall_difficulty,
+        'circle_size': core_sq.c.circle_size,
+        'hp_drain': core_sq.c.hp_drain,
         ## todo: handling of last_played filtering (db stores unix time ish)
-        'last_played': core_sq.last_played,
+        'last_played': core_sq.c.last_played,
         ## todo: normalizing drain_time (db stores seconds) vs total_time (db stores miliseconds)
-        'drain_time': core_sq.drain_time,
-        'total_time': core_sq.total_time,
-        'local_offset': core_sq.local_offset,
+        'drain_time': core_sq.c.drain_time,
+        'total_time': core_sq.c.total_time,
+        'local_offset': core_sq.c.local_offset,
 
         # alternatives
-        'diff': core_sq.difficulty_name,
-        'status': core_sq.ranked_status,
-        'hitcircles': core_sq.num_hitcircles,
-        'circles': core_sq.num_hitcircles,
-        'sliders': core_sq.num_sliders,
-        'spinners': core_sq.num_spinners,
-        'ar': core_sq.approach_rate,
-        'od': core_sq.overall_difficulty,
-        'cs': core_sq.circle_size,
-        'hp': core_sq.hp_drain,
-        'offset': core_sq.local_offset,
+        'diff': core_sq.c.difficulty_name,
+        'status': core_sq.c.ranked_status,
+        'hitcircles': core_sq.c.num_hitcircles,
+        'circles': core_sq.c.num_hitcircles,
+        'sliders': core_sq.c.num_sliders,
+        'spinners': core_sq.c.num_spinners,
+        'ar': core_sq.c.approach_rate,
+        'od': core_sq.c.overall_difficulty,
+        'cs': core_sq.c.circle_size,
+        'hp': core_sq.c.hp_drain,
+        'offset': core_sq.c.local_offset,
     }
 
 
@@ -152,17 +152,17 @@ def get_beatmap_set_filter_fields() -> dict[str, InstrumentedAttribute]:
 
 def get_beatmap_set_sort_fields(core_sq: Subquery | None = None) -> dict[str, InstrumentedAttribute]:
     return {
-        'artist': core_sq.artist,
-        'title': core_sq.title,
-        'owner': core_sq.owner,
-        'song_source': core_sq.song_source,
-        'song_tags': core_sq.song_tags,
+        'artist': core_sq.c.artist,
+        'title': core_sq.c.title,
+        'owner': core_sq.c.owner,
+        'song_source': core_sq.c.song_source,
+        'song_tags': core_sq.c.song_tags,
 
         # alternatives
-        'set_owner': core_sq.owner,
-        'set_mapper': core_sq.owner,
-        'source': core_sq.song_source,
-        'tags': core_sq.song_tags,
+        'set_owner': core_sq.c.owner,
+        'set_mapper': core_sq.c.owner,
+        'source': core_sq.c.song_source,
+        'tags': core_sq.c.song_tags,
     }
 
 
