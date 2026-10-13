@@ -1,6 +1,6 @@
 from sqlalchemy import Select, Subquery, select, func, alias
 
-from .schemas.identifiers import GroupingTypeIdentifier
+from .schemas.enums import GroupingType
 from .schemas.requests import GroupingQueryRequest
 
 from src.beatmap_query.repositories import BeatmapQueryRepository
@@ -14,7 +14,7 @@ def get_aggregated_count_sq(request: GroupingQueryRequest) -> Subquery:
         request.beatmap_query_request.presentation_specs,
     )
 
-    if request.grouping_type == GroupingTypeIdentifier.COLLECTIONS:
+    if request.grouping_type == GroupingType.COLLECTIONS:
         aggregated_count_sq = get_aggregated_count_sq__collections(beatmap_query_stmt)
     
     return aggregated_count_sq

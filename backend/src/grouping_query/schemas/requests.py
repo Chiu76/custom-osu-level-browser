@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 
-from .identifiers import GroupingTypeIdentifier
+from .enums import GroupingType
 from src.beatmap_query.schemas.requests import BeatmapQueryRequest
 
 
 class GroupingQueryRequest(BaseModel):
     beatmap_query_request: BeatmapQueryRequest
-    grouping_type: GroupingTypeIdentifier
+    grouping_type: GroupingType
     q: str
     
 
@@ -19,4 +19,4 @@ class GroupingQueryRow(BaseModel):
 
 class GroupingQueryResponse(BaseModel):
     rows: list[GroupingQueryRow]
-    grouping_type: GroupingTypeIdentifier
+    grouping_type: GroupingType

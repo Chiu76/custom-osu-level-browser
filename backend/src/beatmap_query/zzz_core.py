@@ -8,7 +8,7 @@ import src.beatmap_query.yyy_filter_sort_fields as filter_sort_fields
 
 from src.common.models.beatmaps import Beatmap
 
-import src.score_query.zzz_scores_sq as zzz_scores_sq
+import src.score_query.zzz_score_sq as zzz_score_sq
 
 from .yyy_common import exists_in_collection, date_input_to_posix
 
@@ -30,12 +30,10 @@ def apply_star_rating(stmt: Select, star_rating_spec: StarRatingSpec) -> Select:
 
 
 def apply_attached_score(stmt: Select, attached_score_spec: AttachedScoreSpec) -> Select:
-    scores_sq = zzz_scores_sq.get_scores_sq()
-    return (
-        stmt
-            .add_columns(scores_sq.c.grade, scores_sq.c.accuracy, scores_sq.c.played_at)
-            .outerjoin(scores_sq, scores_sq.c.beatmap_db_id == Beatmap.id)
-    )
+    score_sq = zzz_score_sq.get_score_sq(attached_score_spec.score_sq_spec)
+    stmt = stmt.add_columns(*score_sq.c)
+    stmt_join_or_outerjoin = stmt.join if attached_score_spec.score_required else stmt.outerjoin
+    return stmt_join_or_outerjoin(score_sq, score_sq.c.beatmap_db_id == Beatmap.id)
 
 
 def apply_online_details(stmt: Select, online_details_spec: OnlineDetailsSpec) -> Select:

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.models.collections import Collection
 
-from .schemas.identifiers import GroupingTypeIdentifier
+from .schemas.enums import GroupingType
 from .schemas.requests import GroupingQueryRequest, GroupingQueryRow
 
 import src.grouping_query.zzz_aggregated_count as zzz_aggregated_count
@@ -23,7 +23,7 @@ class GroupingQueryRepository:
     def get_grouping_query_stmt(cls, request: GroupingQueryRequest) -> Select:
         aggregated_count_sq = zzz_aggregated_count.get_aggregated_count_sq(request)
 
-        if request.grouping_type == GroupingTypeIdentifier.COLLECTIONS:
+        if request.grouping_type == GroupingType.COLLECTIONS:
             grouping_query_stmt = cls.get_grouping_query_stmt__collection(aggregated_count_sq, request.q)    
 
         return grouping_query_stmt

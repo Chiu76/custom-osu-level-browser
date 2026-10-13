@@ -14,7 +14,17 @@ function buildRequest(searchSpec, filterSpec, sortSpec, sourceSpec, groupingSpec
     return {
         core_specs: {
             star_rating_spec: {},
-            attached_score_spec: {},
+            attached_score_spec: {
+                score_sq_spec: {
+                    top_by: 'accuracy',
+                    top_by_desc: false,
+                    top_score_only: true,
+                    mods_exact: [],
+                    mods_include: [],
+                    mods_exclude: [],
+                },
+                score_required: false,
+            },
             online_details_spec: {},
             source_spec: sourceSpec,
             filter_spec: filterSpec,

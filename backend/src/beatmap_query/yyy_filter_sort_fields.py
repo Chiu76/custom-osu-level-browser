@@ -1,4 +1,4 @@
-from typing import Literal, get_args
+from typing import Literal
 
 from sqlalchemy import Select, Subquery
 from sqlalchemy.orm import InstrumentedAttribute
@@ -60,7 +60,7 @@ FILTER_SORT_FIELDS = Literal[
 ]
 
 
-def get_beatmap_filter_fields() -> dict[str, InstrumentedAttribute]:
+def get_beatmap_filter_columns() -> dict[str, InstrumentedAttribute]:
     return {
         'beatmap_id': Beatmap.beatmap_id,
         'beatmap_set_id': Beatmap.beatmap_set_id,
@@ -75,7 +75,6 @@ def get_beatmap_filter_fields() -> dict[str, InstrumentedAttribute]:
         'overall_difficulty': Beatmap.overall_difficulty,
         'circle_size': Beatmap.circle_size,
         'hp_drain': Beatmap.hp_drain,
-        ## todo: handling of last_played filtering (db stores unix time ish)
         'last_played': Beatmap.last_played,
         ## todo: normalizing drain_time (db stores seconds) vs total_time (db stores miliseconds)
         'drain_time': Beatmap.drain_time,
@@ -97,7 +96,7 @@ def get_beatmap_filter_fields() -> dict[str, InstrumentedAttribute]:
     }
 
 
-def get_beatmap_sort_fields(core_sq: Subquery) -> dict[str, InstrumentedAttribute]:
+def get_beatmap_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribute]:
     return {
         'beatmap_id': core_sq.c.beatmap_id,
         'beatmap_set_id': core_sq.c.beatmap_set_id,
@@ -112,7 +111,6 @@ def get_beatmap_sort_fields(core_sq: Subquery) -> dict[str, InstrumentedAttribut
         'overall_difficulty': core_sq.c.overall_difficulty,
         'circle_size': core_sq.c.circle_size,
         'hp_drain': core_sq.c.hp_drain,
-        ## todo: handling of last_played filtering (db stores unix time ish)
         'last_played': core_sq.c.last_played,
         ## todo: normalizing drain_time (db stores seconds) vs total_time (db stores miliseconds)
         'drain_time': core_sq.c.drain_time,
@@ -134,7 +132,7 @@ def get_beatmap_sort_fields(core_sq: Subquery) -> dict[str, InstrumentedAttribut
     }
 
 
-def get_beatmap_set_filter_fields() -> dict[str, InstrumentedAttribute]:
+def get_beatmap_set_filter_columns() -> dict[str, InstrumentedAttribute]:
     return {
         'artist': BeatmapSet.artist,
         'title': BeatmapSet.title,
@@ -150,7 +148,7 @@ def get_beatmap_set_filter_fields() -> dict[str, InstrumentedAttribute]:
     }
 
 
-def get_beatmap_set_sort_fields(core_sq: Subquery | None = None) -> dict[str, InstrumentedAttribute]:
+def get_beatmap_set_sort_columns(core_sq: Subquery | None = None) -> dict[str, InstrumentedAttribute]:
     return {
         'artist': core_sq.c.artist,
         'title': core_sq.c.title,
@@ -166,7 +164,7 @@ def get_beatmap_set_sort_fields(core_sq: Subquery | None = None) -> dict[str, In
     }
 
 
-def get_score_filter_fields(core_stmt: Select) -> dict[str, InstrumentedAttribute]:
+def get_score_filter_columns(core_stmt: Select) -> dict[str, InstrumentedAttribute]:
     core_stmt_froms = core_stmt.get_final_froms()[0]
     return {
         'grade': core_stmt_froms.c.corresponding_column(Score.grade),
@@ -179,7 +177,7 @@ def get_score_filter_fields(core_stmt: Select) -> dict[str, InstrumentedAttribut
     }
 
     
-def get_score_sort_fields(core_sq: Subquery) -> dict[str, InstrumentedAttribute]:
+def get_score_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribute]:
     return {
         'grade': core_sq.c.grade,
         'accuracy': core_sq.c.accuracy,
@@ -191,12 +189,11 @@ def get_score_sort_fields(core_sq: Subquery) -> dict[str, InstrumentedAttribute]
     }
 
 
-## todo: separate sort and filter column getter logic to make it clearer and easier to understand
 def get_column__filter_field(field: FILTER_SORT_FIELDS, core_stmt: Select | None = None) -> InstrumentedAttribute:
-    filter_field_columns = get_beatmap_filter_fields() | get_beatmap_set_filter_fields() | get_score_filter_fields(core_stmt)
+    filter_field_columns = get_beatmap_filter_columns() | get_beatmap_set_filter_columns() | get_score_filter_columns(core_stmt)
 
-    if field not in get_args(FILTER_SORT_FIELDS):
-        raise ValueError(f'Received invalid field value, not present in FILTER_SORT_FIELDS mapping: {field}')
+    if field not in filter_field_columns.keys():
+        raise ValueError(f'Received invalid field value, not present in `filter_field_columns` mapping: {field}')
 
     return filter_field_columns[field]
 
@@ -205,9 +202,9 @@ def get_column__sort_field(
     field: FILTER_SORT_FIELDS, 
     core_sq: Subquery, 
 ) -> InstrumentedAttribute:
-    sort_field_columns = get_beatmap_sort_fields(core_sq) | get_beatmap_set_sort_fields(core_sq) | get_score_sort_fields(core_sq)
+    sort_field_columns = get_beatmap_sort_columns(core_sq) | get_beatmap_set_sort_columns(core_sq) | get_score_sort_columns(core_sq)
 
-    if field not in get_args(FILTER_SORT_FIELDS):
-        raise ValueError(f'Received invalid field value, not present in FILTER_SORT_FIELDS mapping: {field}')
+    if field not in sort_field_columns.keys():
+        raise ValueError(f'Received invalid field value, not present in `sort_field_columns` mapping: {field}')
 
     return sort_field_columns[field]

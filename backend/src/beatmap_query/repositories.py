@@ -1,13 +1,13 @@
-from sqlalchemy import Select, Subquery, select, func
+from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.models.beatmaps import Beatmap, BeatmapSet
-from src.common.models.collections import CollectionItem 
 
 from .schemas.identifiers import NoneIdentifier, LocalBeatmapsIdentifier
 from .schemas.requests import BeatmapQueryRequest, BeatmapQueryRow
 from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, PresentationSpecs, GroupingSpec, SearchSpec, Filter, FilterSpec, Sorting, SortingSpec
 
+from src.score_query.schemas.specs import ScoreSqSpec
 
 import src.beatmap_query.zzz_core as zzz_core
 import src.beatmap_query.zzz_presentation as zzz_presentation
@@ -75,7 +75,14 @@ class BeatmapQueryRepository:
     def generate_dummy_beatmap_query_request():
         core_specs = CoreSpecs(
             star_rating_spec=StarRatingSpec(),
-            attached_score_spec=AttachedScoreSpec(),
+            attached_score_spec=AttachedScoreSpec(
+                ScoreSqSpec(
+                    top_by='accuracy', 
+                    top_by_desc=True, 
+                    top_score_only=True,
+                ),
+                score_required=False,
+            ),
             online_details_spec=OnlineDetailsSpec(),
             source_spec=LocalBeatmapsIdentifier(type='local_beatmaps'),
             filter_spec=FilterSpec(
