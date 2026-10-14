@@ -13,10 +13,10 @@ import {
 
 import * as beatmapQuery from "./beatmaps.js"
 
-function buildRequest(beatmapQueryRequest, groupType, q) {
+function buildRequest(beatmap_query_request, grouping_type, q) {
     return {
-        beatmap_query_request: beatmapQueryRequest,
-        grouping_type: groupType,
+        beatmap_query_request: beatmap_query_request,
+        grouping_type: grouping_type,
         q: q,
     }
 }
@@ -25,12 +25,12 @@ const [request, setRequest] = createSignal();
 const [groupingQueryRows, setGroupingQueryRows] = createSignal([]);
 
 createEffect(() => {
-    const beatmapQueryRequest = beatmapQuery.request();
-    const groupType = groupingType();
+    const beatmap_query_request = beatmapQuery.request();
+    const grouping_type = groupingType();
     const q = groupingSearch();
-    const req = buildRequest(beatmapQueryRequest, groupType, q);
-    console.log("groupings: request-building effect: req:", req);
-    setRequest(req);
+    const new_request = buildRequest(beatmap_query_request, grouping_type, q);
+    console.log("groupings: new_request:", new_request);
+    setRequest(new_request);
 });
 
 const groupingContainerHandler = GroupingContainerHandler();

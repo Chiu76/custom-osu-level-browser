@@ -3,8 +3,11 @@ import { schemas } from "../utils.js";
 
 export function BeatmapFilterHandler() {
     const [filter, setFilter] = createSignal([]);
+    
+    const filterValuesDefault = schemas["Filter"]["properties"]["field"]["anyOf"][0]["enum"];
+    const filterValuesAlt = schemas["Filter"]["properties"]["field"]["anyOf"][1]["enum"];
 
-    const fieldValues = schemas["Filter"]["properties"]["field"]["enum"];
+    const fieldValues = filterValuesDefault.concat(filterValuesAlt);
 
     const opValues = schemas["Filter"]["properties"]["op"]["enum"];
     const opValuesRegex = new RegExp(opValues.join("|"), "g");
@@ -23,6 +26,7 @@ export function BeatmapFilterHandler() {
         // ["artist=demetori", "owner=monstrata", "bpm>67"]
         const result = [];
         for (let filter of filters) {
+            filter = filter.toLowerCase();
             if (!assertField(filter)) {
                 return {
                     successful: false,
@@ -43,13 +47,13 @@ export function BeatmapFilterHandler() {
                 field: tokens[0],
                 op: op,
                 value: tokens[1],
-            })
+            });
         }
         return {
             successful: true,
             reason: "",
             result: result,
-        }
+        };
     }
 
     function parseUserInput(filters) {
@@ -65,7 +69,7 @@ export function BeatmapFilterHandler() {
             console.log("filterParsedResult: ", filterParsedResult.reason, filterParsedResult);
             return;
         }
-        setter(filterParsedResult.result);
+        setFilter(filterParsedResult.result);
     }
 
     function init() {

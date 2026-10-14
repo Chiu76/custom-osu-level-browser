@@ -6,33 +6,37 @@ import {
     beatmapSearch, beatmapFilter, beatmapSort, 
     selectedBeatmapId, selectedBeatmapSetId,
     selectedGroupingId, selectedSourceId,
-    groupingType,
+    groupingType, setGroupingType,
     sourceSpec, groupingSpec,
     scoreTopBy, setScoreTopBy,
+    scoreRequired, setScoreRequired,
+    modsExactFilter, setModsExactFilter,	
+    modsIncludeFilter, setModsIncludeFilter,
+    modsExcludeFilter, setModsExcludeFilter,
 } from "./settings.js";
 
-function buildRequest(searchSpec, filterSpec, sortSpec, sourceSpec, groupingSpec, score_top_by) {
+function buildRequest(search_spec, filter_spec, sort_spec, source_spec, grouping_spec, top_by, score_required, mods_exact, mods_include, mods_exclude) {
     return {
         core_specs: {
             star_rating_spec: {},
             attached_score_spec: {
                 score_sq_spec: {
-                    top_by: score_top_by,
+                    top_by: top_by,
                     top_score_only: true,
-                    mods_exact: [],
-                    mods_include: [],
-                    mods_exclude: [],
+                    mods_exact: mods_exact,
+                    mods_include: mods_include,
+                    mods_exclude: mods_exclude,
                 },
-                score_required: true,
+                score_required: score_required,
             },
             online_details_spec: {},
-            source_spec: sourceSpec,
-            filter_spec: filterSpec,
+            source_spec: source_spec,
+            filter_spec: filter_spec,
         },
         presentation_specs: {
-            search_spec: searchSpec,
-            grouping_spec: groupingSpec,
-            sort_spec: sortSpec,
+            search_spec: search_spec,
+            grouping_spec: grouping_spec,
+            sort_spec: sort_spec,
         }
     }
 }
@@ -41,16 +45,20 @@ const [request, setRequest] = createSignal();
 const [beatmapQueryRows, setBeatmapQueryRows] = createSignal([]);
 
 createEffect(() => {
-    const searchSpec = { q: beatmapSearch() };
-    const filterSpec = { filters: beatmapFilter() };
-    const sortSpec = { sort_columns: beatmapSort() };
+    const search_spec = { q: beatmapSearch() };
+    const filter_spec = { filters: beatmapFilter() };
+    const sort_spec = { sort_columns: beatmapSort() };
     // const groupingSpec = { type: groupingType(), id: selectedGroupingId() };
     const source_spec = sourceSpec();
     const grouping_spec = groupingSpec();
-    const score_top_by = scoreTopBy();
-    const req = buildRequest(searchSpec, filterSpec, sortSpec, source_spec, grouping_spec, score_top_by);
-    console.log("beatmaps: request-building effect: req:", req);
-    setRequest(req);
+    const top_by = scoreTopBy();
+    const score_required = scoreRequired();
+    const mods_exact = modsExactFilter();
+    const mods_include = modsIncludeFilter()
+    const mods_exclude = modsExcludeFilter();
+    const new_request = buildRequest(search_spec, filter_spec, sort_spec, source_spec, grouping_spec, top_by, score_required, mods_exact, mods_include, mods_exclude);
+    console.log("beatmaps: new_request:", new_request);
+    setRequest(new_request);
 });
 
 const beatmapContainerHandler = BeatmapContainerHandler();

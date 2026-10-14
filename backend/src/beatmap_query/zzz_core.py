@@ -57,6 +57,7 @@ def apply_source(stmt: Select, source_spec: SourceSpec) -> Select:
 
 def _get_filter_condition(stmt: Select, filter: Filter):
     field_column = filter_sort_fields.get_column__filter_field(field=filter.field, core_stmt=stmt)
+    print("coloi: ", field_column)
 
     if field_column is None:
         return None

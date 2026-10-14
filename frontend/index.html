@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en-US">
 <head>
+<link rel="shortcut icon" href="#">
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
 <script src="./vendor/virtualized-list/virtualized-list.js"></script>
 <script src="./index.js" type="module"></script>
@@ -10,11 +11,33 @@
         <div class="settings">
             <h2>Settings</h2>
             <div class="score-settings">
-                <span>Score top by: </span>
-                <span id="score-top-by">
+                <div id="score-top-by">
+                    <span>Score top by: </span>
                     <select></select>
                     <span class="dir"></span>
-                </span>
+                </div>
+                <div id="mods-exact-filter">
+                    <span>Mods exact: </span>
+                    <input
+                        placeholder="Filter for exact mods.."
+                    />
+                </div>
+                <div id="mods-include-filter">
+                    <span>Mods include: </span>
+                    <input
+                        placeholder="Filter for included mods.."
+                    />
+                </div>
+                <div id="mods-exclude-filter">
+                    <span>Mods exclude: </span>
+                    <input
+                        placeholder="Filter for excluded mods.."
+                    />
+                </div>
+                <div id="score-required">
+                    <span> Show only beatmaps with scores: </span>
+                    <input type="checkbox">
+                </div>
             </div>
             <div class="beatmap-query-settings">
                 <div class="sort-selects">

@@ -174,7 +174,7 @@ def get_score_filter_columns(core_stmt: Select) -> dict[str, InstrumentedAttribu
         'played_at': core_stmt_froms.c.corresponding_column(Score.played_at),
 
         # alternatives
-        'rank': core_stmt_froms.c.corresponding_column(Score.accuracy),
+        'rank': core_stmt_froms.c.corresponding_column(Score.grade),
         'acc': core_stmt_froms.c.corresponding_column(Score.accuracy),
     }
 

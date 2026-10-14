@@ -4,8 +4,6 @@ import { schemas } from "../utils.js";
 // todo: refactor to use SelectHandler and DirHandler
 export function BeatmapSortHandler() {
     const [sort, setSort] = createSignal([]);
-
-    console.log(schemas)
  
     const fieldValues = schemas["Sort"]["properties"]["field"]["anyOf"][0]["enum"].sort();
     

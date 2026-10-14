@@ -5,6 +5,8 @@ import { BeatmapSortHandler } from "../components/BeatmapSortHandler.js";
 import { SearchHandler } from "../components/SearchHandler.js";
 import { GroupingTypeHandler } from "../components/GroupingTypeHandler.js";
 import { ScoreTopByHandler } from "../components/ScoreTopByHandler.js";
+import { CheckboxHandler } from "../components/CheckboxHandler.js";
+import { ModFilterHandler } from "../components/ModFilterHandler.js";
 
 const [beatmapSearch, setBeatmapSearch] = SearchHandler().init("beatmap-search");
 const [beatmapFilter, setBeatmapFilter] = BeatmapFilterHandler().init();
@@ -24,7 +26,12 @@ const [selectedSourceId, setSelectedSourceId] = createSignal(undefined);
 const [selectedGroupingId, setSelectedGroupingId] = createSignal(undefined);
 
 const [scoreTopBy, setScoreTopBy] = ScoreTopByHandler().init();
- 
+const [scoreRequired, setScoreRequired] = CheckboxHandler().init("score-required");
+
+const [modsExactFilter, setModsExactFilter] = ModFilterHandler().init("mods-exact-filter");
+const [modsIncludeFilter, setModsIncludeFilter] = ModFilterHandler().init("mods-include-filter");
+const [modsExcludeFilter, setModsExcludeFilter] = ModFilterHandler().init("mods-exclude-filter");
+
 export { 
     beatmapSearch, setBeatmapSearch,
     beatmapFilter, setBeatmapFilter, 
@@ -43,4 +50,9 @@ export {
     selectedGroupingId, setSelectedGroupingId,
 
     scoreTopBy, setScoreTopBy,
+    scoreRequired, setScoreRequired,
+
+    modsExactFilter, setModsExactFilter,	
+    modsIncludeFilter, setModsIncludeFilter,
+    modsExcludeFilter, setModsExcludeFilter,
 };
