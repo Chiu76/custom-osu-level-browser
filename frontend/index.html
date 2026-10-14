@@ -92,30 +92,15 @@
                         />
                     </span>
                     <span id="grouping-type">
-                        <select>
-                            <option value="collections">Collections</option>
-                            <option value="packs">Packs</option>
-                            <option value="beatmaps-ranked-by-year">Ranked by Year</option>
-                            <option value="beatmaps-ranked-by-month">Ranked by Month</option>
-                        </select>
+                        <select></select>
+                        <!-- <div class="dir"></div> -->
                     </span>
                 </div>
             </div>
         </div>
         <div class="scores">
             <h2>Scores</h2>
-            <ul class="list">
-                <li onclick="scoreOnClick(this)" id="score-id-0" class="row score">
-                    <div class="grade">Grade</div>
-                    <div class="player">Player</div>
-                    <div class="score">Score: 123,456 &ThinSpace;</div>
-                    <div class="pp">PP</div>
-                    <div class="combo">(789x)</div>
-                    <div class="mods">Mods</div>
-                    <div class="accuracy">Accuracy</div>
-                    <div class="played-at">Date</div>
-                </li>
-            </ul>
+            <ul class="list" id="score-list-container"></ul>
         </div>
         <div class="beatmaps">
             <h2>Beatmaps</h2>
@@ -126,11 +111,5 @@
             <ul class="list" id="grouping-list-container"></ul>
         </div>
     </main>
-    <script>
-        const rowGroupingElements = document.getElementsByClassName("row grouping");
-        for (element of rowGroupingElements) {
-            element.addEventListener("contextmenu", (event) => { event.preventDefault(); });
-        }
-    </script>
 </body>
 </html>

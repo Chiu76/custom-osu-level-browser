@@ -43,7 +43,6 @@ function buildRequest(search_spec, filter_spec, sort_spec, source_spec, grouping
 }
 
 const [request, setRequest] = createSignal();
-const [beatmapQueryRows, setBeatmapQueryRows] = createSignal([]);
 
 createEffect(() => {
     const search_spec = { q: beatmapSearch() };
@@ -55,17 +54,15 @@ createEffect(() => {
     const top_by = scoreTopBy();
     const score_required = scoreRequired();
     const mods_exact = modsExactFilter();
-    const mods_include = modsIncludeFilter()
+    const mods_include = modsIncludeFilter();
     const mods_exclude = modsExcludeFilter();
-    const new_request = buildRequest(search_spec, filter_spec, sort_spec, source_spec, grouping_spec, top_by, score_required, mods_exact, mods_include, mods_exclude);
-    console.log("beatmaps: new_request:", new_request);
-    setRequest(new_request);
+    const newRequest = buildRequest(search_spec, filter_spec, sort_spec, source_spec, grouping_spec, top_by, score_required, mods_exact, mods_include, mods_exclude);
+    console.log("beatmaps: newRequest:", newRequest);
+    setRequest(newRequest);
 });
 
-const beatmapContainerHandler = BeatmapContainerHandler();
-const beatmapContainer = beatmapContainerHandler.init();
-
 const beatmapContentHandler = BeatmapContentHandler();
+const [beatmapQueryRows, setBeatmapQueryRows] = createSignal([]);
 
 let latestId = 0;
 createEffect(() => {
@@ -78,6 +75,9 @@ createEffect(() => {
             virtualizedList?.scrollToIndex(0, "start");
         });
 })
+
+const beatmapContainerHandler = BeatmapContainerHandler();
+const beatmapContainer = beatmapContainerHandler.init();
 
 const displayRows = createMemo(() => {
     const beatmaps = beatmapQueryRows();

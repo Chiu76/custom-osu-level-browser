@@ -41,4 +41,19 @@ async function groupingQuery(request) {
     return res.json();
 }
 
-export { openapiSchemas, beatmapQuery, groupingQuery };
+async function scoreQuery(request) {
+    // console.log("api: scoreQuery: request:", request);
+    const res = await fetch(`http://127.0.0.1:8000/api/score_query`, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(request),
+    });
+    if (!res.ok) {
+        throw Error("Failed to query groupings");
+    }
+    return res.json();
+}
+
+export { openapiSchemas, beatmapQuery, groupingQuery, scoreQuery};

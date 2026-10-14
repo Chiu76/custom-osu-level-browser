@@ -8,6 +8,7 @@ function accuracy(beatmap) {
 
 function RowBeatmap(beatmap) {
     const li = createElementClassContent("li", "row beatmap");
+    li.id = beatmap.beatmap_id;
     
     li.appendChild(createElementClassContent("div", "grade", beatmap.grade ?? ""));
     li.appendChild(createElementClassContent("div", "accuracy", accuracy(beatmap)));
@@ -22,6 +23,7 @@ function RowBeatmap(beatmap) {
     li.appendChild(createElementClassContent("div", "mapper-id", beatmap.mapper_id ?? ""));
     li.appendChild(createElementClassContent("div", "mapper", beatmap.mapper ?? ""));
 
+    li.appendChild(createElementClassContent("div", "beatmap-db-id", beatmap.beatmap_db_id, true));
     li.appendChild(createElementClassContent("div", "beatmap-set-id", beatmap.beatmap_set_id, true));
 
     if (beatmap.beatmap_set_id == selectedBeatmapSetId()) {

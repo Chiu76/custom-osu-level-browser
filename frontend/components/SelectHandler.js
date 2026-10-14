@@ -1,4 +1,9 @@
-export function SelectHandler() {    
+export function SelectHandler() {
+    function updateSelect(selectElement, value) {
+        selectElement.value = value;
+        selectElement.dispatchEvent(new Event("change"));
+    }
+
     function createElementOption(value) {
         const option = document.createElement("option");
         option.value = value;
@@ -18,5 +23,6 @@ export function SelectHandler() {
 
     return {
         init,
+        updateSelect,
     }
 }

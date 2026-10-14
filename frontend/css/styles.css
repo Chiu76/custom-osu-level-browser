@@ -245,11 +245,11 @@
       grid-row: 1/5;
       align-content: center;
     }
-    .player {
+    .player-name {
       grid-column: two/three;
       grid-row: 2/3;
     }
-    .score {
+    .replay-score {
       grid-column: two/three;
       grid-row: 3/4;
     }
@@ -257,7 +257,7 @@
       grid-column: two/three;
       grid-row: 4/5;
     }
-    .combo {
+    .max-combo {
       grid-column: three/four;
       grid-row: 3/4;
       justify-self: left;

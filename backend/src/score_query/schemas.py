@@ -19,12 +19,28 @@ class ScoreSqSpec(BaseModel):
 
 
 class ScoreQueryRequest(BaseModel):
-    pass
+    score_sq_spec: ScoreSqSpec
+    beatmap_db_id: int
 
 
 class ScoreQueryRow(BaseModel):
-    pass
+    mode: int
+    player_name: str
+    num_300s: int
+    num_100s: int
+    num_50s: int
+    num_gekis: int
+    num_katus: int
+    num_misses: int
+    grade: str
+    accuracy: float
+    replay_score: int
+    max_combo: int
+    perfect_combo: bool
+    mods: int
+    played_at: int
 
 
 class ScoreQueryResponse(BaseModel):
-    pass
+    rows: list[ScoreQueryRow]
+    count: int

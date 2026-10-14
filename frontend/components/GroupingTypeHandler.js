@@ -11,17 +11,15 @@ export function GroupingTypeHandler() {
     const selectElement = parentElement.getElementsByTagName("select")[0];
 
     function selectOnChange(field) {
-        setGroupingType({
-            field: field,
-        });
+        setGroupingType(field);
     }
 
     function init() {
-        SelectHandler().init(selectElement, selectOnChange, groupingTypeValues);
+        const selectHandler = SelectHandler();
+        selectHandler.init(selectElement, selectOnChange, groupingTypeValues);
+        selectHandler.updateSelect(selectElement, "collections");
 
-        setGroupingType(selectElement.value);
-
-        return [groupingType, setGroupingType]
+        return [groupingType, setGroupingType];
     }
 
     return {

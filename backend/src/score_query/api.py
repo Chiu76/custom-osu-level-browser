@@ -16,5 +16,5 @@ async def query(request: ScoreQueryRequest) -> ScoreQueryResponse:
 
     return ScoreQueryResponse(
         rows=rows,
-        grouping_type=request.grouping_type,
+        count=len(rows),
     )

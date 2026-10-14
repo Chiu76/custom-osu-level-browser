@@ -5,6 +5,8 @@ from src.common.models.scores import Score
 
 from .schemas import ScoreQueryRequest, ScoreQueryRow
 
+from .zzz_score_sq import get_score_sq
+
 
 class ScoreQueryRepository:
     @classmethod
@@ -18,5 +20,10 @@ class ScoreQueryRepository:
 
     @classmethod
     def get_score_query_stmt(cls, request: ScoreQueryRequest) -> Select:
-        score_query_stmt = select()
+        score_sq = get_score_sq(request.score_sq_spec)
+        score_query_stmt = (
+            select(*score_sq.c)
+            .select_from(score_sq)
+            .where(score_sq.c.beatmap_db_id == request.beatmap_db_id)
+        )
         return score_query_stmt

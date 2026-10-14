@@ -22,21 +22,18 @@ function buildRequest(beatmap_query_request, grouping_type, q) {
 }
 
 const [request, setRequest] = createSignal();
-const [groupingQueryRows, setGroupingQueryRows] = createSignal([]);
 
 createEffect(() => {
     const beatmap_query_request = beatmapQuery.request();
     const grouping_type = groupingType();
     const q = groupingSearch();
-    const new_request = buildRequest(beatmap_query_request, grouping_type, q);
-    console.log("groupings: new_request:", new_request);
-    setRequest(new_request);
+    const newRequest = buildRequest(beatmap_query_request, grouping_type, q);
+    console.log("groupings: newRequest:", newRequest);
+    setRequest(newRequest);
 });
 
-const groupingContainerHandler = GroupingContainerHandler();
-const groupingContainer = groupingContainerHandler.init();
-
 const groupingContentHandler = GroupingContentHandler();
+const [groupingQueryRows, setGroupingQueryRows] = createSignal([]);
 
 let latestId = 0;
 createEffect(() => {
@@ -47,6 +44,9 @@ createEffect(() => {
             if (id === latestId) setGroupingQueryRows(response.rows);
         });
 });
+
+const groupingContainerHandler = GroupingContainerHandler();
+const groupingContainer = groupingContainerHandler.init();
 
 createEffect(() => {
     selectedSourceId();
