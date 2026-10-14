@@ -13,6 +13,7 @@ import {
     modsExactFilter, setModsExactFilter,	
     modsIncludeFilter, setModsIncludeFilter,
     modsExcludeFilter, setModsExcludeFilter,
+    disableBeatmapSets, setDisableBeatmapSets,
 } from "./settings.js";
 
 function buildRequest(search_spec, filter_spec, sort_spec, source_spec, grouping_spec, top_by, score_required, mods_exact, mods_include, mods_exclude) {
@@ -84,7 +85,7 @@ const displayRows = createMemo(() => {
     const currentSelectedBeatmapSetId = selectedBeatmapSetId();
     // const currentSelectedGroupingId = selectedGroupingId();
     // const currentSelectedSourceId = selectedSourceId();
-    return beatmapContentHandler.beatmapsToDisplayRows(beatmaps, currentSelectedBeatmapSetId);
+    return beatmapContentHandler.beatmapsToDisplayRows(beatmaps, currentSelectedBeatmapSetId, disableBeatmapSets());
 })
 
 var VirtualizedList = window.VirtualizedList.default;

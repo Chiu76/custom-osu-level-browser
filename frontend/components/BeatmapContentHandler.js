@@ -7,7 +7,14 @@ export function BeatmapContentHandler() {
         return beatmapQuery(request);
     }
 
-    function beatmapsToDisplayRows(beatmaps, selectedSetId) {
+    function beatmapsToDisplayRows(beatmaps, selectedSetId, disableBeatmapSets=false) {
+        if (disableBeatmapSets) {
+            const results = beatmaps.map((beatmap) => { 
+                return { type: "beatmap", content: beatmap }; 
+            });
+            return results;
+        }
+
         const results = [];
         let current = [];
 
@@ -29,6 +36,7 @@ export function BeatmapContentHandler() {
             }
             current.push(beatmap);
         }
+
         flushCurrent(current);
 
         return results;

@@ -32,6 +32,8 @@ const [modsExactFilter, setModsExactFilter] = ModFilterHandler().init("mods-exac
 const [modsIncludeFilter, setModsIncludeFilter] = ModFilterHandler().init("mods-include-filter");
 const [modsExcludeFilter, setModsExcludeFilter] = ModFilterHandler().init("mods-exclude-filter");
 
+const [disableBeatmapSets, setDisableBeatmapSets] = CheckboxHandler().init("disable-beatmap-sets");
+
 export { 
     beatmapSearch, setBeatmapSearch,
     beatmapFilter, setBeatmapFilter, 
@@ -55,4 +57,6 @@ export {
     modsExactFilter, setModsExactFilter,	
     modsIncludeFilter, setModsIncludeFilter,
     modsExcludeFilter, setModsExcludeFilter,
+
+    disableBeatmapSets, setDisableBeatmapSets,
 };
