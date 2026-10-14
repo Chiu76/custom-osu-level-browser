@@ -18,6 +18,11 @@
     outline: 5px inset rgb(162, 42, 42);
     outline-offset: -5px;
   }
+  .dir {
+    background-color: whitesmoke;
+    padding: 2.5px;
+    border-radius: 5%;
+  }
 }
 
 /*# sourceMappingURL=utils.css.map */

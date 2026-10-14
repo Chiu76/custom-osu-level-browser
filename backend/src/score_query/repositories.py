@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.models.scores import Score
 
-from .schemas.requests import ScoreQueryRequest, ScoreQueryRow
+from .schemas import ScoreQueryRequest, ScoreQueryRow
 
 
 class ScoreQueryRepository:

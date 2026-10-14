@@ -1,12 +1,10 @@
+import { createSignal } from "../reactive.js";
 import { schemas } from "../utils.js";
 
-
-export function FilterHandler() {
-    let getter;
-    let setter;
+export function BeatmapFilterHandler() {
+    const [filter, setFilter] = createSignal([]);
 
     const fieldValues = schemas["Filter"]["properties"]["field"]["enum"];
-    // const fieldValuesRegex = new RegExp(fieldValues.join("|"), "g");
 
     const opValues = schemas["Filter"]["properties"]["op"]["enum"];
     const opValuesRegex = new RegExp(opValues.join("|"), "g");
@@ -70,11 +68,8 @@ export function FilterHandler() {
         setter(filterParsedResult.result);
     }
 
-    function init(id, filter, setFilter) {
-        getter = filter;
-        setter = setFilter;
-
-        const filterParent = document.getElementById(id);
+    function init() {
+        const filterParent = document.getElementById("beatmap-filter");
         const filterInput = filterParent.getElementsByTagName("input")[0];
         
         let timeout;
@@ -82,6 +77,8 @@ export function FilterHandler() {
             clearTimeout(timeout);
             timeout = setTimeout(() => onInput(event.target.value), 250);
         });
+
+        return [filter, setFilter];
     }
 
     return {

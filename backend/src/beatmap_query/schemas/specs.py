@@ -2,9 +2,9 @@ from typing import Literal, Annotated
 from pydantic import BaseModel, Field
 
 from .identifiers import NoneIdentifier, LocalBeatmapsIdentifier, CollectionsIdentifier
-from ..yyy_filter_sort_fields import FILTER_SORT_FIELDS, FILTER_OPS
+from ..yyy_filter_sort_fields import FILTER_SORT_FIELDS, FILTER_SORT_FIELDS_ALTERNATIVES, FILTER_OPS
 
-from src.score_query.schemas.specs import ScoreSqSpec
+from src.score_query.schemas import ScoreSqSpec
 
 
 SourceSpec = Annotated[
@@ -27,7 +27,7 @@ class OnlineDetailsSpec(BaseModel):
 
 
 class Filter(BaseModel):
-    field: FILTER_SORT_FIELDS
+    field: FILTER_SORT_FIELDS | FILTER_SORT_FIELDS_ALTERNATIVES
     op: FILTER_OPS
     value: int | float | str
 
@@ -54,16 +54,16 @@ GroupingSpec = Annotated[
 ]
 
 
-class Sorting(BaseModel):
-    field: FILTER_SORT_FIELDS
+class Sort(BaseModel):
+    field: FILTER_SORT_FIELDS | FILTER_SORT_FIELDS_ALTERNATIVES
     dir: Literal['asc', 'desc'] = 'asc'
 
 
-class SortingSpec(BaseModel):
-    sortings: list[Sorting] = []
+class SortSpec(BaseModel):
+    sort_columns: list[Sort] = []
 
 
 class PresentationSpecs(BaseModel):
     search_spec: SearchSpec
     grouping_spec: GroupingSpec
-    sorting_spec: SortingSpec
+    sort_spec: SortSpec

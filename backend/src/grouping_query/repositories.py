@@ -3,8 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.models.collections import Collection
 
-from .schemas.enums import GroupingType
-from .schemas.requests import GroupingQueryRequest, GroupingQueryRow
+from .schemas import GroupingType, GroupingQueryRequest, GroupingQueryRow
 
 import src.grouping_query.zzz_aggregated_count as zzz_aggregated_count
 

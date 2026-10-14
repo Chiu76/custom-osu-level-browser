@@ -5,7 +5,7 @@ from sqlalchemy import Select, and_
 from src.common.models.scores import Score
 
 
-MODS = Literal[
+MODS_FIELDS = Literal[
     'none',
     'nofail',
     'easy',
@@ -40,7 +40,7 @@ MODS = Literal[
     'mirror',
 ]
 
-MODS_ALTERNATIVES = Literal[
+MODS_FIELDS_ALTERNATIVES = Literal[
     'nf',
     'ez',
     'td',
@@ -127,7 +127,7 @@ MODS_VALUES = {
 }
 
 
-def get_mod_value(mod: MODS | MODS_ALTERNATIVES) -> int:
+def get_mod_value(mod: MODS_FIELDS | MODS_FIELDS_ALTERNATIVES) -> int:
     if not mod in MODS_VALUES.keys():
         raise ValueError(f'Received invalid mod value, not present in `MODS_VALUES` mapping: {mod}')
     return MODS_VALUES[mod]
@@ -135,9 +135,9 @@ def get_mod_value(mod: MODS | MODS_ALTERNATIVES) -> int:
 
 def apply_mods(
     stmt: Select,
-    mods_exact: list[MODS | MODS_ALTERNATIVES],
-    mods_include: list[MODS | MODS_ALTERNATIVES],
-    mods_exclude: list[MODS | MODS_ALTERNATIVES],
+    mods_exact: list[MODS_FIELDS | MODS_FIELDS_ALTERNATIVES],
+    mods_include: list[MODS_FIELDS | MODS_FIELDS_ALTERNATIVES],
+    mods_exclude: list[MODS_FIELDS | MODS_FIELDS_ALTERNATIVES],
 ) -> Select:    
     if mods_exact:
         mods_exact_value = sum([get_mod_value(mod) for mod in mods_exact])

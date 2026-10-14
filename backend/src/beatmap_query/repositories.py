@@ -5,9 +5,9 @@ from src.common.models.beatmaps import Beatmap, BeatmapSet
 
 from .schemas.identifiers import NoneIdentifier, LocalBeatmapsIdentifier
 from .schemas.requests import BeatmapQueryRequest, BeatmapQueryRow
-from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, PresentationSpecs, GroupingSpec, SearchSpec, Filter, FilterSpec, Sorting, SortingSpec
+from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, PresentationSpecs, GroupingSpec, SearchSpec, Filter, FilterSpec, Sort, SortSpec
 
-from src.score_query.schemas.specs import ScoreSqSpec
+from src.score_query.schemas import ScoreSqSpec, TopBy
 
 import src.beatmap_query.zzz_core as zzz_core
 import src.beatmap_query.zzz_presentation as zzz_presentation
@@ -77,7 +77,7 @@ class BeatmapQueryRepository:
             star_rating_spec=StarRatingSpec(),
             attached_score_spec=AttachedScoreSpec(
                 ScoreSqSpec(
-                    top_by='accuracy', 
+                    top_by=TopBy(field='accuracy', dir='desc'),
                     top_by_desc=True, 
                     top_score_only=True,
                 ),
@@ -95,9 +95,9 @@ class BeatmapQueryRepository:
         presentation_specs = PresentationSpecs(
             search_spec=SearchSpec(),
             grouping_spec=NoneIdentifier(type='none'),
-            sorting_spec=SortingSpec(
-                sortings=[
-                    Sorting(field='beatmap_set_id', dir='asc'),
+            sort_spec=SortSpec(
+                sort_columns=[
+                    Sort(field='beatmap_set_id', dir='asc'),
                 ]
             ),
         )

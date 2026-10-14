@@ -10,15 +10,11 @@
         <div class="settings">
             <h2>Settings</h2>
             <div class="score-settings">
-                <div>
-                    <span>Score summary criteria: </span>
-                    <select name="selected-score-summary-type">
-                        <option value="score">Score</option>
-                        <option value="pp">PP</option>
-                        <option value="miss-count">Miss Count</option>
-                        <option value="latest">Latest</option>
-                    </select>
-                </div>
+                <span>Score top by: </span>
+                <span id="score-top-by">
+                    <select></select>
+                    <span class="dir"></span>
+                </span>
             </div>
             <div class="beatmap-query-settings">
                 <div class="sort-selects">
@@ -68,12 +64,14 @@
                             placeholder="Search groupings.."
                         />
                     </span>
-                    <select id="grouping-type-select">
-                        <option value="collections">Collections</option>
-                        <option value="packs">Packs</option>
-                        <option value="beatmaps-ranked-by-year">Ranked by Year</option>
-                        <option value="beatmaps-ranked-by-month">Ranked by Month</option>
-                    </select>
+                    <span id="grouping-type">
+                        <select>
+                            <option value="collections">Collections</option>
+                            <option value="packs">Packs</option>
+                            <option value="beatmaps-ranked-by-year">Ranked by Year</option>
+                            <option value="beatmaps-ranked-by-month">Ranked by Month</option>
+                        </select>
+                    </span>
                 </div>
             </div>
         </div>

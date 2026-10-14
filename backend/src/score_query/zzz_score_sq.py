@@ -1,8 +1,8 @@
 from sqlalchemy import Over, Select, Subquery, select, func, alias
 from sqlalchemy.orm import Session, InstrumentedAttribute
 
-from .schemas.specs import ScoreSqSpec
-from .yyy_top_by import get_column__top_by
+from .schemas import ScoreSqSpec
+from .yyy_top_by_fields import get_column__top_by
 from .yyy_mods import apply_mods
 
 from src.common.models.scores import Score
@@ -16,8 +16,8 @@ def get_score_sq(score_sq_spec: ScoreSqSpec) -> Subquery:
 
 
 def build_score_row_num_sq(score_sq_spec: ScoreSqSpec) -> Subquery:
-    column__top_by = get_column__top_by(score_sq_spec.top_by)
-    column__top_by = column__top_by.desc() if score_sq_spec.top_by_desc else column__top_by
+    column__top_by = get_column__top_by(score_sq_spec.top_by.field)
+    column__top_by = column__top_by.desc() if score_sq_spec.top_by.dir == 'desc' else column__top_by
 
     score_row_num_sq = (
         select(

@@ -1,11 +1,13 @@
+import { createSignal } from "../reactive.js";
 import { schemas } from "../utils.js";
 
-export function SortHandler() {
-    let getter;
-    let setter;
+// todo: refactor to use SelectHandler and DirHandler
+export function BeatmapSortHandler() {
+    const [sort, setSort] = createSignal([]);
 
-    const fieldValues = schemas["Sorting"]["properties"]["field"]["enum"].sort();
-    // const fieldValuesRegex = new RegExp(fieldValues.join("|"), "g");
+    console.log(schemas)
+ 
+    const fieldValues = schemas["Sort"]["properties"]["field"]["anyOf"][0]["enum"].sort();
     
     function updateSortSelect(parentId, value) {
         const sortSelect = document.getElementById(parentId).getElementsByTagName("select")[0];
@@ -14,7 +16,7 @@ export function SortHandler() {
     }
 
     function updateSortAtIndex(index, field, dir) {
-        const sortContent = getter();
+        const sortContent = sort();
         sortContent[index] = { field: field, dir: dir };
         return sortContent;
     }
@@ -40,7 +42,7 @@ export function SortHandler() {
             sortSelect.appendChild(createElementOption(fieldValue));
         }
         sortSelect.addEventListener("change", (event) => { 
-            setter(
+            setSort(
                 updateSortAtIndex(index, event.target.value, sortDir.innerText)
             ); 
         });        
@@ -55,10 +57,7 @@ export function SortHandler() {
         instantiateSortDir(sortSelect, sortDir);
     }
 
-    function init(sort, setSort) {
-        getter = sort;
-        setter = setSort;
-
+    function init() {
         instantiateSort("sort-primary", 0);
         instantiateSort("sort-secondary", 1);
         instantiateSort("sort-third", 2);
@@ -68,6 +67,8 @@ export function SortHandler() {
         updateSortSelect("sort-primary", "artist");
         updateSortSelect("sort-secondary", "title");
         updateSortSelect("sort-third", "beatmap_set_id");
+
+        return [sort, setSort];
     }
 
     return {

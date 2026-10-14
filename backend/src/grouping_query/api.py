@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from src.common.db import SessionMaker
 from .repositories import GroupingQueryRepository
 
-from .schemas.requests import GroupingQueryRequest, GroupingQueryResponse
+from .schemas import GroupingQueryRequest, GroupingQueryResponse
 
 
 router = APIRouter()

@@ -1,7 +1,6 @@
 from sqlalchemy import Select, Subquery, select, func, alias
 
-from .schemas.enums import GroupingType
-from .schemas.requests import GroupingQueryRequest
+from .schemas import GroupingType, GroupingQueryRequest
 
 from src.beatmap_query.repositories import BeatmapQueryRepository
 

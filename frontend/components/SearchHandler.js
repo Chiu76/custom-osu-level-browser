@@ -1,11 +1,9 @@
+import { createSignal } from "../reactive.js";
+
 export function SearchHandler() {
-    let getter;
-    let setter;
+    const [search, setSearch] = createSignal("");
 
-    function init(id, search, setSearch) {
-        getter = search;
-        setter = setSearch;
-
+    function init(id) {
         const searchParent = document.getElementById(id);
         const searchInput = searchParent.getElementsByTagName("input")[0];
         
@@ -14,6 +12,8 @@ export function SearchHandler() {
             clearTimeout(timeout);
             timeout = setTimeout(() => setter(event.target.value), 250);
         });
+
+        return [search, setSearch];
     }
 
     return {

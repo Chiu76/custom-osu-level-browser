@@ -38,8 +38,10 @@ FILTER_SORT_FIELDS = Literal[
     'grade',
     'accuracy',
     'played_at',
+]
 
-    # alternatives
+
+FILTER_SORT_FIELDS_ALTERNATIVES = Literal[
     'diff',
     'status',
     'hitcircles',
@@ -189,7 +191,10 @@ def get_score_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribute
     }
 
 
-def get_column__filter_field(field: FILTER_SORT_FIELDS, core_stmt: Select | None = None) -> InstrumentedAttribute:
+def get_column__filter_field(
+    field: FILTER_SORT_FIELDS | FILTER_SORT_FIELDS_ALTERNATIVES, 
+    core_stmt: Select
+) -> InstrumentedAttribute:
     filter_field_columns = get_beatmap_filter_columns() | get_beatmap_set_filter_columns() | get_score_filter_columns(core_stmt)
 
     if field not in filter_field_columns.keys():
@@ -199,7 +204,7 @@ def get_column__filter_field(field: FILTER_SORT_FIELDS, core_stmt: Select | None
 
 
 def get_column__sort_field(
-    field: FILTER_SORT_FIELDS, 
+    field: FILTER_SORT_FIELDS | FILTER_SORT_FIELDS_ALTERNATIVES, 
     core_sq: Subquery, 
 ) -> InstrumentedAttribute:
     sort_field_columns = get_beatmap_sort_columns(core_sq) | get_beatmap_set_sort_columns(core_sq) | get_score_sort_columns(core_sq)

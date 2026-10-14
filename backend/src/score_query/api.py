@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from src.common.db import SessionMaker
 from .repositories import ScoreQueryRepository
 
-from .schemas.requests import ScoreQueryRequest, ScoreQueryResponse
+from .schemas import ScoreQueryRequest, ScoreQueryResponse
 
 
 router = APIRouter()

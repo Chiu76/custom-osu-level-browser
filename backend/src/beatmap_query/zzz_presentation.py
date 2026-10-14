@@ -2,7 +2,7 @@ from sqlalchemy import Select, Subquery, select, or_, and_, desc
 from sqlalchemy.orm import InstrumentedAttribute
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .schemas.specs import PresentationSpecs, GroupingSpec, SearchSpec, Sorting, SortingSpec, LocalBeatmapsIdentifier
+from .schemas.specs import PresentationSpecs, GroupingSpec, SearchSpec, Sort, SortSpec, LocalBeatmapsIdentifier
 
 from .yyy_filter_sort_fields import get_column__sort_field
 from .yyy_common import exists_in_collection
@@ -16,7 +16,7 @@ def apply_presentation_specs(core_stmt: Select, presentation_specs: Presentation
     beatmap_query_stmt = select(core_sq)
     beatmap_query_stmt = apply_search(beatmap_query_stmt, core_sq, presentation_specs.search_spec)
     beatmap_query_stmt = apply_grouping(beatmap_query_stmt, core_sq, presentation_specs.grouping_spec)
-    beatmap_query_stmt = apply_sort(beatmap_query_stmt, core_sq, presentation_specs.sorting_spec)
+    beatmap_query_stmt = apply_sort(beatmap_query_stmt, core_sq, presentation_specs.sort_spec)
 
     return beatmap_query_stmt
 
@@ -65,17 +65,17 @@ def _get_default_sort_columns(core_sq: Subquery) -> list[InstrumentedAttribute]:
     ]
 
 
-def _get_sort_columns(sorting: Sorting, core_sq: Subquery):
-    field_column = get_column__sort_field(sorting.field, core_sq)
-    if sorting.dir == 'desc': field_column = desc(field_column)
+def _get_sort_columns(sort: Sort, core_sq: Subquery):
+    field_column = get_column__sort_field(sort.field, core_sq)
+    if sort.dir == 'desc': field_column = desc(field_column)
     return field_column
 
 
-def apply_sort(stmt: Select, core_sq: Subquery, sorting_spec: SortingSpec) -> Select:
-    sorting_columns = [_get_sort_columns(s, core_sq) for s in sorting_spec.sortings]
+def apply_sort(stmt: Select, core_sq: Subquery, sort_spec: SortSpec) -> Select:
+    sort_columns = [_get_sort_columns(s, core_sq) for s in sort_spec.sort_columns]
     
-    if sorting_columns:
-        stmt = stmt.order_by(*sorting_columns)
+    if sort_columns:
+        stmt = stmt.order_by(*sort_columns)
     else:
         stmt = stmt.order_by(*_get_default_sort_columns(core_sq))
 

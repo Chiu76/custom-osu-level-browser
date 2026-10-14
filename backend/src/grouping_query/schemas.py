@@ -1,7 +1,13 @@
+from enum import StrEnum
 from pydantic import BaseModel
 
-from .enums import GroupingType
 from src.beatmap_query.schemas.requests import BeatmapQueryRequest
+
+
+class GroupingType(StrEnum):
+    NONE = 'none',
+    COLLECTIONS = 'collections',
+    ARTIST = 'artist',
 
 
 class GroupingQueryRequest(BaseModel):

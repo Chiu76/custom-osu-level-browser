@@ -1,34 +1,21 @@
 import { createSignal, createEffect, createMemo } from "../reactive.js";
 
-import { FilterHandler } from "../components/FilterHandler.js";
-import { SortHandler } from "../components/SortHandler.js";
+import { BeatmapFilterHandler } from "../components/BeatmapFilterHandler.js";
+import { BeatmapSortHandler } from "../components/BeatmapSortHandler.js";
 import { SearchHandler } from "../components/SearchHandler.js";
-import { TypeHandler } from "../components/TypeHandler.js";
+import { GroupingTypeHandler } from "../components/GroupingTypeHandler.js";
+import { ScoreTopByHandler } from "../components/ScoreTopByHandler.js";
 
-const [search, setSearch] = createSignal("");
-const [filter, setFilter] = createSignal([]);
-const [sort, setSort] = createSignal([]);
+const [beatmapSearch, setBeatmapSearch] = SearchHandler().init("beatmap-search");
+const [beatmapFilter, setBeatmapFilter] = BeatmapFilterHandler().init();
+const [beatmapSort, setBeatmapSort] = BeatmapSortHandler().init();
 
-const beatmapSearchHandler = SearchHandler();
-beatmapSearchHandler.init("beatmap-search", search, setSearch);
-
-const beatmapFilterHandler = FilterHandler();
-beatmapFilterHandler.init("beatmap-filter", filter, setFilter);
-
-const beatmapSortHandler = SortHandler();
-beatmapSortHandler.init(sort, setSort);
-
-const [groupingSearch, setGroupingSearch] = createSignal("");
-const [groupingType, setGroupingType] = createSignal();
+const [groupingSearch, setGroupingSearch] = SearchHandler().init("grouping-search");
 
 const [sourceSpec, setSourceSpec] = createSignal({ type: "local_beatmaps" });
 const [groupingSpec, setGroupingSpec] = createSignal({ type: "none" });
 
-const groupingSearchHandler = SearchHandler();
-groupingSearchHandler.init("grouping-search", groupingSearch, setGroupingSearch);
-
-const groupingTypeHandler = TypeHandler();
-groupingTypeHandler.init("grouping-type-select", groupingType, setGroupingType);
+const [groupingType, setGroupingType] = GroupingTypeHandler().init();
 
 const [selectedBeatmapSetId, setSelectedBeatmapSetId] = createSignal();
 const [selectedBeatmapId, setSelectedBeatmapId] = createSignal();
@@ -36,10 +23,12 @@ const [selectedBeatmapId, setSelectedBeatmapId] = createSignal();
 const [selectedSourceId, setSelectedSourceId] = createSignal(undefined);
 const [selectedGroupingId, setSelectedGroupingId] = createSignal(undefined);
 
+const [scoreTopBy, setScoreTopBy] = ScoreTopByHandler().init();
+ 
 export { 
-    search, setSearch,
-    filter, setFilter, 
-    sort, setSort, 
+    beatmapSearch, setBeatmapSearch,
+    beatmapFilter, setBeatmapFilter, 
+    beatmapSort, setBeatmapSort, 
     
     selectedBeatmapSetId, setSelectedBeatmapSetId, 
     selectedBeatmapId, setSelectedBeatmapId,
@@ -52,4 +41,6 @@ export {
 
     selectedSourceId, setSelectedSourceId,
     selectedGroupingId, setSelectedGroupingId,
+
+    scoreTopBy, setScoreTopBy,
 };
