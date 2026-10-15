@@ -29,6 +29,7 @@
         .max-combo {
             grid-column: three / four;
             grid-row: 3 / 4;
+            padding-inline-start: 0.2em;
             justify-self: left;
         }
         .mods {

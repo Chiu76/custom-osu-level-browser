@@ -1,12 +1,14 @@
 import { createSignal } from "../reactive.js";
 import { schemas } from "../utils.js";
 
-export function ModFilterHandler() {
+export function ModFilterHandler(parentId) {
     const [modFilter, setModFilter] = createSignal([]);
+
+    const filterParent = document.getElementById(parentId);
+    const filterInput = filterParent.getElementsByTagName("input")[0];
 
     const fieldValuesDefault = schemas["ScoreSqSpec"]["properties"]["mods_exact"]["items"]["anyOf"][0]["enum"];
     const fieldValuesAlts = schemas["ScoreSqSpec"]["properties"]["mods_exact"]["items"]["anyOf"][1]["enum"];
-    
     const fieldValues = fieldValuesDefault.concat(fieldValuesAlts);
 
     function assertField(mod) {
@@ -51,10 +53,7 @@ export function ModFilterHandler() {
         setModFilter(filterParsedResult.result);
     }
 
-    function init(parentId) {
-        const filterParent = document.getElementById(parentId);
-        const filterInput = filterParent.getElementsByTagName("input")[0];
-        
+    function init() {
         let timeout;
         filterInput.addEventListener("input", (event) => {
             clearTimeout(timeout);

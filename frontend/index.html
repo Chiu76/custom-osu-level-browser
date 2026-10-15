@@ -11,11 +11,6 @@
         <div class="settings">
             <h2>Settings</h2>
             <div class="score-settings">
-                <div id="score-top-by">
-                    <span>Score top by: </span>
-                    <select></select>
-                    <span class="dir"></span>
-                </div>
                 <div id="mods-exact-filter">
                     <span>Mods exact: </span>
                     <input
@@ -34,12 +29,13 @@
                         placeholder="Filter for excluded mods.."
                     />
                 </div>
-                <div id="score-required">
-                    <span> Show only beatmaps with scores: </span>
-                    <input type="checkbox">
+                <div id="score-sort-by">
+                    <span>Sort scores by: </span>
+                    <select></select>
+                    <span class="dir"></span>
                 </div>
             </div>
-            <div class="beatmap-query-settings">
+            <div class="beatmap-settings">
                 <div class="sort-selects">
                     <span>Sort by: </span>
                     <span id="sort-primary">
@@ -56,7 +52,7 @@
                     </span>
                 </div>
                 <div id="beatmap-filter">
-                    <span>Filters: </span>
+                    <span>Filter: </span>
                     <input
                         placeholder="Filter beatmaps.."
                     />
@@ -71,6 +67,18 @@
                     <span> Disable grouping into beatmaps sets: </span>
                     <input type="checkbox">
                 </div>
+                <div class="attached-score-settings">
+                    <span id="score-required">
+                        <span> Show only beatmaps with scores: </span>
+                        <input type="checkbox">
+                    </span>
+                    <span id="attached-score-top-by">
+                        <span>Attached score top-by criteria: </span>
+                        <select></select>
+                        <span class="dir"></span>
+                    </span>
+                </div>
+
             </div>
             <div class="grouping-settings">
                 <div>
@@ -85,16 +93,16 @@
                         <button type="button" onclick="clearActiveGrouping()">Clear</button>
                     </div>
                 </div>
-                <div>
-                    <span id="grouping-search">
-                        <input
-                            placeholder="Search groupings.."
-                        />
-                    </span>
-                    <span id="grouping-type">
-                        <select></select>
-                        <!-- <div class="dir"></div> -->
-                    </span>
+                <span id="grouping-type">
+                    <span>Shown grouping type: </span>
+                    <select></select>
+                    <!-- <div class="dir"></div> -->
+                </span>
+                <div id="grouping-search">
+                    <span>Search: </span>
+                    <input
+                        placeholder="Search groupings.."
+                    />
                 </div>
             </div>
         </div>

@@ -1,12 +1,12 @@
 import { createSignal } from "../reactive.js";
 
-export function CheckboxHandler() {
+export function CheckboxHandler(parentId) {
     const [checkbox, setCheckbox] = createSignal();
 
-    function init(id, initialValue=false) {
-        const checkboxParent = document.getElementById(id);
-        const checkboxInput = checkboxParent.getElementsByTagName("input")[0];
-        
+    const checkboxParent = document.getElementById(parentId);
+    const checkboxInput = checkboxParent.getElementsByTagName("input")[0];
+
+    function init(initialValue=false) {
         checkboxInput.addEventListener("change", (event) => setCheckbox(event.target.checked));
 
         setCheckbox(initialValue);

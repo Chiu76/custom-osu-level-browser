@@ -8,11 +8,11 @@ import { ScoreTopByHandler } from "../components/ScoreTopByHandler.js";
 import { CheckboxHandler } from "../components/CheckboxHandler.js";
 import { ModFilterHandler } from "../components/ModFilterHandler.js";
 
-const [beatmapSearch, setBeatmapSearch] = SearchHandler().init("beatmap-search");
+const [beatmapSearch, setBeatmapSearch] = SearchHandler("beatmap-search").init();
 const [beatmapFilter, setBeatmapFilter] = BeatmapFilterHandler().init();
 const [beatmapSort, setBeatmapSort] = BeatmapSortHandler().init();
 
-const [groupingSearch, setGroupingSearch] = SearchHandler().init("grouping-search");
+const [groupingSearch, setGroupingSearch] = SearchHandler("grouping-search").init();
 
 const [sourceSpec, setSourceSpec] = createSignal({ type: "local_beatmaps" });
 const [groupingSpec, setGroupingSpec] = createSignal({ type: "none" });
@@ -25,14 +25,15 @@ const [selectedBeatmapId, setSelectedBeatmapId] = createSignal();
 const [selectedSourceId, setSelectedSourceId] = createSignal(undefined);
 const [selectedGroupingId, setSelectedGroupingId] = createSignal(undefined);
 
-const [scoreTopBy, setScoreTopBy] = ScoreTopByHandler().init();
-const [scoreRequired, setScoreRequired] = CheckboxHandler().init("score-required");
+const [scoreSortBy, setScoreSortBy] = ScoreTopByHandler("score-sort-by").init();
+const [attachedScoreTopBy, setAttachedScoreTopBy] = ScoreTopByHandler("attached-score-top-by").init();
+const [scoreRequired, setScoreRequired] = CheckboxHandler("score-required").init();
 
-const [modsExactFilter, setModsExactFilter] = ModFilterHandler().init("mods-exact-filter");
-const [modsIncludeFilter, setModsIncludeFilter] = ModFilterHandler().init("mods-include-filter");
-const [modsExcludeFilter, setModsExcludeFilter] = ModFilterHandler().init("mods-exclude-filter");
+const [modsExactFilter, setModsExactFilter] = ModFilterHandler("mods-exact-filter").init();
+const [modsIncludeFilter, setModsIncludeFilter] = ModFilterHandler("mods-include-filter").init();
+const [modsExcludeFilter, setModsExcludeFilter] = ModFilterHandler("mods-exclude-filter").init();
 
-const [disableBeatmapSets, setDisableBeatmapSets] = CheckboxHandler().init("disable-beatmap-sets");
+const [disableBeatmapSets, setDisableBeatmapSets] = CheckboxHandler("disable-beatmap-sets").init();
 
 export { 
     beatmapSearch, setBeatmapSearch,
@@ -51,7 +52,8 @@ export {
     selectedSourceId, setSelectedSourceId,
     selectedGroupingId, setSelectedGroupingId,
 
-    scoreTopBy, setScoreTopBy,
+    scoreSortBy, setScoreSortBy,
+    attachedScoreTopBy, setAttachedScoreTopBy,
     scoreRequired, setScoreRequired,
 
     modsExactFilter, setModsExactFilter,	

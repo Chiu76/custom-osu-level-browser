@@ -8,7 +8,7 @@ import {
     selectedGroupingId, selectedSourceId,
     groupingType, setGroupingType,
     sourceSpec, groupingSpec,
-    scoreTopBy, setScoreTopBy,
+    attachedScoreTopBy, setAttachedScoreTopBy,
     scoreRequired, setScoreRequired,
     modsExactFilter, setModsExactFilter,	
     modsIncludeFilter, setModsIncludeFilter,
@@ -51,7 +51,7 @@ createEffect(() => {
     // const groupingSpec = { type: groupingType(), id: selectedGroupingId() };
     const source_spec = sourceSpec();
     const grouping_spec = groupingSpec();
-    const top_by = scoreTopBy();
+    const top_by = attachedScoreTopBy();
     const score_required = scoreRequired();
     const mods_exact = modsExactFilter();
     const mods_include = modsIncludeFilter();

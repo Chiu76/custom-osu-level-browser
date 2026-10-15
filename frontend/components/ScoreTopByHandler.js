@@ -3,17 +3,17 @@ import { schemas } from "../utils.js";
 import { SelectHandler } from "./SelectHandler.js";
 import { DirHandler } from "./DirHandler.js";
 
-export function ScoreTopByHandler() {
-    const [scoreTopBy, setScoreTopBy] = createSignal();
+export function ScoreTopByHandler(parentId) {
+    const [attachedScoreTopBy, setAttachedScoreTopBy] = createSignal();
     
     const topByValues = schemas["TopBy"]["properties"]["field"]["enum"].sort();
     
-    const parentElement = document.getElementById("score-top-by");
+    const parentElement = document.getElementById(parentId);
     const selectElement = parentElement.getElementsByTagName("select")[0];
     const dirElement = parentElement.getElementsByClassName("dir")[0];
 
     function selectOnChange(field) {
-        setScoreTopBy({
+        setAttachedScoreTopBy({
             field: field,
             dir: dirElement.innerText,
         });
@@ -25,7 +25,7 @@ export function ScoreTopByHandler() {
 
         selectOnChange(selectElement.value);
 
-        return [scoreTopBy, setScoreTopBy]
+        return [attachedScoreTopBy, setAttachedScoreTopBy]
     }
 
     return {

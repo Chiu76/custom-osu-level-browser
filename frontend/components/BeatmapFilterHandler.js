@@ -3,10 +3,12 @@ import { schemas } from "../utils.js";
 
 export function BeatmapFilterHandler() {
     const [filter, setFilter] = createSignal([]);
+
+    const filterParent = document.getElementById("beatmap-filter");
+    const filterInput = filterParent.getElementsByTagName("input")[0];
     
     const filterValuesDefault = schemas["Filter"]["properties"]["field"]["anyOf"][0]["enum"];
     const filterValuesAlt = schemas["Filter"]["properties"]["field"]["anyOf"][1]["enum"];
-
     const fieldValues = filterValuesDefault.concat(filterValuesAlt);
 
     const opValues = schemas["Filter"]["properties"]["op"]["enum"];
@@ -73,9 +75,6 @@ export function BeatmapFilterHandler() {
     }
 
     function init() {
-        const filterParent = document.getElementById("beatmap-filter");
-        const filterInput = filterParent.getElementsByTagName("input")[0];
-        
         let timeout;
         filterInput.addEventListener("input", (event) => {
             clearTimeout(timeout);

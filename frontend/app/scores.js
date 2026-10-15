@@ -4,7 +4,7 @@ import { ScoreContentHandler } from "../components/ScoreContentHandler.js";
 import { RowScore } from "../components/RowScore.js";
 
 import { 
-    scoreTopBy,
+    scoreSortBy,
     modsExactFilter,	
     modsIncludeFilter,
     modsExcludeFilter,
@@ -33,7 +33,7 @@ function getBeatmapDbId(beatmapId) {
 const [request, setRequest] = createSignal();
 
 createEffect(() => {
-    const top_by = scoreTopBy();
+    const top_by = scoreSortBy();
     const mods_exact = modsExactFilter();
     const mods_include = modsIncludeFilter();
     const mods_exclude = modsExcludeFilter();
@@ -56,6 +56,9 @@ createEffect(() => {
                 if (id === latestId) setScoreQueryRows(response.rows);
             });
     }
+    else {
+        setScoreQueryRows([]);
+    }
 });
 
 const scoreContainerHandler = ScoreContainerHandler();
@@ -70,25 +73,3 @@ createEffect(() => {
         }
     }
 });
-
-let selectedScoreId = undefined;
-
-const scoreOnClick = (element) => {
-    const prevSelected = document.getElementById(selectedScoreId);
-    if (prevSelected == undefined) {
-        element.classList.toggle("highlighted");
-        selectedScoreId = element.id;
-    }
-    else {
-        if (prevSelected.id != element.id) {
-            prevSelected.classList.toggle("highlighted")
-            selectedScoreId = element.id;
-        }
-        else {
-            selectedScoreId = undefined;
-        }
-        element.classList.toggle("highlighted");
-    }
-};
-
-window.scoreOnClick = scoreOnClick;
