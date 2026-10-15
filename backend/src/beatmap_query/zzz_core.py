@@ -6,7 +6,7 @@ from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineD
 
 import src.beatmap_query.yyy_filter_sort_fields as filter_sort_fields
 
-from src.common.models.beatmaps import Beatmap
+from src.common.models.beatmaps import Beatmap, BeatmapStarRating
 
 import src.score_query.zzz_score_sq as zzz_score_sq
 
@@ -26,7 +26,13 @@ def apply_core_specs(initial_stmt: Select, core_specs: CoreSpecs):
 
 
 def apply_star_rating(stmt: Select, star_rating_spec: StarRatingSpec) -> Select:
-    return stmt
+    stmt = stmt.add_columns(BeatmapStarRating.star_rating)
+    
+    return stmt.outerjoin(BeatmapStarRating, and_(
+        BeatmapStarRating.beatmap_db_id == Beatmap.id,
+        BeatmapStarRating.mode == 0,
+        BeatmapStarRating.mods == 0,
+    ))
 
 
 def apply_attached_score(stmt: Select, attached_score_spec: AttachedScoreSpec) -> Select:

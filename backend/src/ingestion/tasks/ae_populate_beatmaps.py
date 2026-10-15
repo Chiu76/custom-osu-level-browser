@@ -25,7 +25,7 @@ def compute_bpm(timing_points: list) -> float:
     return bpm_counts_as_sorted_list[0][0]
 
 
-def get_table_row__beatmaps(beatmap_db_content: dict, import_source_hash: str) -> dict:
+def get_beatmap_mapping(beatmap_db_content: dict, import_source_hash: str) -> dict:
     return {
         'beatmap_set_id': beatmap_db_content['beatmap_set_id'],
         'beatmap_id': beatmap_db_content['beatmap_id'],
@@ -58,11 +58,6 @@ log_messages = {
 }
     
 def fn(self: Task, session: Session, force_refresh: bool = False):
-    """
-        load parsed_osu_db_file.json
-
-    """
-
     self.log_info('start_task')
 
     self.vars = {
@@ -79,7 +74,7 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
 
     beatmap_rows = []
     for beatmap in beatmap_data:
-        row = get_table_row__beatmaps(beatmap, import_source_hash=db_file_hash)
+        row = get_beatmap_mapping(beatmap, import_source_hash=db_file_hash)
         if row['ranked_status'] == 1: continue
         beatmap_rows.append(row)
 

@@ -12,10 +12,14 @@ from ..prechecks.tables import init_precheck__state_table_populated
 from ..tasks.generic_import_db_file import init_task__generic_import_db_file 
 from ..tasks.generic_update_state_db_file import init_task__generic_update_state_db_file 
 from ..tasks.generic_parse_imported_db_file import init_task__generic_parse_imported_db_file
+
 from ..tasks.ad_populate_beatmap_sets import init_task__populate_beatmap_sets
 from ..tasks.ae_populate_beatmaps import init_task__populate_beatmaps
+from ..tasks.ah_populate_star_ratings import init_task__populate_beatmap_star_ratings
+
 from ..tasks.afa_populate_collections import init_task__populate_collections
 from ..tasks.afb_populate_collection_items import init_task__populate_collection_items
+
 from ..tasks.ag_populate_scores import init_task__populate_scores
 
 
@@ -48,9 +52,10 @@ def run_job__osu_db_file_import(session: Session):
                 session=session,
                 db_file_type=db_file_type,
                 force_refresh=False,
-            ),            
+            ),
             init_task__populate_beatmap_sets(session=session, force_refresh=False),
             init_task__populate_beatmaps(session=session, force_refresh=False),
+            init_task__populate_beatmap_star_ratings(session=session, force_refresh=False),
         ]
         job.run()
 

@@ -59,12 +59,14 @@ export function BeatmapSortHandler() {
         instantiateSort("sort-primary", 0);
         instantiateSort("sort-secondary", 1);
         instantiateSort("sort-third", 2);
+        instantiateSort("sort-fourth", 3);
 
         // default values
         // todo: when reactive batching is implemented, these should be batched
         updateSortSelect("sort-primary", "artist");
         updateSortSelect("sort-secondary", "title");
         updateSortSelect("sort-third", "beatmap_set_id");
+        updateSortSelect("sort-fourth", "star_rating");
 
         return [sort, setSort];
     }

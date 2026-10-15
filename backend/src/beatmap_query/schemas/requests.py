@@ -39,6 +39,8 @@ class BeatmapQueryRow(BaseModel):
     grade: str | None
     accuracy: float | None
 
+    star_rating: float | None
+
 
 class BeatmapQueryResponse(BaseModel):
     rows: list[BeatmapQueryRow]

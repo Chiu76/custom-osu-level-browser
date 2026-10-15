@@ -76,3 +76,19 @@ class Beatmap(Model):
 
     def __repr__(self):
         return f'Beatmap(beatmap_id={self.beatmap_id})'
+
+
+class BeatmapStarRating(Model):
+    __tablename__ = 'beatmap_star_rating'
+
+    beatmap_db_id: Mapped[int] = mapped_column(
+        ForeignKey('beatmaps.id', ondelete='CASCADE'),
+        index=True,
+        primary_key=True,
+    )
+    mode: Mapped[int] = mapped_column(Integer, index=True, primary_key=True)
+    mods: Mapped[int] = mapped_column(Integer, primary_key=True)
+    
+    star_rating: Mapped[float] = mapped_column(Float)
+
+    import_source_hash: Mapped[str] = mapped_column(String(32), nullable=False, index=True)

@@ -3,7 +3,7 @@ from typing import Literal
 from sqlalchemy import Select, Subquery
 from sqlalchemy.orm import InstrumentedAttribute
 
-from src.common.models.beatmaps import Beatmap, BeatmapSet
+from src.common.models.beatmaps import Beatmap, BeatmapSet, BeatmapStarRating
 from src.common.models.scores import Score
 
 
@@ -34,7 +34,8 @@ FILTER_SORT_FIELDS = Literal[
     'song_source',
     'song_tags',
 
-    # score-related
+    'star_rating',
+
     'num_300s',
     'num_100s',
     'num_50s',
@@ -67,6 +68,11 @@ FILTER_SORT_FIELDS_ALTERNATIVES = Literal[
     'set_mapper',
     'source',
     'tags',
+
+    
+    'sr',
+    'stars',
+
     '300s',
     '100s',
     '50s',
@@ -103,6 +109,8 @@ def get_beatmap_filter_columns() -> dict[str, InstrumentedAttribute]:
         'total_time': Beatmap.total_time,
         'local_offset': Beatmap.local_offset,
 
+        'star_rating': BeatmapStarRating.star_rating,
+
         # alternatives
         'diff': Beatmap.difficulty_name,
         'status': Beatmap.ranked_status,
@@ -115,6 +123,9 @@ def get_beatmap_filter_columns() -> dict[str, InstrumentedAttribute]:
         'cs': Beatmap.circle_size,
         'hp': Beatmap.hp_drain,
         'offset': Beatmap.local_offset,
+
+        'sr': BeatmapStarRating.star_rating,
+        'stars': BeatmapStarRating.star_rating,
     }
 
 
@@ -139,6 +150,8 @@ def get_beatmap_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribu
         'total_time': core_sq.c.total_time,
         'local_offset': core_sq.c.local_offset,
 
+        'star_rating': core_sq.c.star_rating,
+
         # alternatives
         'diff': core_sq.c.difficulty_name,
         'status': core_sq.c.ranked_status,
@@ -151,6 +164,9 @@ def get_beatmap_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribu
         'cs': core_sq.c.circle_size,
         'hp': core_sq.c.hp_drain,
         'offset': core_sq.c.local_offset,
+
+        'sr': core_sq.c.star_rating,
+        'stars': core_sq.c.star_rating,
     }
 
 

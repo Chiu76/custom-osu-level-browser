@@ -6,6 +6,11 @@ function accuracy(beatmap) {
     else return "";
 }
 
+function starRating(beatmap) {
+    if (beatmap.star_rating) return `${beatmap.star_rating}*`;
+    else return "";
+}
+
 function RowBeatmap(beatmap) {
     const li = createElementClassContent("li", "row beatmap");
     li.id = beatmap.beatmap_id;
@@ -15,7 +20,7 @@ function RowBeatmap(beatmap) {
     li.appendChild(createElementClassContent("div", "title", beatmap.title));
     li.appendChild(createElementClassContent("div", "artist", beatmap.artist));
     li.appendChild(createElementClassContent("div", "difficulty-name", `[${beatmap.difficulty_name}]`));
-    li.appendChild(createElementClassContent("div", "star-rating", beatmap.star_rating ?? ""));
+    li.appendChild(createElementClassContent("div", "star-rating", starRating(beatmap)));
     li.appendChild(createElementClassContent("div", "bpm", `${beatmap.bpm} BPM`));
     li.appendChild(createElementClassContent("div", "combo", beatmap.combo ?? ""));
     li.appendChild(createElementClassContent("div", "max-combo", beatmap.max_combo ?? ""));

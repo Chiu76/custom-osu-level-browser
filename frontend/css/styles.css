@@ -112,7 +112,7 @@
   @scope (.sort-selects) {
     :scope {
       display: flex;
-      gap: 1em;
+      gap: 0.3em;
     }
   }
   @scope (.attached-score-settings) {
