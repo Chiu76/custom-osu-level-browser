@@ -35,8 +35,18 @@ FILTER_SORT_FIELDS = Literal[
     'song_tags',
 
     # score-related
+    'num_300s',
+    'num_100s',
+    'num_50s',
+    'num_gekis',
+    'num_katus',
+    'num_misses',
     'grade',
     'accuracy',
+    'replay_score',
+    'max_combo',
+    'perfect_combo',
+    'mods',
     'played_at',
 ]
 
@@ -57,8 +67,18 @@ FILTER_SORT_FIELDS_ALTERNATIVES = Literal[
     'set_mapper',
     'source',
     'tags',
+    '300s',
+    '100s',
+    '50s',
+    'gekis',
+    'katus',
+    'misses',
     'rank',
     'acc',
+    'score',
+    'combo',
+    'is_fc',
+    'pfc',
 ]
 
 
@@ -169,25 +189,67 @@ def get_beatmap_set_sort_columns(core_sq: Subquery | None = None) -> dict[str, I
 def get_score_filter_columns(core_stmt: Select) -> dict[str, InstrumentedAttribute]:
     core_stmt_froms = core_stmt.get_final_froms()[0]
     return {
+        'num_300s': core_stmt_froms.c.corresponding_column(Score.num_300s),
+        'num_100s': core_stmt_froms.c.corresponding_column(Score.num_100s),
+        'num_50s': core_stmt_froms.c.corresponding_column(Score.num_50s),
+        'num_gekis': core_stmt_froms.c.corresponding_column(Score.num_gekis),
+        'num_katus': core_stmt_froms.c.corresponding_column(Score.num_katus),
+        'num_missess': core_stmt_froms.c.corresponding_column(Score.num_misses),
         'grade': core_stmt_froms.c.corresponding_column(Score.grade),
         'accuracy': core_stmt_froms.c.corresponding_column(Score.accuracy),
+        'replay_score': core_stmt_froms.c.corresponding_column(Score.replay_score),
+        'max_combo': core_stmt_froms.c.corresponding_column(Score.max_combo),
+        'perfect_combo': core_stmt_froms.c.corresponding_column(Score.perfect_combo),
+        'mods': core_stmt_froms.c.corresponding_column(Score.mods),
         'played_at': core_stmt_froms.c.corresponding_column(Score.played_at),
 
         # alternatives
+        '300s': core_stmt_froms.c.corresponding_column(Score.num_300s),
+        '100s': core_stmt_froms.c.corresponding_column(Score.num_100s),
+        '50s': core_stmt_froms.c.corresponding_column(Score.num_50s),
+        'gekis': core_stmt_froms.c.corresponding_column(Score.num_gekis),
+        'katus': core_stmt_froms.c.corresponding_column(Score.num_katus),
+        'misses': core_stmt_froms.c.corresponding_column(Score.num_misses),
         'rank': core_stmt_froms.c.corresponding_column(Score.grade),
         'acc': core_stmt_froms.c.corresponding_column(Score.accuracy),
+        'score': core_stmt_froms.c.corresponding_column(Score.replay_score),
+        'combo': core_stmt_froms.c.corresponding_column(Score.max_combo),
+        'is_fc': core_stmt_froms.c.corresponding_column(Score.perfect_combo),
+        'pfc': core_stmt_froms.c.corresponding_column(Score.perfect_combo),
     }
 
     
 def get_score_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribute]:
     return {
+        'num_300s': core_sq.c.num_300s,
+        'num_100s': core_sq.c.num_100s,
+        'num_50s': core_sq.c.num_50s,
+        'num_gekis': core_sq.c.num_gekis,
+        'num_katus': core_sq.c.num_katus,
+        'num_misses': core_sq.c.num_misses,
         'grade': core_sq.c.grade,
         'accuracy': core_sq.c.accuracy,
+        'replay_score': core_sq.c.replay_score,
+        'max_combo': core_sq.c.max_combo,
+        'perfect_combo': core_sq.c.perfect_combo,
+        'mods': core_sq.c.mods,
         'played_at': core_sq.c.played_at,
 
         # alternatives
         'rank': core_sq.c.grade,
         'acc': core_sq.c.accuracy,
+        '300s': core_sq.c.num_300s,
+        '100s': core_sq.c.num_100s,
+        '50s': core_sq.c.num_50s,
+        'gekis': core_sq.c.num_gekis,
+        'katus': core_sq.c.num_katus,
+        'misses': core_sq.c.num_misses,
+        'rank': core_sq.c.grade,
+        'acc': core_sq.c.accuracy,
+        'score': core_sq.c.replay_score,
+        'combo': core_sq.c.max_combo,
+        'is_fc': core_sq.c.perfect_combo,
+        'pfc': core_sq.c.perfect_combo,
     }
 
 

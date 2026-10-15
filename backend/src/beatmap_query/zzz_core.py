@@ -57,7 +57,8 @@ def apply_source(stmt: Select, source_spec: SourceSpec) -> Select:
 
 def _get_filter_condition(stmt: Select, filter: Filter):
     field_column = filter_sort_fields.get_column__filter_field(field=filter.field, core_stmt=stmt)
-    print("coloi: ", field_column)
+
+    # print(filter)
 
     if field_column is None:
         return None
@@ -84,6 +85,7 @@ def _get_filter_condition(stmt: Select, filter: Filter):
             return field_column > value
         case '>=':
             return field_column >= value
+        ## todo: because of this, equality for numbers does not work properly
         case '=':
             return field_column.ilike(f'%{value}%')
         case '~':
