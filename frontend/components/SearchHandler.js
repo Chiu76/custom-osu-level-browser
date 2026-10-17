@@ -10,7 +10,7 @@ export function SearchHandler(parentId) {
         let timeout;
         searchInput.addEventListener("input", (event) => {
             clearTimeout(timeout);
-            timeout = setTimeout(() => setter(event.target.value), 250);
+            timeout = setTimeout(() => setSearch(event.target.value), 250);
         });
 
         return [search, setSearch];

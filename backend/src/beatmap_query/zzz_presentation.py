@@ -1,13 +1,12 @@
 from sqlalchemy import Select, Subquery, select, or_, and_, desc
 from sqlalchemy.orm import InstrumentedAttribute
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas.specs import PresentationSpecs, GroupingSpec, SearchSpec, Sort, SortSpec, LocalBeatmapsIdentifier
 
 from .yyy_filter_sort_fields import get_column__sort_field
-from .yyy_common import exists_in_collection
+from .yyy_common import exists_in_collection, exists_in_artist_grouping, exists_in_overall_difficulty_grouping
 
-from src.common.models.beatmaps import Beatmap, BeatmapSet
+from src.grouping_query.enums import GroupingTypeEnum
 
 
 def apply_presentation_specs(core_stmt: Select, presentation_specs: PresentationSpecs):
@@ -44,16 +43,19 @@ def apply_search(stmt: Select, core_sq: Subquery, search_spec: SearchSpec) -> Se
 
 
 def apply_grouping(stmt: Select, core_sq: Subquery, grouping_spec: GroupingSpec) -> Select:
-    ## todo: unsure if 'none' can have any meaningful value here
-    ## todo: use the grouping type enum here 
-    if grouping_spec.type == 'none':
-        pass
-    elif grouping_spec.type == 'local_beatmaps':
-        pass
-    elif grouping_spec.type == 'collections':
+    if grouping_spec.type == GroupingTypeEnum.COLLECTIONS:
         collection_id = grouping_spec.id
         stmt = stmt.where(exists_in_collection(core_sq.c.beatmap_db_id, collection_id))
 
+    elif grouping_spec.type == GroupingTypeEnum.ARTIST:
+        grouping_id = grouping_spec.id
+        stmt = stmt.where(exists_in_artist_grouping(core_sq.c.beatmap_db_id, grouping_id))
+    
+    
+    elif grouping_spec.type == GroupingTypeEnum.OVERALL_DIFFICULTY:
+        grouping_id = grouping_spec.id
+        stmt = stmt.where(exists_in_overall_difficulty_grouping(core_sq.c.beatmap_db_id, grouping_id))
+    
     return stmt
 
 

@@ -1,4 +1,4 @@
-import { createSignal, createEffect, createMemo } from "../reactive.js";
+import { createSignal, createEffect } from "../reactive.js";
 import { GroupingContainerHandler } from "../components/GroupingContainerHandler.js";
 import { GroupingContentHandler } from "../components/GroupingContentHandler.js";
 import { RowGrouping } from "../components/RowGrouping.js";
@@ -6,9 +6,7 @@ import { RowGrouping } from "../components/RowGrouping.js";
 import { 
     selectedSourceId, selectedGroupingId,
     groupingSearch, 
-    groupingType, setGroupingType,
-    groupingSpec, setGroupingSpec,
-    sourceSpec, setSourceSpec,
+    groupingType,
 } from "../app/settings.js";
 
 import * as beatmapQuery from "./beatmaps.js"
@@ -59,34 +57,3 @@ createEffect(() => {
         }
     }
 });
-
-createEffect(() => {
-    if (selectedSourceId() != undefined) {
-        // todo: find a nicer way to do this, because having the grouping id (which is just an int) be the html element id seems very wrong
-        const groupingName = document.getElementById(selectedSourceId()).name;
-        document.getElementById("active-source").innerHTML = groupingName;
-        setSourceSpec({ type: "collections", id: selectedSourceId() });
-    }
-    else {
-        document.getElementById("active-source").innerHTML = "(none)";
-        setSourceSpec({ type: "local_beatmaps" });
-    }
-});
-
-createEffect(() => {
-    if (selectedGroupingId() != undefined) {
-        // todo: find a nicer way to do this, because having the grouping id (which is just an int) be the html element id seems very wrong
-        const groupingName = document.getElementById(selectedGroupingId()).name;
-        document.getElementById("active-grouping").innerHTML = groupingName;
-        // setGroupingType("collections")
-        setGroupingSpec({ type: "collections", id: selectedGroupingId() });
-    }
-    else {
-        document.getElementById("active-grouping").innerHTML = "(none)";
-        // setGroupingType("none")
-        setGroupingSpec({ type: "none" });
-    }
-});
-
-window.clearActiveSource = groupingContainerHandler.clearActiveSource;
-window.clearActiveGrouping = groupingContainerHandler.clearActiveGrouping;

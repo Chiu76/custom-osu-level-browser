@@ -1,6 +1,4 @@
-from sqlalchemy import Select, Subquery, select, or_, and_
-from sqlalchemy.orm import InstrumentedAttribute
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import Select, and_
 
 from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, Filter, FilterSpec
 
@@ -97,13 +95,13 @@ def _get_filter_condition(stmt: Select, filter: Filter):
         case '~':
             try:
                 value = int(value)
-                return and_(field_column >= value - 5, field_column <= value + 5)
+                return and_(field_column >= value - 5, field_column < value + 5)
             except ValueError:
                 return None
         case '&':
             try:
                 value = int(value)
-                return and_(field_column >= value - 1, field_column <= value + 1)
+                return and_(field_column >= value - 1, field_column < value + 1)
             except ValueError:
                 return None
 

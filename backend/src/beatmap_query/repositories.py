@@ -3,11 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.models.beatmaps import Beatmap, BeatmapSet
 
-from .schemas.identifiers import NoneIdentifier, LocalBeatmapsIdentifier
 from .schemas.requests import BeatmapQueryRequest, BeatmapQueryRow
-from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, PresentationSpecs, GroupingSpec, SearchSpec, Filter, FilterSpec, Sort, SortSpec
-
-from src.score_query.schemas import ScoreSqSpec, TopBy
+from .schemas.specs import CoreSpecs, PresentationSpecs
 
 import src.beatmap_query.zzz_core as zzz_core
 import src.beatmap_query.zzz_presentation as zzz_presentation
@@ -18,7 +15,7 @@ class BeatmapQueryRepository:
     async def query(cls, request: BeatmapQueryRequest, session: AsyncSession) -> list[BeatmapQueryRow]:
         beatmap_query_stmt = cls.get_beatmap_query_stmt(request.core_specs, request.presentation_specs)
 
-        beatmap_query_stmt = beatmap_query_stmt.limit(500)
+        # beatmap_query_stmt = beatmap_query_stmt.limit(500)
         # print(beatmap_query_stmt)
 
         results = session.execute(beatmap_query_stmt).mappings().all()
@@ -70,36 +67,3 @@ class BeatmapQueryRepository:
         )
 
         return stmt
-
-    @staticmethod
-    def generate_dummy_beatmap_query_request():
-        core_specs = CoreSpecs(
-            star_rating_spec=StarRatingSpec(),
-            attached_score_spec=AttachedScoreSpec(
-                ScoreSqSpec(
-                    top_by=TopBy(field='accuracy', dir='desc'),
-                    top_by_desc=True, 
-                    top_score_only=True,
-                ),
-                score_required=False,
-            ),
-            online_details_spec=OnlineDetailsSpec(),
-            source_spec=LocalBeatmapsIdentifier(type='local_beatmaps'),
-            filter_spec=FilterSpec(
-                filters=[
-                    Filter(field='owner', op='=', value='monstrata'),
-                ]
-            ),
-        )
-
-        presentation_specs = PresentationSpecs(
-            search_spec=SearchSpec(),
-            grouping_spec=NoneIdentifier(type='none'),
-            sort_spec=SortSpec(
-                sort_columns=[
-                    Sort(field='beatmap_set_id', dir='asc'),
-                ]
-            ),
-        )
-        
-        return BeatmapQueryRequest(core_specs=core_specs, presentation_specs=presentation_specs)

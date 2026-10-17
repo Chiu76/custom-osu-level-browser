@@ -4,6 +4,25 @@ import {
 } from "../app/settings.js";
 
 export function GroupingContainerHandler() {
+    function clearActiveSource() {
+        const prevSelected = document.getElementById(selectedSourceId());
+        if (prevSelected != undefined) {
+            prevSelected.querySelector(".source-marker").classList.toggle("hidden");
+        }
+        setSelectedSourceId(undefined)
+    }
+
+    function clearActiveGrouping() {
+        const prevSelected = document.getElementById(selectedGroupingId());
+        if (prevSelected != undefined) {
+            prevSelected.querySelector(".grouping-marker").classList.toggle("hidden");
+        }
+        setSelectedGroupingId(undefined)
+    }
+
+    window.clearActiveSource = clearActiveSource;
+    window.clearActiveGrouping = clearActiveGrouping;
+
     function toggleActiveSource(event) {
         const row = event.target.closest(".row");
         const prevSelectedId = selectedSourceId();
@@ -36,22 +55,6 @@ export function GroupingContainerHandler() {
         }
     }
 
-    function clearActiveSource() {
-        const prevSelected = document.getElementById(selectedSourceId());
-        if (prevSelected != undefined) {
-            prevSelected.querySelector(".source-marker").classList.toggle("hidden");
-        }
-        setSelectedSourceId(undefined)
-    }
-
-    function clearActiveGrouping() {
-        const prevSelected = document.getElementById(selectedGroupingId());
-        if (prevSelected != undefined) {
-            prevSelected.querySelector(".grouping-marker").classList.toggle("hidden");
-        }
-        setSelectedGroupingId(undefined)
-    }
-
     function init() {
         const groupingListContainer = document.getElementById("grouping-list-container");
         groupingListContainer.addEventListener("click", (event) => toggleActiveGrouping(event));
@@ -61,7 +64,5 @@ export function GroupingContainerHandler() {
 
     return {
         init,
-        clearActiveSource,
-        clearActiveGrouping,
     }
 }

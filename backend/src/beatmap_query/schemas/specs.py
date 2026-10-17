@@ -1,14 +1,14 @@
 from typing import Literal, Annotated
 from pydantic import BaseModel, Field
 
-from .identifiers import NoneIdentifier, LocalBeatmapsIdentifier, CollectionsIdentifier
+from .identifiers import NoneIdentifier, LocalBeatmapsIdentifier, GroupingIdentifier
 from ..yyy_filter_sort_fields import FILTER_SORT_FIELDS, FILTER_SORT_FIELDS_ALTERNATIVES, FILTER_OPS
 
 from src.score_query.schemas import ScoreSqSpec
 
 
 SourceSpec = Annotated[
-    LocalBeatmapsIdentifier | CollectionsIdentifier, # | AllRankedBeatmapsIdentifier | TimeBasedBeatmapsIdentifier | PackIdentifier,
+    NoneIdentifier | LocalBeatmapsIdentifier | GroupingIdentifier, # | AllRankedBeatmapsIdentifier | TimeBasedBeatmapsIdentifier | PackIdentifier,
     Field(discriminator='type')
 ]
 
@@ -49,7 +49,7 @@ class SearchSpec(BaseModel):
 
 
 GroupingSpec = Annotated[
-    NoneIdentifier | LocalBeatmapsIdentifier | CollectionsIdentifier, # | AllRankedBeatmapsIdentifier | TemporalBeatmapsIdentifier | PackIdentifier, 
+    NoneIdentifier | GroupingIdentifier, # | AllRankedBeatmapsIdentifier | TemporalBeatmapsIdentifier | PackIdentifier, 
     Field(discriminator='type')
 ]
 

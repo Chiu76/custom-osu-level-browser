@@ -5,9 +5,9 @@ import { SelectHandler } from "./SelectHandler.js";
 export function GroupingTypeHandler() {
     const [groupingType, setGroupingType] = createSignal();
     
-    const groupingTypeValues = schemas["GroupingType"]["enum"].sort();
+    const groupingTypeValues = schemas["GroupingIdentifier"]["properties"]["type"]["enum"].sort();
     
-    const parentElement = document.getElementById("grouping-type");
+    const parentElement = document.getElementById("grouping-type-select");
     const selectElement = parentElement.getElementsByTagName("select")[0];
 
     function selectOnChange(field) {
