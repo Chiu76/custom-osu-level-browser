@@ -41,6 +41,7 @@ MODS_FIELDS = Literal[
 ]
 
 MODS_FIELDS_ALTERNATIVES = Literal[
+    'nm',
     'nf',
     'ez',
     'td',
@@ -54,57 +55,43 @@ MODS_FIELDS_ALTERNATIVES = Literal[
     'fl',
     'ap',
     'so',
+    'rx2',
     'pf',
+    'k4',
+    'k5',
+    'k6',
+    'k7',
+    'k8',
+    'fi',
+    'rd',
+    'cm',
+    'tg',
+    'k9',
+    'kc',
+    'k1',
+    'k3',
+    'k2',
     'sv2',
+    'mr',
 ]
 
 MODS_VALUES = {
     'none': 0,
-    
     'nofail': 1,
-    'nf': 1,
-    
     'easy': 2,
-    'ez': 2,
-    
     'touchdevice': 4,
-    'td': 4,
-    
     'hidden': 8,
-    'hd': 8,
-    
     'hardrock': 16,
-    'hr': 16,
-    
     'suddendeath': 32,
-    'sd': 32,
-    
     'doubletime': 64,
-    'dt': 64,
-    
     'relax': 128,
-    'rx': 128,
-    
     'halftime': 256,
-    'ht': 256,
-    
     'nightcore': 576,
-    'nc': 576,
-    
     'flashlight': 1024,
-    'fl': 1024,
-    
     'autoplay': 2048,
-    'ap': 2048,
-    
     'spunout': 4096,
-    'so': 4096,
-    
     'Relax2': 8192,
-    
     'perfect': 16416,
-    'pf': 16416,
-    
     'key4': 32768,
     'key5': 65536,
     'key6': 131072,
@@ -119,18 +106,51 @@ MODS_VALUES = {
     'key1': 67108864,
     'key3': 134217728,
     'key2': 268435456,
-
     'scorev2': 536870912,
-    'sv2': 536870912,
-    
     'mirror': 1073741824,
+}
+
+MODS_VALUES_ALTERNATIVES = {
+    'nm': 0,
+    'nf': 1,
+    'ez': 2,
+    'td': 4,
+    'hd': 8,
+    'hr': 16,
+    'sd': 32,
+    'dt': 64,
+    'rx': 128,
+    'ht': 256,
+    'nc': 576,
+    'fl': 1024,
+    'ap': 2048,
+    'so': 4096,
+    'rx2': 8192,
+    'pf': 16416,
+    'k4': 32768,
+    'k5': 65536,
+    'k6': 131072,
+    'k7': 262144,
+    'k8': 524288,
+    'fi': 1048576,
+    'rd': 2097152,
+    'cm': 4194304,
+    'tg': 8388608,
+    'k9': 16777216,
+    'kc': 33554432,
+    'k1': 67108864,
+    'k3': 134217728,
+    'k2': 268435456,
+    'sv2': 536870912,
+    'mr': 1073741824,
 }
 
 
 def get_mod_value(mod: MODS_FIELDS | MODS_FIELDS_ALTERNATIVES) -> int:
-    if not mod in MODS_VALUES.keys():
-        raise ValueError(f'Received invalid mod value, not present in `MODS_VALUES` mapping: {mod}')
-    return MODS_VALUES[mod]
+    mod_values = MODS_VALUES | MODS_VALUES_ALTERNATIVES
+    if not mod in mod_values.keys():
+        raise ValueError(f'Received invalid mod value, not present in `MODS_VALUES` or `MODS_FIELDS_ALTERNATIVES` mappings: {mod}')
+    return mod_values[mod]
 
 
 def apply_mods(

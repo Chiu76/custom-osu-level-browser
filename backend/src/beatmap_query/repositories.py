@@ -15,7 +15,7 @@ class BeatmapQueryRepository:
     async def query(cls, request: BeatmapQueryRequest, session: AsyncSession) -> list[BeatmapQueryRow]:
         beatmap_query_stmt = cls.get_beatmap_query_stmt(request.core_specs, request.presentation_specs)
 
-        # beatmap_query_stmt = beatmap_query_stmt.limit(500)
+        beatmap_query_stmt = beatmap_query_stmt.limit(500)
         # print(beatmap_query_stmt)
 
         results = session.execute(beatmap_query_stmt).mappings().all()

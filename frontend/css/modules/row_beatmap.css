@@ -1,6 +1,7 @@
 @layer modules {
   @scope (li.row.beatmap) {
     :scope {
+      position: relative;
       display: grid;
       grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 2fr 0.5fr;
       grid-template-rows: repeat(6, 1fr);
@@ -9,9 +10,12 @@
       pointer-events: none;
     }
     .grade {
+      position: absolute;
+      top: 25px;
+      left: 10px;
+      font-size: 1.6rem;
       grid-column: 2/3;
       grid-row: 1/5;
-      align-content: center;
     }
     .accuracy {
       grid-column: 2/3;
