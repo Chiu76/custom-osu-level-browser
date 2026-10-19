@@ -8,12 +8,12 @@ export function BeatmapContainerHandler() {
         const row = event.target.closest(".row");
         if (row.classList.contains("beatmap-set")) {
             const beatmapSetId = row.getElementsByClassName("beatmap-set-id")[0].innerHTML;
-            if (beatmapSetId == selectedBeatmapSetId()) {
-                setSelectedBeatmapSetId(undefined);
+            if (beatmapSetId != selectedBeatmapSetId()) {
+                setSelectedBeatmapSetId(beatmapSetId);
                 setSelectedBeatmapId(undefined);
             }
             else {
-                setSelectedBeatmapSetId(beatmapSetId);
+                setSelectedBeatmapSetId(undefined);
                 setSelectedBeatmapId(undefined);
             }
         }
@@ -22,11 +22,9 @@ export function BeatmapContainerHandler() {
             const beatmapSetId = row.getElementsByClassName("beatmap-set-id")[0].innerHTML;
             if (beatmapId != selectedBeatmapId()) {
                 setSelectedBeatmapId(beatmapId);
-                if (beatmapSetId != selectedBeatmapSetId()) setSelectedBeatmapSetId(beatmapSetId);
             }
             else {
                 setSelectedBeatmapId(undefined);
-                setSelectedBeatmapSetId(undefined);
             }
         }
     }

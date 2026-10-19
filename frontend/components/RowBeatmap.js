@@ -1,5 +1,5 @@
 import { createElementClassContent, getGradeElement } from "../utils.js";
-import { selectedBeatmapSetId, selectedBeatmapId } from "../app/settings.js";
+import { selectedBeatmapSetId, selectedBeatmapId, disableBeatmapSets } from "../app/settings.js";
 
 
 function accuracy(beatmap) {
@@ -32,7 +32,7 @@ function RowBeatmap(beatmap) {
     li.appendChild(createElementClassContent("div", "beatmap-db-id", beatmap.beatmap_db_id, true));
     li.appendChild(createElementClassContent("div", "beatmap-set-id", beatmap.beatmap_set_id, true));
 
-    if (beatmap.beatmap_set_id == selectedBeatmapSetId()) {
+    if (beatmap.beatmap_set_id == selectedBeatmapSetId() && !disableBeatmapSets()) {
         li.classList.add("highlighted");        
     }
 
