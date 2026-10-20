@@ -40,6 +40,3 @@ def access_osu_api_data_cache():
         ).mappings().all()
         # print(results)
         return results[:5]
-
-
-print(access_osu_api_data_cache())

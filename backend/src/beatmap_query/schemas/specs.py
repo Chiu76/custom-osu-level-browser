@@ -40,7 +40,7 @@ class CoreSpecs(BaseModel):
     star_rating_spec: StarRatingSpec
     attached_score_spec: AttachedScoreSpec 
     online_details_spec: OnlineDetailsSpec
-    source_spec: SourceSpec
+    source_specs: list[SourceSpec]
     filter_spec: FilterSpec
 
 
@@ -49,7 +49,7 @@ class SearchSpec(BaseModel):
 
 
 GroupingSpec = Annotated[
-    NoneIdentifier | GroupingIdentifier, # | AllRankedBeatmapsIdentifier | TemporalBeatmapsIdentifier | PackIdentifier, 
+    NoneIdentifier | GroupingIdentifier, # | AllRankedBeatmapIdentifier | TemporalBeatmapIdentifier | PackIdentifier, 
     Field(discriminator='type')
 ]
 
@@ -65,5 +65,5 @@ class SortSpec(BaseModel):
 
 class PresentationSpecs(BaseModel):
     search_spec: SearchSpec
-    grouping_spec: GroupingSpec
+    grouping_specs: list[GroupingSpec]
     sort_spec: SortSpec

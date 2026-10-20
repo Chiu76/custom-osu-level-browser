@@ -1,4 +1,4 @@
-from sqlalchemy import Select, and_
+from sqlalchemy import Select, and_, or_
 
 from .schemas.specs import CoreSpecs, StarRatingSpec, AttachedScoreSpec, OnlineDetailsSpec, SourceSpec, Filter, FilterSpec
 
@@ -17,7 +17,7 @@ def apply_core_specs(initial_stmt: Select, core_specs: CoreSpecs):
     core_stmt = apply_star_rating(core_stmt, core_specs.star_rating_spec)
     core_stmt = apply_attached_score(core_stmt, core_specs.attached_score_spec)
     core_stmt = apply_online_details(core_stmt, core_specs.online_details_spec)
-    core_stmt = apply_source(core_stmt, core_specs.source_spec)
+    core_stmt = apply_source(core_stmt, core_specs.source_specs)
     core_stmt = apply_filter(core_stmt, core_specs.filter_spec)
 
     return core_stmt
@@ -50,12 +50,19 @@ def apply_online_details(stmt: Select, online_details_spec: OnlineDetailsSpec) -
     return stmt
 
 
-def apply_source(stmt: Select, source_spec: SourceSpec) -> Select:
-    if source_spec.type == 'local_beatmaps':
-        pass
-    elif source_spec.type == 'collections':
-        collection_id = source_spec.id
-        stmt = stmt.where(exists_in_collection(Beatmap.id, collection_id))
+def apply_source(stmt: Select, source_specs: list[SourceSpec]) -> Select:
+    clauses = []
+
+    for source_spec in source_specs:
+        if source_spec.type == 'local_beatmaps':
+            pass
+        elif source_spec.type == 'collections':
+            collection_id = source_spec.id
+            clauses.append(exists_in_collection(Beatmap.id, collection_id))
+
+    if clauses:
+        stmt = stmt.where(or_(*clauses))
+    
     return stmt
 
 
@@ -69,6 +76,11 @@ def _get_filter_condition(stmt: Select, filter: Filter):
 
     match filter.field:
         case 'played_at':
+            try:
+                value = date_input_to_posix(filter.value)
+            except ValueError as e:
+                return None
+        case 'last_played':
             try:
                 value = date_input_to_posix(filter.value)
             except ValueError as e:

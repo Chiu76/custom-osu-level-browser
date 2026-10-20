@@ -14,7 +14,7 @@ def apply_presentation_specs(core_stmt: Select, presentation_specs: Presentation
 
     beatmap_query_stmt = select(core_sq)
     beatmap_query_stmt = apply_search(beatmap_query_stmt, core_sq, presentation_specs.search_spec)
-    beatmap_query_stmt = apply_grouping(beatmap_query_stmt, core_sq, presentation_specs.grouping_spec)
+    beatmap_query_stmt = apply_grouping(beatmap_query_stmt, core_sq, presentation_specs.grouping_specs)
     beatmap_query_stmt = apply_sort(beatmap_query_stmt, core_sq, presentation_specs.sort_spec)
 
     return beatmap_query_stmt
@@ -42,19 +42,24 @@ def apply_search(stmt: Select, core_sq: Subquery, search_spec: SearchSpec) -> Se
     return stmt
 
 
-def apply_grouping(stmt: Select, core_sq: Subquery, grouping_spec: GroupingSpec) -> Select:
-    if grouping_spec.type == GroupingTypeEnum.COLLECTIONS:
-        collection_id = grouping_spec.id
-        stmt = stmt.where(exists_in_collection(core_sq.c.beatmap_db_id, collection_id))
+def apply_grouping(stmt: Select, core_sq: Subquery, grouping_specs: list[GroupingSpec]) -> Select:
+    clauses = []
 
-    elif grouping_spec.type == GroupingTypeEnum.ARTIST:
-        grouping_id = grouping_spec.id
-        stmt = stmt.where(exists_in_artist_grouping(core_sq.c.beatmap_db_id, grouping_id))
-    
-    
-    elif grouping_spec.type == GroupingTypeEnum.OVERALL_DIFFICULTY:
-        grouping_id = grouping_spec.id
-        stmt = stmt.where(exists_in_overall_difficulty_grouping(core_sq.c.beatmap_db_id, grouping_id))
+    for grouping_spec in grouping_specs:
+        if grouping_spec.type == GroupingTypeEnum.COLLECTIONS:
+            collection_id = grouping_spec.id
+            clauses.append(exists_in_collection(core_sq.c.beatmap_db_id, collection_id))
+
+        elif grouping_spec.type == GroupingTypeEnum.ARTIST:
+            grouping_id = grouping_spec.id
+            clauses.append(exists_in_artist_grouping(core_sq.c.beatmap_db_id, grouping_id))
+        
+        elif grouping_spec.type == GroupingTypeEnum.OVERALL_DIFFICULTY:
+            grouping_id = grouping_spec.id
+            clauses.append(exists_in_overall_difficulty_grouping(core_sq.c.beatmap_db_id, grouping_id))
+
+    if clauses:
+        stmt = stmt.where(or_(*clauses))
     
     return stmt
 

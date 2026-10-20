@@ -4,8 +4,8 @@ import { createSignal, createEffect } from "../reactive.js";
 import { 
     selectedSourceId,
     selectedGroupingId,
-    setGroupingSpec,
-    setSourceSpec,
+    setGroupingSpecs,
+    setSourceSpecs,
 } from "../app/settings.js";
 
 export function GroupingContentHandler() {
@@ -17,12 +17,12 @@ export function GroupingContentHandler() {
             const row = document.getElementById(selectedSourceId());
             document.getElementById("active-source").innerHTML = row.groupingName;
             setSelectedSourceType(row.groupingType);
-            setSourceSpec({ type: row.groupingType, id: row.groupingId });
+            setSourceSpecs([{ type: row.groupingType, id: row.groupingId }]);
         }
         else {
             document.getElementById("active-source").innerHTML = "(none)";
             setSelectedSourceType("none");
-            setSourceSpec({ type: "local_beatmaps" });
+            setSourceSpecs([{ type: "local_beatmaps" }]);
         }
     });
 
@@ -31,12 +31,12 @@ export function GroupingContentHandler() {
             const row = document.getElementById(selectedGroupingId());
             document.getElementById("active-grouping").innerHTML = row.groupingName;
             setSelectedGroupingType(row.groupingType);
-            setGroupingSpec({ type: selectedGroupingType(), id: row.groupingId });
+            setGroupingSpecs([{ type: selectedGroupingType(), id: row.groupingId }]);
         }
         else {
             document.getElementById("active-grouping").innerHTML = "(none)";
             setSelectedGroupingType("none");
-            setGroupingSpec({ type: selectedGroupingType() });
+            setGroupingSpecs([{ type: selectedGroupingType() }]);
         }
     });
 
