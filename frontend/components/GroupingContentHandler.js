@@ -2,41 +2,68 @@ import { groupingQuery } from "../api.js";
 import { createSignal, createEffect } from "../reactive.js";
 
 import { 
-    selectedSourceId,
-    selectedGroupingId,
+    selectedSources,
+    selectedGroupings,
     setGroupingSpecs,
     setSourceSpecs,
 } from "../app/settings.js";
 
 export function GroupingContentHandler() {
-    const [selectedSourceType, setSelectedSourceType] = createSignal();
-    const [selectedGroupingType, setSelectedGroupingType] = createSignal();
-
     createEffect(() => {
-        if (selectedSourceId() != undefined) {
-            const row = document.getElementById(selectedSourceId());
-            document.getElementById("active-source").innerHTML = row.groupingName;
-            setSelectedSourceType(row.groupingType);
-            setSourceSpecs([{ type: row.groupingType, id: row.groupingId }]);
+        const selected = selectedSources();
+        if (selected.length > 0) {
+            const activeGroupings = selected.map((source) => document.getElementById(source).groupingName).join(", ");
+            document.getElementById("active-sources").innerHTML = activeGroupings;
         }
         else {
-            document.getElementById("active-source").innerHTML = "(none)";
-            setSelectedSourceType("none");
+            document.getElementById("active-sources").innerHTML = "(none)";
+        }
+    });
+
+    createEffect(() => {
+        const selected = selectedGroupings();
+        if (selected.length > 0) {
+            const activeGroupings = selected.map((grouping) => document.getElementById(grouping).groupingName).join(", ");
+            document.getElementById("active-groupings").innerHTML = activeGroupings;
+        }
+        else {
+            document.getElementById("active-groupings").innerHTML = "(none)";
+        }
+    });
+
+    createEffect(() => {
+        const selected = selectedSources();
+        const sources = selected.map((source) => {
+            const el = document.getElementById(source);
+            return {
+                type: el.groupingType,
+                id: el.groupingId,
+            }
+        });
+        
+        if (sources.length > 0) {
+            setSourceSpecs(sources);
+        }
+        else {
             setSourceSpecs([{ type: "local_beatmaps" }]);
         }
     });
 
     createEffect(() => {
-        if (selectedGroupingId() != undefined) {
-            const row = document.getElementById(selectedGroupingId());
-            document.getElementById("active-grouping").innerHTML = row.groupingName;
-            setSelectedGroupingType(row.groupingType);
-            setGroupingSpecs([{ type: selectedGroupingType(), id: row.groupingId }]);
+        const selected = selectedGroupings();
+        const groupings = selected.map((grouping) => {
+            const el = document.getElementById(grouping);
+            return {
+                type: el.groupingType,
+                id: el.groupingId,
+            }
+        });
+
+        if (groupings.length > 0) {
+            setGroupingSpecs(groupings);
         }
         else {
-            document.getElementById("active-grouping").innerHTML = "(none)";
-            setSelectedGroupingType("none");
-            setGroupingSpecs([{ type: selectedGroupingType() }]);
+            setGroupingSpecs([{ type: "none" }]);
         }
     });
 

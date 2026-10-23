@@ -5,7 +5,6 @@ import { BeatmapContainerHandler } from "../components/BeatmapContainerHandler.j
 import { 
     beatmapSearch, beatmapFilter, beatmapSort, 
     selectedBeatmapId, selectedBeatmapSetId,
-    selectedGroupingId, selectedSourceId,
     groupingType, setGroupingType,
     sourceSpecs, groupingSpecs,
     attachedScoreTopBy, setAttachedScoreTopBy,
@@ -82,8 +81,6 @@ const displayRows = createMemo(() => {
     const beatmaps = beatmapQueryRows();
     const currentSelectBeatmapId = selectedBeatmapId();
     const currentSelectedBeatmapSetId = selectedBeatmapSetId();
-    // const currentSelectedGroupingId = selectedGroupingId();
-    // const currentSelectedSourceId = selectedSourceId();
     return beatmapContentHandler.beatmapsToDisplayRows(beatmaps, currentSelectedBeatmapSetId, disableBeatmapSets());
 })
 

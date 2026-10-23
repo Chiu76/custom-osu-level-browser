@@ -3,8 +3,8 @@ import { GroupingContainerHandler } from "../components/GroupingContainerHandler
 import { GroupingContentHandler } from "../components/GroupingContentHandler.js";
 import { RowGrouping } from "../components/RowGrouping.js";
 
-import { 
-    selectedSourceId, selectedGroupingId,
+import {
+    selectedSources, selectedGroupings,
     groupingSearch, 
     groupingType,
 } from "../app/settings.js";
@@ -23,6 +23,8 @@ const [request, setRequest] = createSignal();
 
 createEffect(() => {
     const beatmap_query_request = beatmapQuery.request();
+    beatmap_query_request.presentation_specs.grouping_specs = [{ type: "none" }];
+    
     const grouping_type = groupingType();
     const q = groupingSearch();
     const newRequest = buildRequest(beatmap_query_request, grouping_type, q);
@@ -47,8 +49,8 @@ const groupingContainerHandler = GroupingContainerHandler();
 const groupingContainer = groupingContainerHandler.init();
 
 createEffect(() => {
-    selectedSourceId();
-    selectedGroupingId();
+    selectedSources();
+    selectedGroupings();
     const rows = groupingQueryRows();
     groupingContainer.replaceChildren();
     if (rows.length > 0) {

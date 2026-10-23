@@ -1,23 +1,30 @@
 import { 
-    selectedSourceId, setSelectedSourceId,
-    selectedGroupingId, setSelectedGroupingId, 
+    selectedSources, setSelectedSources,
+    selectedGroupings, setSelectedGroupings, 
 } from "../app/settings.js";
 
 export function GroupingContainerHandler() {
     function clearActiveSource() {
-        const prevSelected = document.getElementById(selectedSourceId());
-        if (prevSelected != undefined) {
-            prevSelected.querySelector(".source-marker").classList.toggle("hidden");
+        const selectedElements = selectedSources().map((source) => document.getElementById(source));
+        for (let element of selectedElements) {
+            // element can be null when a different grouping type is selected, hence no element to remove hidden class
+            if (element != null) {
+                element.querySelector(".source-marker").classList.remove("hidden");
+            }
         }
-        setSelectedSourceId(undefined)
+        setSelectedSources([]);
     }
 
     function clearActiveGrouping() {
-        const prevSelected = document.getElementById(selectedGroupingId());
-        if (prevSelected != undefined) {
-            prevSelected.querySelector(".grouping-marker").classList.toggle("hidden");
+        const selectedElements = selectedGroupings().map((source) => document.getElementById(source));
+        console.log(selectedElements);
+        for (let element of selectedElements) {
+            // element can be null when a different grouping type is selected, hence no element to remove hidden class
+            if (element != null) {
+                element.querySelector(".grouping-marker").classList.remove("hidden");
+            }
         }
-        setSelectedGroupingId(undefined)
+        setSelectedGroupings([]);
     }
 
     window.clearActiveSource = clearActiveSource;
@@ -25,33 +32,29 @@ export function GroupingContainerHandler() {
 
     function toggleActiveSource(event) {
         const row = event.target.closest(".row");
-        const prevSelectedId = selectedSourceId();
-        if (prevSelectedId == undefined) {
-            setSelectedSourceId(row.id);
+        const selected = selectedSources();
+        if (selected.length == 0 || !selected.includes(row.id)) {
+            selected.push(row.id);
+            setSelectedSources(selected);
         }
         else {
-            if (prevSelectedId != row.id) {
-                setSelectedSourceId(row.id);
-            }
-            else {
-                setSelectedSourceId(undefined);
-            }
+            const idx = selected.indexOf(row.id);
+            selected.splice(idx, 1);
+            setSelectedSources(selected);
         }
     }
 
     function toggleActiveGrouping(event) {
         const row = event.target.closest(".row");
-        const prevSelectedId = selectedGroupingId();
-        if (prevSelectedId == undefined) {
-            setSelectedGroupingId(row.id);
+        const selected = selectedGroupings();
+        if (selected.length == 0 || !selected.includes(row.id)) {
+            selected.push(row.id);
+            setSelectedGroupings(selected);
         }
         else {
-            if (prevSelectedId != row.id) {
-                setSelectedGroupingId(row.id);
-            }
-            else {
-                setSelectedGroupingId(undefined);
-            }
+            const idx = selected.indexOf(row.id);
+            selected.splice(idx, 1);
+            setSelectedGroupings(selected);
         }
     }
 

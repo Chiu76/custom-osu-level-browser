@@ -22,8 +22,8 @@ const [groupingType, setGroupingType] = GroupingTypeHandler().init();
 const [selectedBeatmapSetId, setSelectedBeatmapSetId] = createSignal();
 const [selectedBeatmapId, setSelectedBeatmapId] = createSignal();
 
-const [selectedSourceId, setSelectedSourceId] = createSignal(undefined);
-const [selectedGroupingId, setSelectedGroupingId] = createSignal(undefined);
+const [selectedSources, setSelectedSources] = createSignal([]);
+const [selectedGroupings, setSelectedGroupings] = createSignal([]);
 
 const [scoreSortBy, setScoreSortBy] = ScoreTopByHandler("score-sort-by").init();
 const [attachedScoreTopBy, setAttachedScoreTopBy] = ScoreTopByHandler("attached-score-top-by").init();
@@ -49,8 +49,8 @@ export {
     sourceSpecs, setSourceSpecs,
     groupingSpecs, setGroupingSpecs,
 
-    selectedSourceId, setSelectedSourceId,
-    selectedGroupingId, setSelectedGroupingId,
+    selectedSources, setSelectedSources,
+    selectedGroupings, setSelectedGroupings,
 
     scoreSortBy, setScoreSortBy,
     attachedScoreTopBy, setAttachedScoreTopBy,
