@@ -11,6 +11,7 @@ Filter and sort beatmaps by their scores (example: acc>94, grade=S). Each beatma
 Perform set operations between groupings (collections, hardcoded groupings such as OD): 
  - right click a grouping to select it as "Source"
  - left click a different grouping to select it as a "Grouping"
+ 
  => leads to showing only the intersection of the two groupings
 
 Multiple selected sources and groupings are supported.
@@ -25,12 +26,16 @@ Multiple selected sources and groupings are supported.
 
 ## Setup
 
-Under backend/, create .env file based on .env.example, add path to osu!stable instance under OSU_DIRECTORY.
+Under backend/: create .env file based on .env.example, add path to osu!stable instance under OSU_DIRECTORY.
+
+Under backend/, execute command (required uv and git to be installed): uv sync
 
 ## Commands
 Backend:
-    uv sync
-    python -m src.common.exec_full_import recreate_db
-    uv run fastapi dev
+    - python -m src.common.exec_full_import recreate_db
+    - uv run fastapi dev
+
 Frontend:
-    python -m http.server 3000
+    - python -m http.server 3000
+
+When both are running, access the app in the browser at: http://localhost:3000/.
