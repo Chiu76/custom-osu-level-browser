@@ -1,14 +1,19 @@
 from typing import Literal
 
+import os
 import json
 from pathlib import Path
 import hashlib
+
+from dotenv import load_dotenv
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.common.models.state import State
 
+
+load_dotenv()
 
 MODULE_DIR = Path(__file__).resolve().parent
 SRC_DIR = MODULE_DIR.parent
@@ -28,14 +33,16 @@ DB_FILES_DIR = _get_dir(DATA_DIR / 'db_files')
 IMPORTED_DB_FILES_DIR = _get_dir(DB_FILES_DIR / 'imported')
 PARSED_DB_FILES_DIR = _get_dir(DB_FILES_DIR / 'parsed')
 
+OSU_DIRECTORY = Path(os.environ['OSU_DIRECTORY'])
+
 osu_db_file_name = 'osu!'
-OSU_DB_FILE_PATH = _get_file_path(DB_FILES_DIR, osu_db_file_name, 'db')
+OSU_DB_FILE_PATH = _get_file_path(OSU_DIRECTORY, osu_db_file_name, 'db')
 
 collection_db_file_name = 'collection'
-COLLECTION_DB_FILE_PATH = _get_file_path(DB_FILES_DIR, collection_db_file_name, 'db')
+COLLECTION_DB_FILE_PATH = _get_file_path(OSU_DIRECTORY, collection_db_file_name, 'db')
 
 scores_db_file_name = 'scores'
-SCORES_DB_FILE_PATH = _get_file_path(DB_FILES_DIR, scores_db_file_name, 'db')
+SCORES_DB_FILE_PATH = _get_file_path(OSU_DIRECTORY, scores_db_file_name, 'db')
 
 
 def get_state__db_file_hash(

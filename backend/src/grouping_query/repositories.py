@@ -71,6 +71,7 @@ class GroupingQueryRepository:
             .select_from(artist_grouping_sq)
             .outerjoin(aggregated_count_sq, aggregated_count_sq.c.grouping_id == artist_grouping_sq.c.grouping_id)
             .group_by(first_char)
+            .order_by(artist_grouping_sq.c.grouping_id)
         )
 
 
@@ -88,4 +89,5 @@ class GroupingQueryRepository:
             .select_from(overall_difficulty_sq)
             .outerjoin(aggregated_count_sq, aggregated_count_sq.c.grouping_id == overall_difficulty_sq.c.grouping_id)
             .group_by(overall_difficulty_sq.c.bins)
+            .order_by(overall_difficulty_sq.c.grouping_id)
         )

@@ -26,6 +26,9 @@ def fn(
         'force_refresh': None,
     }
 
+    tmp_file_path = utils.DB_FILES_DIR / f'{db_file_type}.db'
+    copyfile(db_file_path, tmp_file_path)
+
     db_file_hash = utils.md5_hash(db_file_path)
     imported_file_path = utils.IMPORTED_DB_FILES_DIR / f'{db_file_type}_{db_file_hash}.db'
 

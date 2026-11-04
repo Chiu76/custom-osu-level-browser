@@ -16,7 +16,6 @@ class Model(DeclarativeBase):
 
 
 load_dotenv()
-DATABASE_URL = ''
 
 engine = create_engine(
     url=os.environ['DATABASE_URL'],
