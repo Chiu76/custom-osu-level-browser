@@ -31,6 +31,20 @@ def get_artist_grouping_sq() -> Subquery:
 
 
 def get_overall_difficulty_grouping_sq() -> Subquery:
+    ids = case(  
+        (Beatmap.overall_difficulty < 1, 0),
+        (and_(Beatmap.overall_difficulty >= 1, Beatmap.overall_difficulty < 2), 1),
+        (and_(Beatmap.overall_difficulty >= 2, Beatmap.overall_difficulty < 3), 2),
+        (and_(Beatmap.overall_difficulty >= 3, Beatmap.overall_difficulty < 4), 3),
+        (and_(Beatmap.overall_difficulty >= 4, Beatmap.overall_difficulty < 5), 4),
+        (and_(Beatmap.overall_difficulty >= 5, Beatmap.overall_difficulty < 6), 5),
+        (and_(Beatmap.overall_difficulty >= 6, Beatmap.overall_difficulty < 7), 6),
+        (and_(Beatmap.overall_difficulty >= 7, Beatmap.overall_difficulty < 8), 7),
+        (and_(Beatmap.overall_difficulty >= 8, Beatmap.overall_difficulty < 9), 8),
+        (and_(Beatmap.overall_difficulty >= 9, Beatmap.overall_difficulty < 10), 9),
+        else_=10,
+    )
+
     bins = case(  
         (Beatmap.overall_difficulty < 1, '0-1'),
         (and_(Beatmap.overall_difficulty >= 1, Beatmap.overall_difficulty < 2), '1-2'),
@@ -42,12 +56,12 @@ def get_overall_difficulty_grouping_sq() -> Subquery:
         (and_(Beatmap.overall_difficulty >= 7, Beatmap.overall_difficulty < 8), '7-8'),
         (and_(Beatmap.overall_difficulty >= 8, Beatmap.overall_difficulty < 9), '8-9'),
         (and_(Beatmap.overall_difficulty >= 9, Beatmap.overall_difficulty < 10), '9-10'),
-        else_='10',
+        else_='10+',
     )
     
     inner_sq = (
         select(
-            func.row_number().over(order_by=bins).label('id'),
+            ids.label('id'),
             bins.label('bins'),
         )
         .select_from(Beatmap)

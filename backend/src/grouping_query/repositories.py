@@ -1,4 +1,4 @@
-from sqlalchemy import Select, Subquery, select, func, and_, case
+from sqlalchemy import Select, Subquery, select, func, and_, case, cast, String
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.models.beatmaps import Beatmap
@@ -30,9 +30,11 @@ class GroupingQueryRepository:
         aggregated_count_sq = zzz_aggregated_count.get_aggregated_count_sq(request)
 
         if request.grouping_type == GroupingTypeEnum.COLLECTIONS:
-            grouping_query_stmt = cls.get_grouping_query_stmt__collection(aggregated_count_sq, request)
+            grouping_query_stmt = cls.get_grouping_query_stmt__collections(aggregated_count_sq, request)
+        
         elif request.grouping_type == GroupingTypeEnum.ARTIST:
             grouping_query_stmt = cls.get_grouping_query_stmt__artist(aggregated_count_sq, request)
+        
         elif request.grouping_type == GroupingTypeEnum.OVERALL_DIFFICULTY:
             grouping_query_stmt = cls.get_grouping_query_stmt__overall_difficulty(aggregated_count_sq, request)
 
@@ -40,8 +42,8 @@ class GroupingQueryRepository:
 
 
     @staticmethod
-    def get_grouping_query_stmt__collection(aggregated_count_sq: Subquery, request: GroupingQueryRequest) -> Select:
-        return (
+    def get_grouping_query_stmt__collections(aggregated_count_sq: Subquery, request: GroupingQueryRequest) -> Select:
+        grouping_query_stmt = (
             select(
                 func.coalesce(request.grouping_type, request.grouping_type).label('grouping_type'),
                 Collection.id.label('grouping_id'), 
@@ -53,6 +55,7 @@ class GroupingQueryRepository:
             .outerjoin(aggregated_count_sq, aggregated_count_sq.c.grouping_id == Collection.id)
             .where(Collection.name.ilike(f'%{request.q}%'))
         )
+        return grouping_query_stmt
 
 
     @staticmethod
@@ -60,7 +63,7 @@ class GroupingQueryRepository:
         artist_grouping_sq = get_artist_grouping_sq()
         first_char = func.substr(func.lower(artist_grouping_sq.c.artist), 1, 1).label('first_char')
         
-        return (
+        grouping_query_stmt = (
             select(
                 func.coalesce(request.grouping_type, request.grouping_type).label('grouping_type'),
                 artist_grouping_sq.c.grouping_id,
@@ -74,15 +77,18 @@ class GroupingQueryRepository:
             .order_by(artist_grouping_sq.c.grouping_id)
         )
 
+        return grouping_query_stmt
+
 
     @staticmethod
     def get_grouping_query_stmt__overall_difficulty(aggregated_count_sq: Subquery, request: GroupingQueryRequest) -> Select:
         overall_difficulty_sq = get_overall_difficulty_grouping_sq()
-        return (
+        
+        grouping_query_stmt = (
             select(
                 func.coalesce(request.grouping_type, request.grouping_type).label('grouping_type'),
                 overall_difficulty_sq.c.grouping_id,
-                overall_difficulty_sq.c.bins.label('grouping_name'),
+                cast(overall_difficulty_sq.c.bins.label('grouping_name'), String),
                 func.coalesce(aggregated_count_sq.c.total_count, 0).label('total_count'), 
                 func.coalesce(aggregated_count_sq.c.selected_count, 0).label('selected_count'),
             )
@@ -91,3 +97,5 @@ class GroupingQueryRepository:
             .group_by(overall_difficulty_sq.c.bins)
             .order_by(overall_difficulty_sq.c.grouping_id)
         )
+
+        return grouping_query_stmt

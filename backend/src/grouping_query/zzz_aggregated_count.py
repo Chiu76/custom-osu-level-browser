@@ -18,13 +18,13 @@ def get_aggregated_count_sq(request: GroupingQueryRequest) -> Subquery:
 
     if request.grouping_type == GroupingTypeEnum.COLLECTIONS:
         aggregated_count_sq = get_aggregated_count_sq__collections(beatmap_query_stmt)
-    
+
     elif request.grouping_type == GroupingTypeEnum.ARTIST:
         aggregated_count_sq = get_aggregated_count_sq__artist(beatmap_query_stmt)
-    
+
     elif request.grouping_type == GroupingTypeEnum.OVERALL_DIFFICULTY:
         aggregated_count_sq = get_aggregated_count_sq__overall_difficulty(beatmap_query_stmt)
-    
+
     return aggregated_count_sq
 
 
