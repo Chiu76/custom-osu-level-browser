@@ -49,10 +49,6 @@ def execute_upsert(row_contents: list[dict], target_table: MappedClassProtocol, 
 
 
 def upsert_items(self: Task, row_contents: list[dict], target_table: MappedClassProtocol, table_unique_keys: list[str], session: Session):
-    """
-    
-    """
-
     BATCH_SIZE = 1000
 
     self.vars['num_items_to_import'] = len(row_contents)

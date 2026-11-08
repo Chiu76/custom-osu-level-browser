@@ -8,8 +8,20 @@ function accuracy(beatmap) {
 }
 
 function starRating(beatmap) {
-    if (beatmap.star_rating) return `${beatmap.star_rating}*`;
-    else return "";
+    let starRatingString = "";
+    if (beatmap.star_rating) {
+        starRatingString = starRatingString.concat(`${beatmap.star_rating}* `);
+    }
+    if (beatmap.star_rating_aim) {
+        starRatingString = starRatingString.concat(`${beatmap.star_rating_aim}* `);
+    } 
+    if (beatmap.star_rating_speed) {
+        starRatingString = starRatingString.concat(`${beatmap.star_rating_speed}* `);
+    } 
+    if (beatmap.star_rating_reading) {
+        starRatingString = starRatingString.concat(`${beatmap.star_rating_reading}* `);
+    }   
+    return starRatingString;
 }
 
 function RowBeatmap(beatmap) {
@@ -23,8 +35,6 @@ function RowBeatmap(beatmap) {
     li.appendChild(createElementClassContent("div", "difficulty-name", `[${beatmap.difficulty_name}]`));
     li.appendChild(createElementClassContent("div", "star-rating", starRating(beatmap)));
     li.appendChild(createElementClassContent("div", "bpm", `${beatmap.bpm} BPM`));
-    li.appendChild(createElementClassContent("div", "combo", beatmap.combo ?? ""));
-    li.appendChild(createElementClassContent("div", "max-combo", beatmap.max_combo ?? ""));
     li.appendChild(createElementClassContent("div", "beatmap-id", beatmap.beatmap_id));
     li.appendChild(createElementClassContent("div", "mapper-id", beatmap.mapper_id ?? ""));
     li.appendChild(createElementClassContent("div", "mapper", beatmap.mapper ?? ""));

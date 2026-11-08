@@ -35,6 +35,9 @@ FILTER_SORT_FIELDS = Literal[
     'song_tags',
 
     'star_rating',
+    'star_rating_aim',
+    'star_rating_speed',
+    'star_rating_reading',
 
     'num_300s',
     'num_100s',
@@ -71,7 +74,20 @@ FILTER_SORT_FIELDS_ALTERNATIVES = Literal[
 
     
     'sr',
+    'sr_aim',
+    'sr_speed',
+    'sr_tapping',
+    'sr_tap',
+    'sr_reading',
+    'sr_read',
+
     'stars',
+    'stars_aim',
+    'stars_speed',
+    'stars_tapping',
+    'stars_tap',
+    'stars_reading',
+    'stars_read',
 
     '300s',
     '100s',
@@ -110,6 +126,9 @@ def get_beatmap_filter_columns() -> dict[str, InstrumentedAttribute]:
         'local_offset': Beatmap.local_offset,
 
         'star_rating': BeatmapStarRating.star_rating,
+        'star_rating_aim': BeatmapStarRating.star_rating_aim,
+        'star_rating_speed': BeatmapStarRating.star_rating_speed,
+        'star_rating_reading': BeatmapStarRating.star_rating_reading,
 
         # alternatives
         'diff': Beatmap.difficulty_name,
@@ -125,7 +144,20 @@ def get_beatmap_filter_columns() -> dict[str, InstrumentedAttribute]:
         'offset': Beatmap.local_offset,
 
         'sr': BeatmapStarRating.star_rating,
+        'sr_aim': BeatmapStarRating.star_rating_aim,
+        'sr_speed': BeatmapStarRating.star_rating_speed,
+        'sr_tapping': BeatmapStarRating.star_rating_speed,
+        'sr_tap': BeatmapStarRating.star_rating_speed,
+        'sr_reading': BeatmapStarRating.star_rating_reading,
+        'sr_read': BeatmapStarRating.star_rating_reading,
+
         'stars': BeatmapStarRating.star_rating,
+        'stars_aim': BeatmapStarRating.star_rating_aim,
+        'stars_speed': BeatmapStarRating.star_rating_speed,
+        'stars_tapping': BeatmapStarRating.star_rating_speed,
+        'stars_tap': BeatmapStarRating.star_rating_speed,
+        'stars_reading': BeatmapStarRating.star_rating_reading,
+        'stars_read': BeatmapStarRating.star_rating_reading,
     }
 
 
@@ -151,6 +183,9 @@ def get_beatmap_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribu
         'local_offset': core_sq.c.local_offset,
 
         'star_rating': core_sq.c.star_rating,
+        'star_rating_aim': core_sq.c.star_rating_aim,
+        'star_rating_speed': core_sq.c.star_rating_speed,
+        'star_rating_reading': core_sq.c.star_rating_reading,
 
         # alternatives
         'diff': core_sq.c.difficulty_name,
@@ -166,7 +201,20 @@ def get_beatmap_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribu
         'offset': core_sq.c.local_offset,
 
         'sr': core_sq.c.star_rating,
+        'sr_aim': core_sq.c.star_rating_aim,
+        'sr_speed': core_sq.c.star_rating_speed,
+        'sr_tapping': core_sq.c.star_rating_speed,
+        'sr_tap': core_sq.c.star_rating_speed,
+        'sr_reading': core_sq.c.star_rating_reading,
+        'sr_read': core_sq.c.star_rating_reading,
+
         'stars': core_sq.c.star_rating,
+        'stars_aim': core_sq.c.star_rating_aim,
+        'stars_speed': core_sq.c.star_rating_speed,
+        'stars_tapping': core_sq.c.star_rating_speed,
+        'stars_tap': core_sq.c.star_rating_speed,
+        'stars_reading': core_sq.c.star_rating_reading,
+        'stars_read': core_sq.c.star_rating_reading,
     }
 
 

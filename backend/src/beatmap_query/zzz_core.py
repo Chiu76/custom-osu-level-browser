@@ -24,7 +24,12 @@ def apply_core_specs(initial_stmt: Select, core_specs: CoreSpecs):
 
 
 def apply_star_rating(stmt: Select, star_rating_spec: StarRatingSpec) -> Select:
-    stmt = stmt.add_columns(BeatmapStarRating.star_rating)
+    stmt = stmt.add_columns(
+        BeatmapStarRating.star_rating,
+        BeatmapStarRating.star_rating_aim,
+        BeatmapStarRating.star_rating_speed,
+        BeatmapStarRating.star_rating_reading,
+    )
     
     return stmt.outerjoin(BeatmapStarRating, and_(
         BeatmapStarRating.beatmap_db_id == Beatmap.id,

@@ -79,16 +79,20 @@ class Beatmap(Model):
 
 
 class BeatmapStarRating(Model):
-    __tablename__ = 'beatmap_star_rating'
+    __tablename__ = 'beatmap_star_ratings'
 
     beatmap_db_id: Mapped[int] = mapped_column(
         ForeignKey('beatmaps.id', ondelete='CASCADE'),
         index=True,
         primary_key=True,
     )
+    
     mode: Mapped[int] = mapped_column(Integer, index=True, primary_key=True)
     mods: Mapped[int] = mapped_column(Integer, primary_key=True)
     
-    star_rating: Mapped[float] = mapped_column(Float)
+    star_rating: Mapped[float] = mapped_column(Float, index=True)
+    star_rating_aim: Mapped[float] = mapped_column(Float, nullable=True, index=True)
+    star_rating_speed: Mapped[float] = mapped_column(Float, nullable=True, index=True)
+    star_rating_reading: Mapped[float] = mapped_column(Float, nullable=True, index=True)
 
     import_source_hash: Mapped[str] = mapped_column(String(32), nullable=False, index=True)

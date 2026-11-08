@@ -75,7 +75,7 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     beatmap_rows = []
     for beatmap in beatmap_data:
         row = get_beatmap_mapping(beatmap, import_source_hash=db_file_hash)
-        if row['ranked_status'] == 1: continue
+        if row['ranked_status'] == 1 or row['beatmap_id'] == 0: continue
         beatmap_rows.append(row)
 
     already_imported_count = session.scalar(

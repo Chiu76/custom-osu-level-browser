@@ -40,6 +40,9 @@ class BeatmapQueryRow(BaseModel):
     accuracy: float | None
 
     star_rating: float | None
+    star_rating_aim: float | None
+    star_rating_speed: float | None
+    star_rating_reading: float | None
 
 
 class BeatmapQueryResponse(BaseModel):

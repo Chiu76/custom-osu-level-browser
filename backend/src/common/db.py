@@ -16,18 +16,21 @@ class Model(DeclarativeBase):
 
 
 load_dotenv()
-
+ 
 engine = create_engine(
-    url=os.environ['DATABASE_URL'],
+    url="sqlite:///db.sqlite",
     echo=False,
 )
 
 SessionMaker = sessionmaker(engine)
 
-def access_osu_api_data_cache():
-    engine = create_engine(
+
+def get_osu_api_data_cache_engine():
+    return create_engine(
         url=os.environ['OSU_API_DATA_CACHE_DATABASE_URL'],
+        echo=False,
     )
+
     with engine.connect() as conn:
         results = conn.execute(
             text('''
