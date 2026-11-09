@@ -108,6 +108,10 @@ def _get_filter_condition(stmt: Select, filter: Filter):
             return field_column >= value
         ## todo: because of this, equality for numbers does not work properly
         case '=':
+            if type(filter.value) == str and '-' in filter.value:
+                between_values = value.split('-')
+                if len(between_values) == 2:
+                    return and_(field_column >= between_values[0], field_column < between_values[1])
             return field_column.ilike(f'%{value}%')
         case '~':
             try:

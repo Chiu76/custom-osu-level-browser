@@ -21,23 +21,25 @@ def apply_presentation_specs(core_stmt: Select, presentation_specs: Presentation
 
 
 def apply_search(stmt: Select, core_sq: Subquery, search_spec: SearchSpec) -> Select:
-    if not search_spec.q:
-        return stmt
-
-    q = search_spec.q
-    stmt = stmt.where(
-        or_(
-            ## todo: eventually, have the searchable columns defined somewhere else? and destructure them here only
-            core_sq.c.beatmap_id.ilike(f'%{q}%'),
-            core_sq.c.beatmap_set_id.ilike(f'%{q}%'),
-            core_sq.c.difficulty_name.ilike(f'%{q}%'),
-            core_sq.c.artist.ilike(f'%{q}%'),
-            core_sq.c.title.ilike(f'%{q}%'),
-            core_sq.c.owner.ilike(f'%{q}%'),
-            core_sq.c.song_source.ilike(f'%{q}%'),
-            core_sq.c.song_tags.ilike(f'%{q}%'),
+    clauses = []
+    
+    for q in search_spec.queries:
+        clauses.append(
+            or_(
+                ## todo: eventually, have the searchable columns defined somewhere else? and destructure them here only
+                core_sq.c.beatmap_id.ilike(f'%{q}%'),
+                core_sq.c.beatmap_set_id.ilike(f'%{q}%'),
+                core_sq.c.difficulty_name.ilike(f'%{q}%'),
+                core_sq.c.artist.ilike(f'%{q}%'),
+                core_sq.c.title.ilike(f'%{q}%'),
+                core_sq.c.owner.ilike(f'%{q}%'),
+                core_sq.c.song_source.ilike(f'%{q}%'),
+                core_sq.c.song_tags.ilike(f'%{q}%'),
+            )
         )
-    )
+
+    if clauses:
+        stmt = stmt.where(and_(*clauses))
     
     return stmt
 

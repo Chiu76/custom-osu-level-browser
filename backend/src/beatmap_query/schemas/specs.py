@@ -45,7 +45,7 @@ class CoreSpecs(BaseModel):
 
 
 class SearchSpec(BaseModel):
-    q: str | None = None
+    queries: list[str] = []
 
 
 GroupingSpec = Annotated[

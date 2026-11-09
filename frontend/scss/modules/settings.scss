@@ -36,14 +36,27 @@
         }
     }
 
-    @scope (.sort-selects) {
+    @scope (#sort-selects) {
         :scope {
             display: flex;
             gap: 0.3em;
         }
     }
 
-    @scope (.attached-score-settings) {
+    @scope (#beatmap-search-filter-and-sketchpad) {
+        :scope {
+            display: flex;
+            justify-content: space-between;
+        }
+        #beatmap-search-filter input {
+            width: 35ch;
+        }
+        #sketchpad input {
+            width: 35ch;
+        }
+    }
+
+    @scope (#attached-score-settings) {
         :scope {
             display: flex;
             justify-content: space-between;

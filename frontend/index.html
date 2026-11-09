@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="beatmap-settings">
-                <div class="sort-selects">
+                <div id="sort-selects">
                     <span>Sort: </span>
                     <span id="sort-primary">
                         <select></select>
@@ -55,23 +55,25 @@
                         <span class="dir"></span>
                     </span>
                 </div>
-                <div id="beatmap-filter">
-                    <span>Filter: </span>
-                    <input
-                        placeholder="Filter beatmaps.."
-                    />
-                </div>
-                <div id="beatmap-search">
-                    <span>Search: </span>
-                    <input
-                        placeholder="Search beatmaps.."
-                    />
+                <div id="beatmap-search-filter-and-sketchpad">
+                    <span id="beatmap-search-filter">
+                        <span>Search/Filter: </span>
+                        <input
+                            placeholder="Search/Filter beatmaps.."
+                        />
+                    </span>
+                    <span id="sketchpad">
+                        <span>Sketchpad: </span>
+                        <input
+                            placeholder="Prepare Filters.."
+                        />
+                    </span>
                 </div>
                 <div id="disable-beatmap-sets">
                     <span> Disable grouping into sets: </span>
                     <input type="checkbox">
                 </div>
-                <div class="attached-score-settings">
+                <div id="attached-score-settings">
                     <span id="score-required">
                         <span> Show only beatmaps with scores: </span>
                         <input type="checkbox">

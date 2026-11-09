@@ -1,6 +1,6 @@
 import { createSignal } from "../reactive.js";
 
-import { BeatmapFilterHandler } from "../components/BeatmapFilterHandler.js";
+import { BeatmapSearchFilterHandler } from "../components/BeatmapSearchFilterHandler.js";
 import { BeatmapSortHandler } from "../components/BeatmapSortHandler.js";
 import { SearchHandler } from "../components/SearchHandler.js";
 import { GroupingTypeHandler } from "../components/GroupingTypeHandler.js";
@@ -8,8 +8,8 @@ import { ScoreTopByHandler } from "../components/ScoreTopByHandler.js";
 import { CheckboxHandler } from "../components/CheckboxHandler.js";
 import { ModFilterHandler } from "../components/ModFilterHandler.js";
 
-const [beatmapSearch, setBeatmapSearch] = SearchHandler("beatmap-search").init();
-const [beatmapFilter, setBeatmapFilter] = BeatmapFilterHandler().init();
+
+const [beatmapSearch, setBeatmapSearch, beatmapFilter, setBeatmapFilter] = BeatmapSearchFilterHandler().init();
 const [beatmapSort, setBeatmapSort] = BeatmapSortHandler().init();
 
 const [groupingSearch, setGroupingSearch] = SearchHandler("grouping-search").init();

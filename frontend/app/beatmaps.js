@@ -44,7 +44,7 @@ function buildRequest(search_spec, filter_spec, sort_spec, source_specs, groupin
 const [request, setRequest] = createSignal();
 
 createEffect(() => {
-    const search_spec = { q: beatmapSearch() };
+    const search_spec = { queries: beatmapSearch() };
     const filter_spec = { filters: beatmapFilter() };
     const sort_spec = { sort_columns: beatmapSort() };
     const source_specs = sourceSpecs();
