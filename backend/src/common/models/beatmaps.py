@@ -88,7 +88,7 @@ class BeatmapStarRating(Model):
     )
     
     mode: Mapped[int] = mapped_column(Integer, index=True, primary_key=True)
-    mods: Mapped[int] = mapped_column(Integer, primary_key=True)
+    mods: Mapped[int] = mapped_column(Integer, index=True, primary_key=True)
     
     star_rating: Mapped[float] = mapped_column(Float, index=True)
     star_rating_aim: Mapped[float] = mapped_column(Float, nullable=True, index=True)

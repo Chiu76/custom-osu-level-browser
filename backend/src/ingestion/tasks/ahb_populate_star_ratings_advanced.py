@@ -43,13 +43,13 @@ def get_dict__beatmap_id_to_db_id(import_source_hash: str, session: Session) -> 
     return { beatmap_id: beatmap_db_id for beatmap_id, beatmap_db_id in beatmap_id_and_db_id }
 
 
-def get_star_ratings__osu_api_data_cache():
+def get_osu_api_data_cache__star_ratings():
     engine = get_osu_api_data_cache_engine()
     with engine.connect() as conn:
         results = conn.execute(
             text('''
-                SELECT version, beatmap_id, star_rating, star_rating_aim, star_rating_speed, star_rating_reading
-                FROM beatmap_star_ratings
+                SELECT version, beatmap_id, mode, mods, star_rating, star_rating_aim, star_rating_speed, star_rating_reading
+                FROM beatmap_star_ratings;
             ''')
         ).mappings().all()
     return results
@@ -73,18 +73,18 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     }
 
     db_file_hash = utils.get_state__db_file_hash('osu!', session)
-    beatmap_data = get_star_ratings__osu_api_data_cache()
+    beatmap_star_ratings_data = get_osu_api_data_cache__star_ratings()
 
     beatmap_id_to_db_id = get_dict__beatmap_id_to_db_id(db_file_hash, session)
 
     beatmap_star_rating_rows = []
-    for beatmap in beatmap_data:
+    for beatmap in beatmap_star_ratings_data:
         beatmap_db_id = beatmap_id_to_db_id.get(beatmap['beatmap_id'])
         if not beatmap_db_id: continue
         row = get_beatmap_star_rating_mapping(
             beatmap_db_id,
-            0,
-            0,
+            beatmap['mode'],
+            beatmap['mods'],
             beatmap['star_rating'],
             beatmap['star_rating_aim'],
             beatmap['star_rating_speed'],

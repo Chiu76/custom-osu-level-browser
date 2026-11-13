@@ -14,7 +14,9 @@ from ..tasks.generic_update_state_db_file import init_task__generic_update_state
 from ..tasks.generic_parse_imported_db_file import init_task__generic_parse_imported_db_file
 
 from ..tasks.ad_populate_beatmap_sets import init_task__populate_beatmap_sets
+from ..tasks.ad_populate_beatmap_sets_advanced import init_task__populate_beatmap_sets_advanced
 from ..tasks.ae_populate_beatmaps import init_task__populate_beatmaps
+from ..tasks.ae_populate_beatmaps_advanced import init_task__populate_beatmaps_advanced
 from ..tasks.aha_populate_star_ratings import init_task__populate_beatmap_star_ratings
 from ..tasks.ahb_populate_star_ratings_advanced import init_task__populate_beatmap_star_ratings_advanced
 
@@ -55,7 +57,9 @@ def run_job__osu_db_file_import(session: Session):
                 force_refresh=False,
             ),
             init_task__populate_beatmap_sets(session=session, force_refresh=False),
+            # init_task__populate_beatmap_sets_advanced(session=session, force_refresh=False),
             init_task__populate_beatmaps(session=session, force_refresh=False),
+            # init_task__populate_beatmaps_advanced(session=session, force_refresh=False),
             init_task__populate_beatmap_star_ratings(session=session, force_refresh=False),
             init_task__populate_beatmap_star_ratings_advanced(session=session, force_refresh=False),
         ]

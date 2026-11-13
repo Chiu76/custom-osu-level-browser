@@ -7,6 +7,7 @@ import { GroupingTypeHandler } from "../components/GroupingTypeHandler.js";
 import { ScoreTopByHandler } from "../components/ScoreTopByHandler.js";
 import { CheckboxHandler } from "../components/CheckboxHandler.js";
 import { ModFilterHandler } from "../components/ModFilterHandler.js";
+import { StarRatingModsHandler } from "../components/StarRatingModsHandler.js";
 
 
 const [beatmapSearch, setBeatmapSearch, beatmapFilter, setBeatmapFilter] = BeatmapSearchFilterHandler().init();
@@ -35,6 +36,8 @@ const [modsExcludeFilter, setModsExcludeFilter] = ModFilterHandler("mods-exclude
 
 const [disableBeatmapSets, setDisableBeatmapSets] = CheckboxHandler("disable-beatmap-sets").init();
 
+const [starRatingMods, setStarRatingMods] = StarRatingModsHandler().init();
+
 export { 
     beatmapSearch, setBeatmapSearch,
     beatmapFilter, setBeatmapFilter, 
@@ -61,4 +64,5 @@ export {
     modsExcludeFilter, setModsExcludeFilter,
 
     disableBeatmapSets, setDisableBeatmapSets,
+    starRatingMods, setStarRatingMods,
 };
