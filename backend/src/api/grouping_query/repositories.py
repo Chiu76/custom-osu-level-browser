@@ -9,7 +9,7 @@ from .enums import GroupingTypeEnum
 
 from .yyy_field_groupings import get_artist_grouping_sq, get_overall_difficulty_grouping_sq
 
-import src.grouping_query.zzz_aggregated_count as zzz_aggregated_count
+import src.api.grouping_query.zzz_aggregated_count as zzz_aggregated_count
 
 
 class GroupingQueryRepository:

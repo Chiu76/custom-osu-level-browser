@@ -4,8 +4,8 @@ from pydantic import BaseModel, Field
 from .identifiers import NoneIdentifier, LocalBeatmapsIdentifier, GroupingIdentifier
 from ..yyy_filter_sort_fields import FILTER_SORT_FIELDS, FILTER_SORT_FIELDS_ALTERNATIVES, FILTER_OPS
 
-from src.score_query.schemas import ScoreSqSpec
-from src.score_query.yyy_mods import MODS_FIELDS, MODS_FIELDS_ALTERNATIVES
+from src.api.score_query.schemas import ScoreSqSpec
+from src.api.score_query.yyy_mods import MODS_FIELDS, MODS_FIELDS_ALTERNATIVES
 
 
 SourceSpec = Annotated[
@@ -23,10 +23,6 @@ class AttachedScoreSpec(BaseModel):
     score_required: bool = False
 
 
-class OnlineDetailsSpec(BaseModel):
-    pass
-
-
 class Filter(BaseModel):
     field: FILTER_SORT_FIELDS | FILTER_SORT_FIELDS_ALTERNATIVES
     op: FILTER_OPS
@@ -40,7 +36,6 @@ class FilterSpec(BaseModel):
 class CoreSpecs(BaseModel):
     star_rating_spec: StarRatingSpec
     attached_score_spec: AttachedScoreSpec 
-    online_details_spec: OnlineDetailsSpec
     source_specs: list[SourceSpec]
     filter_spec: FilterSpec
 

@@ -38,7 +38,6 @@ def get_beatmap_mapping(beatmap_db_content: dict, import_source_hash: str) -> di
         'play_count': beatmap_db_content['play_count'],
         'pass_count': beatmap_db_content['passcount'],
         'lazer_only': beatmap_db_content['lazer_only'],
-        'deleted_date': beatmap_db_content['deleted_at'],
         
         'import_type': 'API_DATA',
         'import_source_hash': import_source_hash,
@@ -80,6 +79,7 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     beatmap_rows = []
     for beatmapset in beatmapset_data:
         for beatmap in json.loads(beatmapset['content'])['beatmaps']:
+            if beatmap['mode'] != 0: continue
             beatmap_rows.append(
                 get_beatmap_mapping(beatmap, import_source_hash=beatmapset_data_hash)
             )

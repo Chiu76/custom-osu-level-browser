@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.beatmap_query.api import router as beatmap_query_router
-from src.grouping_query.api import router as grouping_query_router
-from src.score_query.api import router as score_query_router
+from src.api.beatmap_query.api import router as beatmap_query_router
+from src.api.grouping_query.api import router as grouping_query_router
+from src.api.score_query.api import router as score_query_router
 
 
 app = FastAPI()

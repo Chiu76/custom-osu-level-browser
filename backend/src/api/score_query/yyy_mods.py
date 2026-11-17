@@ -153,7 +153,7 @@ def get_mod_value(mod: MODS_FIELDS | MODS_FIELDS_ALTERNATIVES) -> int:
 
 
 def get_mods_value(mods: list[MODS_FIELDS | MODS_FIELDS_ALTERNATIVES]) -> int:
-    return sum([get_mod_value(mod) for mod in mods])
+    return sum([get_mod_value(mod.lower()) for mod in mods])
 
 
 def apply_mods(

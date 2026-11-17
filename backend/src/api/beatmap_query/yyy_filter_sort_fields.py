@@ -26,15 +26,34 @@ FILTER_SORT_FIELDS = Literal[
     'hp_drain',
     'drain_time',
     'total_time',
+
+    'creator_id',
+    'creators',
+    'max_combo',
+    'play_count',
+    'pass_count',
+    'lazer_only',
     
     'last_played_date',
     
     
     'artist',
     'title',
-    'owner',
     'song_source',
     'song_tags',
+    'owner',
+
+    'owner_id',
+    'play_count',
+    'favourite_count',
+    'rating',
+    'genre_id',
+    'language_id',
+    'spotlight',
+    'submitted_date',
+    'ranked_date',
+    'ranked_year',
+    'ranked_month',
 
     
     'star_rating',
@@ -70,8 +89,10 @@ FILTER_SORT_FIELDS_ALTERNATIVES = Literal[
     'od',
     'cs',
     'hp',
-    'set_owner',
-    'set_mapper',
+
+    'last_played',
+
+
     'source',
     'tags',
 
@@ -126,6 +147,13 @@ def get_beatmap_filter_columns() -> dict[str, InstrumentedAttribute]:
         'drain_time': Beatmap.drain_time,
         'total_time': Beatmap.total_time,
 
+        'creator_id': Beatmap.creator_id,
+        'creators': Beatmap.creators,
+        'max_combo': Beatmap.max_combo,
+        'play_count': Beatmap.play_count,
+        'pass_count': Beatmap.pass_count,
+        'lazer_only': Beatmap.lazer_only,
+
         'last_played_date': Beatmap.last_played_date,
 
 
@@ -146,6 +174,8 @@ def get_beatmap_filter_columns() -> dict[str, InstrumentedAttribute]:
         'od': Beatmap.overall_difficulty,
         'cs': Beatmap.circle_size,
         'hp': Beatmap.hp_drain,
+
+        'last_played': Beatmap.last_played_date,
 
 
         'sr': BeatmapStarRating.star_rating,
@@ -185,6 +215,13 @@ def get_beatmap_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribu
         'drain_time': core_sq.c.drain_time,
         'total_time': core_sq.c.total_time,
 
+        'creator_id': core_sq.c.creator_id,
+        'creators': core_sq.c.creators,
+        'max_combo': core_sq.c.max_combo,
+        'play_count': core_sq.c.play_count,
+        'pass_count': core_sq.c.pass_count,
+        'lazer_only': core_sq.c.lazer_only,
+
         'last_played_date': core_sq.c.last_played_date,
 
 
@@ -205,6 +242,8 @@ def get_beatmap_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribu
         'od': core_sq.c.overall_difficulty,
         'cs': core_sq.c.circle_size,
         'hp': core_sq.c.hp_drain,
+
+        'last_played': core_sq.c.last_played_date,
 
 
         'sr': core_sq.c.star_rating,
@@ -230,13 +269,24 @@ def get_beatmapset_filter_columns() -> dict[str, InstrumentedAttribute]:
     return {
         'artist': Beatmapset.artist,
         'title': Beatmapset.title,
-        'owner': Beatmapset.owner,
         'song_source': Beatmapset.song_source,
         'song_tags': Beatmapset.song_tags,
+        'owner': Beatmapset.owner,
+
+        'owner_id': Beatmapset.owner_id,
+        'play_count': Beatmapset.play_count,
+        'favourite_count': Beatmapset.favourite_count,
+        'rating': Beatmapset.rating,
+        'genre_id': Beatmapset.genre_id,
+        'language_id': Beatmapset.language_id,
+        'spotlight': Beatmapset.spotlight,
+        'submitted_date': Beatmapset.submitted_date,
+        'ranked_date': Beatmapset.ranked_date,
+        'ranked_year': Beatmapset.ranked_year,
+        'ranked_month': Beatmapset.ranked_month,
+
 
         # alternatives
-        'set_owner': Beatmapset.owner,
-        'set_mapper': Beatmapset.owner,
         'source': Beatmapset.song_source,
         'tags': Beatmapset.song_tags,
     }
@@ -246,13 +296,23 @@ def get_beatmapset_sort_columns(core_sq: Subquery | None = None) -> dict[str, In
     return {
         'artist': core_sq.c.artist,
         'title': core_sq.c.title,
-        'owner': core_sq.c.owner,
         'song_source': core_sq.c.song_source,
         'song_tags': core_sq.c.song_tags,
+        'owner': core_sq.c.owner,
+
+        'owner_id': core_sq.c.owner_id,
+        'play_count': core_sq.c.play_count,
+        'favourite_count': core_sq.c.favourite_count,
+        'rating': core_sq.c.rating,
+        'genre_id': core_sq.c.genre_id,
+        'language_id': core_sq.c.language_id,
+        'spotlight': core_sq.c.spotlight,
+        'submitted_date': core_sq.c.submitted_date,
+        'ranked_date': core_sq.c.ranked_date,
+        'ranked_year': core_sq.c.ranked_year,
+        'ranked_month': core_sq.c.ranked_month,
 
         # alternatives
-        'set_owner': core_sq.c.owner,
-        'set_mapper': core_sq.c.owner,
         'source': core_sq.c.song_source,
         'tags': core_sq.c.song_tags,
     }
@@ -274,6 +334,7 @@ def get_score_filter_columns(core_stmt: Select) -> dict[str, InstrumentedAttribu
         'perfect_combo': core_stmt_froms.c.corresponding_column(Score.perfect_combo),
         'mods': core_stmt_froms.c.corresponding_column(Score.mods),
         'played_at': core_stmt_froms.c.corresponding_column(Score.played_at),
+
 
         # alternatives
         '300s': core_stmt_froms.c.corresponding_column(Score.num_300s),
@@ -306,6 +367,7 @@ def get_score_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribute
         'perfect_combo': core_sq.c.perfect_combo,
         'mods': core_sq.c.mods,
         'played_at': core_sq.c.played_at,
+
 
         # alternatives
         'rank': core_sq.c.grade,

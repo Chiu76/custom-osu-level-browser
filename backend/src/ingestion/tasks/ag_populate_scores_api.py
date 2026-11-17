@@ -1,4 +1,6 @@
-from sqlalchemy import select, func
+import json
+
+from sqlalchemy import select, func, text
 from sqlalchemy.orm import Session
 
 from orchestrator import Task, TaskStatus
@@ -9,85 +11,64 @@ from src.common.models.scores import Score
 
 import src.ingestion.tasks.zzz_common as task_common
 
+from src.api.score_query.yyy_mods import get_mods_value
 
-## todo: create a type for possible grades and use it in compute_grade()
-def compute_grade(score: dict) -> str:
-    num_300s = score['num_300s']
-    num_100s = score['num_100s']
-    num_50s = score['num_50s']
-    num_misses = score['num_misses']
-
-    total_hits = num_300s + num_100s + num_50s + num_misses
-
-    all_300s = num_300s == total_hits
-    over_90_percent_300s = num_300s * 100 > total_hits * 90
-    over_80_percent_300s = num_300s * 100 > total_hits * 80
-    over_70_percent_300s = num_300s * 100 > total_hits * 70
-    over_60_percent_300s = num_300s * 100 > total_hits * 60
-    at_most_1_percent_50s = num_50s * 100 <= total_hits
-
-    if all_300s:
-        return 'SS'
-    elif over_90_percent_300s and at_most_1_percent_50s and num_misses == 0:
-        return 'S'
-    elif (over_80_percent_300s and num_misses == 0) or over_90_percent_300s:
-        return 'A'
-    elif (over_70_percent_300s and num_misses == 0) or over_80_percent_300s:
-        return 'B'
-    elif over_60_percent_300s:
-        return 'C'
-    else:
-        return 'D'
-
-
-def compute_accuracy(score: dict) -> float:
-    num_300s = score['num_300s']
-    num_100s = score['num_100s']
-    num_50s = score['num_50s']
-    num_misses = score['num_misses']
-    total_hits = num_300s + num_100s + num_50s + num_misses
-    accuracy_fractional = (num_300s * 300 + num_100s * 100 + num_50s) / (total_hits * 300)
-    return round(accuracy_fractional * 100, 2)
+from src.common.db import get_osu_api_data_cache_engine
 
 
 def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) -> dict:
     return {
         'beatmap_db_id': beatmap_db_id,
+        'online_score_id': score['id'],
         'mode': score['mode'],
-        'version': score['version'],
-        'player_name': score['player_name'],
-        'beatmap_md5_hash': score['md5'],
-        'replay_md5_hash': score['replay_md5'],
-        'num_300s': score['num_300s'],
-        'num_100s': score['num_100s'],
-        'num_50s': score['num_50s'],
-        'num_gekis': score['num_gekis'],
-        'num_katus': score['num_katus'],
-        'num_misses': score['num_misses'],
-        'grade': compute_grade(score),
-        'accuracy': compute_accuracy(score),
-        'replay_score': score['replay_score'],
+        'mods': get_mods_value(score['mods']),
+        'num_300s': score['statistics']['count_300'],
+        'num_100s': score['statistics']['count_100'],
+        'num_50s': score['statistics']['count_50'],
+        'num_gekis': score['statistics']['count_geki'],
+        'num_katus': score['statistics']['count_katu'],
+        'num_misses': score['statistics']['count_miss'],
+        'grade': score['rank'],
+        'accuracy': round(score['accuracy'] * 100, 2),
+        'replay_score': score['score'],
         'max_combo': score['max_combo'],
-        'perfect_combo': score['perfect_combo'],
-        'mods': score['mods'],
-        'played_at': task_common.ticks_to_posix(score['timestamp']),
-        'online_score_id': score['online_score_id'],
+        'perfect_combo': score['perfect'],
+        'played_at': task_common.osu_api_timestamp_to_posix(score['created_at']),
+
+        'player_id': score['user_id'],
+        'passed': score['passed'],
+        'pp': score['pp'],
+        
+        'import_type': 'STABLE_LOCAL_DATA',
         'import_source_hash': import_source_hash,
     }
 
 
-def get_dict__hash_to_beatmap_db_id(score_data_per_beatmap: dict, session: Session):
-    hashes_to_import = set()
-    for beatmap_md5_hash in score_data_per_beatmap:
-        hashes_to_import.add(beatmap_md5_hash)
+def get_osu_api_data_cache__user_beatmap_scores(user_id: int):
+    engine = get_osu_api_data_cache_engine()
+    with engine.connect() as conn:
+        results = conn.execute(
+            text(f'''
+            SELECT beatmap_id, content 
+            FROM user_beatmap_scores
+            WHERE user_id = {user_id}; 
+            ''')
+        ).mappings().all()
+    return [dict(row) for row in results]
+
+
+def get_dict__beatmap_id_to_beatmap_db_id(user_beatmap_scores_data: list[dict], session: Session):
+    beatmap_ids_to_import = set()
+    for user_beatmap_score in user_beatmap_scores_data:
+        beatmap_ids_to_import.add(user_beatmap_score['beatmap_id'])
 
     stmt_select_beatmap_hash_and_id = (
-        select(Beatmap.md5_hash, Beatmap.id)
-        .where(Beatmap.md5_hash.in_(hashes_to_import))
+        select(Beatmap.beatmap_id, Beatmap.id)
+        .where(Beatmap.beatmap_id.in_(beatmap_ids_to_import))
     )
-    beatmap_hash_and_id = session.execute(stmt_select_beatmap_hash_and_id).all()
+    beatmap_id_and_db_id = session.execute(stmt_select_beatmap_hash_and_id).all()
     
-    return { hash: beatmap_db_id for hash, beatmap_db_id in beatmap_hash_and_id }
+    return { id: db_id for id, db_id in beatmap_id_and_db_id }
 
 
 log_messages = {
@@ -95,7 +76,7 @@ log_messages = {
     'end_task': 'TASK_END: end_task',
 }
     
-def fn(self: Task, session: Session, force_refresh: bool = False):
+def fn(self: Task, user_id: int, session: Session, force_refresh: bool = False):
     self.log_info('start_task')
 
     self.vars = {
@@ -107,24 +88,24 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
         'force_refresh': None,
     }
 
-    db_file_hash = utils.get_state__db_file_hash('scores', session)
-    score_data_per_beatmap = utils.load_json__db_file('scores', db_file_hash)['beatmaps']
+    user_beatmap_scores_data = get_osu_api_data_cache__user_beatmap_scores(user_id)
+    user_beatmap_scores_data_hash = utils.md5_hash_dict(user_beatmap_scores_data)
 
     ## todo: keep track of how many scores are not imported due to possible possible beatmap hash without a db id
-    hash_to_beatmap_db_id = get_dict__hash_to_beatmap_db_id(score_data_per_beatmap, session)
-
+    beatmap_id_to_beatmap_db_id = get_dict__beatmap_id_to_beatmap_db_id(user_beatmap_scores_data, session)
+    
     score_rows = []
-    for beatmap_md5_hash in score_data_per_beatmap:
-        beatmap_db_id = hash_to_beatmap_db_id.get(beatmap_md5_hash)
+    for user_beatmap_scores in user_beatmap_scores_data:
+        beatmap_db_id = beatmap_id_to_beatmap_db_id.get(user_beatmap_scores['beatmap_id'])
         if not beatmap_db_id: continue
-        for score in score_data_per_beatmap[beatmap_md5_hash]:
-            mapping = get_score_mapping(beatmap_db_id, score, db_file_hash)
+        for score in json.loads(user_beatmap_scores['content']):
+            mapping = get_score_mapping(beatmap_db_id, score, user_beatmap_scores_data_hash)
             score_rows.append(mapping)
 
     already_imported_count = session.scalar(
         select(func.count())
         .select_from(Score)
-        .where(Score.import_source_hash == db_file_hash)
+        .where(Score.import_source_hash == user_beatmap_scores_data_hash)
     )
 
     self.vars['to_import_items'] = already_imported_count != len(score_rows)
@@ -135,7 +116,7 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
             self=self,
             row_contents=score_rows,
             target_table=Score,
-            table_unique_keys=['beatmap_md5_hash', 'replay_md5_hash'],
+            table_unique_keys=['id'],
             session=session,
         )
 
@@ -149,11 +130,12 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     self.log_info('end_task')
 
 
-def init_task__populate_scores(session: Session, force_refresh: bool = False):
+def init_task__populate_scores_api(user_id: int, session: Session, force_refresh: bool = False):
     return Task(
-        'task__populate_scores',
+        'task__populate_scores_api',
         fn,
         log_messages,
+        user_id,
         session,
         force_refresh=force_refresh,
     )

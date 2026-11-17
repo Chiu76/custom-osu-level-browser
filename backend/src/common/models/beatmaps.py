@@ -33,7 +33,8 @@ class Beatmapset(Model):
     spotlight: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
     submitted_date: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     ranked_date: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    deleted_date: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    ranked_year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    ranked_month: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     # import details fields
     import_type: Mapped[str] = mapped_column(String(32), nullable=False)
@@ -79,7 +80,6 @@ class Beatmap(Model):
     play_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     pass_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     lazer_only: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
-    deleted_date: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     # osu!stable import fields
     last_played_date: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)

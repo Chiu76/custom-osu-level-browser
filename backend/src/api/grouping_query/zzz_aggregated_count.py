@@ -5,7 +5,7 @@ from .schemas import GroupingQueryRequest
 
 from .yyy_field_groupings import get_artist_grouping_sq, get_overall_difficulty_grouping_sq
 
-from src.beatmap_query.repositories import BeatmapQueryRepository
+from src.api.beatmap_query.repositories import BeatmapQueryRepository
 
 from src.common.models.collections import CollectionItem
 

@@ -22,7 +22,7 @@ def build_score_row_num_sq(score_sq_spec: ScoreSqSpec) -> Subquery:
     score_row_num_sq = (
         select(
             Score.mode, 
-            Score.player_name, 
+            Score.mods,
             Score.num_300s, 
             Score.num_100s, 
             Score.num_50s, 
@@ -34,8 +34,14 @@ def build_score_row_num_sq(score_sq_spec: ScoreSqSpec) -> Subquery:
             Score.replay_score,
             Score.max_combo,
             Score.perfect_combo,
-            Score.mods,
             Score.played_at,
+
+            Score.player_id,
+            Score.passed,
+            Score.pp,
+            
+            Score.player_name,
+
             Score.beatmap_db_id,
             _get_row_num_over(column__top_by).label('row_num'),
         )

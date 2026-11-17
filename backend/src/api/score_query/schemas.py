@@ -25,7 +25,7 @@ class ScoreQueryRequest(BaseModel):
 
 class ScoreQueryRow(BaseModel):
     mode: int
-    player_name: str
+    mods: int
     num_300s: int
     num_100s: int
     num_50s: int
@@ -37,8 +37,13 @@ class ScoreQueryRow(BaseModel):
     replay_score: int
     max_combo: int
     perfect_combo: bool
-    mods: int
     played_at: int
+
+    player_id: int | None
+    passed: bool | None
+    pp: float | None
+
+    player_name: str | None
 
 
 class ScoreQueryResponse(BaseModel):

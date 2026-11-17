@@ -6,7 +6,7 @@ import { DirHandler } from "./DirHandler.js";
 export function ScoreTopByHandler(parentId) {
     const [attachedScoreTopBy, setAttachedScoreTopBy] = createSignal();
     
-    const topByValues = schemas["TopBy"]["properties"]["field"]["enum"].sort();
+    const topByValues = schemas["TopBy"]["properties"]["field"]["enum"];
     
     const parentElement = document.getElementById(parentId);
     const selectElement = parentElement.getElementsByTagName("select")[0];

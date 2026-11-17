@@ -6,8 +6,8 @@ from src.common.models.beatmaps import Beatmap, Beatmapset
 from .schemas.requests import BeatmapQueryRequest, BeatmapQueryRow
 from .schemas.specs import CoreSpecs, PresentationSpecs
 
-import src.beatmap_query.zzz_core as zzz_core
-import src.beatmap_query.zzz_presentation as zzz_presentation
+import src.api.beatmap_query.zzz_core as zzz_core
+import src.api.beatmap_query.zzz_presentation as zzz_presentation
 
 
 class BeatmapQueryRepository:
@@ -54,6 +54,13 @@ class BeatmapQueryRepository:
                 Beatmap.drain_time,
                 Beatmap.total_time,
 
+                Beatmap.creator_id,
+                Beatmap.creators,
+                Beatmap.max_combo,
+                Beatmap.play_count,
+                Beatmap.pass_count,
+                Beatmap.lazer_only,
+
                 Beatmap.last_played_date,
 
 
@@ -62,6 +69,19 @@ class BeatmapQueryRepository:
                 Beatmapset.owner,
                 Beatmapset.song_source,
                 Beatmapset.song_tags,
+                Beatmapset.owner,
+
+                Beatmapset.owner_id,
+                Beatmapset.play_count,
+                Beatmapset.favourite_count,
+                Beatmapset.rating,
+                Beatmapset.genre_id,
+                Beatmapset.language_id,
+                Beatmapset.spotlight,
+                Beatmapset.submitted_date,
+                Beatmapset.ranked_date,
+                Beatmapset.ranked_year,
+                Beatmapset.ranked_month,
             )
             .select_from(Beatmap)
             .join(Beatmapset, Beatmapset.beatmapset_id == Beatmap.beatmapset_id)

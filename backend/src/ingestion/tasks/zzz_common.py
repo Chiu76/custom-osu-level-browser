@@ -1,4 +1,4 @@
-import datetime
+import time, datetime
 
 from sqlalchemy import Insert
 from sqlalchemy.dialects.sqlite import insert
@@ -17,6 +17,24 @@ def ticks_to_posix(dotnet_ticks):
     seconds = dotnet_ticks / _ten_million;
     posix =  seconds - _offset
     return round(posix)
+
+
+def osu_api_timestamp_to_posix(timestamp_str):
+    if type(timestamp_str) != str: return None
+    dt = datetime.datetime.strptime(timestamp_str, '%Y-%m-%dT%H:%M:%SZ')
+    return time.mktime(dt.timetuple())
+
+
+def osu_api_timestamp_to_year(timestamp_str):
+    if type(timestamp_str) != str: return None
+    dt = datetime.datetime.strptime(timestamp_str, '%Y-%m-%dT%H:%M:%SZ')
+    return dt.year
+
+
+def osu_api_timestamp_to_month(timestamp_str):
+    if type(timestamp_str) != str: return None
+    dt = datetime.datetime.strptime(timestamp_str, '%Y-%m-%dT%H:%M:%SZ')
+    return dt.month
 
 
 def batch(items: list, size: int):

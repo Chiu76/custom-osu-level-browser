@@ -53,11 +53,9 @@ def compute_accuracy(score: dict) -> float:
 def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) -> dict:
     return {
         'beatmap_db_id': beatmap_db_id,
+        'online_score_id': score['online_score_id'],
         'mode': score['mode'],
-        'version': score['version'],
-        'player_name': score['player_name'],
-        'beatmap_md5_hash': score['md5'],
-        'replay_md5_hash': score['replay_md5'],
+        'mods': score['mods'],
         'num_300s': score['num_300s'],
         'num_100s': score['num_100s'],
         'num_50s': score['num_50s'],
@@ -69,9 +67,12 @@ def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) 
         'replay_score': score['replay_score'],
         'max_combo': score['max_combo'],
         'perfect_combo': score['perfect_combo'],
-        'mods': score['mods'],
         'played_at': task_common.ticks_to_posix(score['timestamp']),
-        'online_score_id': score['online_score_id'],
+
+        'player_name': score['player_name'],
+        'beatmap_md5_hash': score['md5'],
+        
+        'import_type': 'STABLE_LOCAL_DATA',
         'import_source_hash': import_source_hash,
     }
 

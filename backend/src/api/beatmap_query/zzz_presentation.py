@@ -6,7 +6,7 @@ from .schemas.specs import PresentationSpecs, GroupingSpec, SearchSpec, Sort, So
 from .yyy_filter_sort_fields import get_column__sort_field
 from .yyy_common import exists_in_collection, exists_in_artist_grouping, exists_in_overall_difficulty_grouping
 
-from src.grouping_query.enums import GroupingTypeEnum
+from src.api.grouping_query.enums import GroupingTypeEnum
 
 
 def apply_presentation_specs(core_stmt: Select, presentation_specs: PresentationSpecs):

@@ -5,9 +5,10 @@ from sqlalchemy.orm import InstrumentedAttribute
 from src.common.models.scores import Score
 
 
-TOP_BY_FIELDS = Literal['accuracy', 'played_at']
+TOP_BY_FIELDS = Literal['score', 'accuracy', 'played_at']
 
 TOP_BY_COLUMNS = {
+    'score': Score.replay_score,
     'accuracy': Score.accuracy,
     'played_at': Score.played_at,
 }

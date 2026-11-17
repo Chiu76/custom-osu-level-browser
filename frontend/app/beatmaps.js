@@ -3,7 +3,7 @@ import { createSignal, createEffect, createMemo } from "../reactive.js";
 import { BeatmapContentHandler } from "../components/BeatmapContentHandler.js";
 import { BeatmapContainerHandler } from "../components/BeatmapContainerHandler.js";
 import { 
-    beatmapSearch, beatmapFilter, beatmapSort, 
+    beatmapSearch, beatmapFilter, beatmapSort,
     selectedBeatmapId, selectedBeatmapSetId,
     groupingType, setGroupingType,
     sourceSpecs, groupingSpecs,
@@ -35,7 +35,6 @@ function buildRequest(
                 },
                 score_required: score_required,
             },
-            online_details_spec: {},
             source_specs: source_specs,
             filter_spec: filter_spec,
         },

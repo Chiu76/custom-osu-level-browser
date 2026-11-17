@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from src.beatmap_query.schemas.requests import BeatmapQueryRequest
+from src.api.beatmap_query.schemas.requests import BeatmapQueryRequest
 from .enums import GroupingType
 
 

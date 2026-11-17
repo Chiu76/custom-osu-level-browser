@@ -24,6 +24,7 @@ from ..tasks.afa_populate_collections import init_task__populate_collections
 from ..tasks.afb_populate_collection_items import init_task__populate_collection_items
 
 from ..tasks.ag_populate_scores import init_task__populate_scores
+from ..tasks.ag_populate_scores_api import init_task__populate_scores_api
 
 
 def full_import():
@@ -40,6 +41,7 @@ def run_job__api_import(session: Session):
         init_task__populate_beatmapsets_api(session=session, force_refresh=False),
         init_task__populate_beatmaps_api(session=session, force_refresh=False),
         init_task__populate_beatmap_star_ratings_api(session=session, force_refresh=False),
+        init_task__populate_scores_api(user_id=3148900, session=session, force_refresh=False),
     ]
     job.run()
 
