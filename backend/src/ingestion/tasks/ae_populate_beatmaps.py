@@ -27,14 +27,12 @@ def compute_bpm(timing_points: list) -> float:
 
 def get_beatmap_mapping(beatmap_db_content: dict, import_source_hash: str) -> dict:
     return {
-        'beatmap_set_id': beatmap_db_content['beatmap_set_id'],
         'beatmap_id': beatmap_db_content['beatmap_id'],
+        'beatmapset_id': beatmap_db_content['beatmapset_id'],
         'md5_hash': beatmap_db_content['md5_hash'],
         'mode': beatmap_db_content['gameplay_mode'],
-        'difficulty_name': beatmap_db_content['difficulty'],
         'bpm': compute_bpm(beatmap_db_content['timing_points']),
-        'audio_file': beatmap_db_content['audio_file'],
-        'map_file': beatmap_db_content['map_file'],
+        'difficulty_name': beatmap_db_content['difficulty'],
         'ranked_status': beatmap_db_content['ranked_status'],
         'num_hitcircles': beatmap_db_content['num_hitcircles'],
         'num_sliders': beatmap_db_content['num_sliders'],
@@ -43,11 +41,12 @@ def get_beatmap_mapping(beatmap_db_content: dict, import_source_hash: str) -> di
         'overall_difficulty': round(beatmap_db_content['overall_difficulty'], 1),
         'circle_size': round(beatmap_db_content['circle_size'], 1),
         'hp_drain': round(beatmap_db_content['hp_drain'], 1),
-        'last_played': task_common.ticks_to_posix(beatmap_db_content['last_played']),
-        'last_modified': task_common.ticks_to_posix(beatmap_db_content['last_modified']),
         'drain_time': beatmap_db_content['drain_time'],
         'total_time': beatmap_db_content['total_time'],
-        'local_offset': beatmap_db_content['local_offset'],
+        
+        'last_played_date': task_common.ticks_to_posix(beatmap_db_content['last_played']),
+        
+        'import_type': 'STABLE_LOCAL_DATA',
         'import_source_hash': import_source_hash,
     }
 

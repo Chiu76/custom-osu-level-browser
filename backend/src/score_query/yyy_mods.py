@@ -1,5 +1,4 @@
 from typing import Literal
-from enum import Enum
 from sqlalchemy import Select, and_
 
 from src.common.models.scores import Score
@@ -153,6 +152,10 @@ def get_mod_value(mod: MODS_FIELDS | MODS_FIELDS_ALTERNATIVES) -> int:
     return mod_values[mod]
 
 
+def get_mods_value(mods: list[MODS_FIELDS | MODS_FIELDS_ALTERNATIVES]) -> int:
+    return sum([get_mod_value(mod) for mod in mods])
+
+
 def apply_mods(
     stmt: Select,
     mods_exact: list[MODS_FIELDS | MODS_FIELDS_ALTERNATIVES],
@@ -160,7 +163,7 @@ def apply_mods(
     mods_exclude: list[MODS_FIELDS | MODS_FIELDS_ALTERNATIVES],
 ) -> Select:    
     if mods_exact:
-        mods_exact_value = sum([get_mod_value(mod) for mod in mods_exact])
+        mods_exact_value = get_mods_value(mods_exact)
         return stmt.where(Score.mods == mods_exact_value)
     
     conditions = []

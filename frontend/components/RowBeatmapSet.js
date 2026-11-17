@@ -11,11 +11,11 @@ function RowBeatmapSet(beatmaps) {
     li.appendChild(createElementClassContent("div", "title", beatmapSet.title));
     li.appendChild(createElementClassContent("div", "artist", beatmapSet.artist));
     li.appendChild(createElementClassContent("div", "bpm", `${beatmapSet.bpm} BPM`));
-    li.appendChild(createElementClassContent("div", "beatmap-set-id", beatmapSet.beatmap_set_id));
+    li.appendChild(createElementClassContent("div", "beatmap-set-id", beatmapSet.beatmapset_id));
     li.appendChild(createElementClassContent("div", "owner-id", beatmapSet.owner_id ?? ""));
     li.appendChild(createElementClassContent("div", "owner", beatmapSet.owner));
     
-    if (beatmapSet.beatmap_set_id == selectedBeatmapSetId()) {
+    if (beatmapSet.beatmapset_id == selectedBeatmapSetId()) {
         li.classList.add("highlighted");
         li.classList.add("inner-outline-brown");
     }

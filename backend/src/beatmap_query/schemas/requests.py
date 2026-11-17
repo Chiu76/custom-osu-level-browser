@@ -12,7 +12,7 @@ class BeatmapQueryRequest(BaseModel):
 class BeatmapQueryRow(BaseModel):
     beatmap_db_id: int
     beatmap_id: int
-    beatmap_set_id: int
+    beatmapset_id: int
     md5_hash: str
     mode: int
     bpm: float
@@ -25,20 +25,23 @@ class BeatmapQueryRow(BaseModel):
     overall_difficulty: float
     circle_size: float
     hp_drain: float
-    last_played: int
     drain_time: int
     total_time: int
-    local_offset: int
 
+    last_played_date: int | None
+
+    
     artist: str
     title: str
     owner: str
     song_source: str
     song_tags: str
 
+    
     grade: str | None
     accuracy: float | None
 
+    
     star_rating: float | None
     star_rating_aim: float | None
     star_rating_speed: float | None

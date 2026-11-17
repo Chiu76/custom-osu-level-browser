@@ -6,27 +6,22 @@ import { DirHandler } from "./DirHandler.js";
 export function StarRatingModsHandler() {
     const [starRatingMods, setStarRatingMods] = createSignal();
     
-    const modsValues = ["NM", "HR", "DT", "DTHR"]
-    
     const parentElement = document.getElementById("star-rating-mods");
     const selectElement = parentElement.getElementsByTagName("select")[0];
 
-    function modsToInt(mods) {
-        const mapping = {
-            "NM": 0,
-            "HR": 16,
-            "HR": 64,
-            "DTHR": 80,
-        };
-        return mapping[mods];
+    const modsValues = {
+        "NM": ["nm"],
+        "HR": ["hr"],
+        "DT": ["dt"],
+        "DTHR": ["dt", "hr"],
     }
 
     function selectOnChange(field) {
-        setStarRatingMods(modsToInt(field));
+        setStarRatingMods(modsValues[field]);
     }
 
     function init() {
-        SelectHandler().init(selectElement, selectOnChange, modsValues);
+        SelectHandler().init(selectElement, selectOnChange, Object.keys(modsValues));
 
         selectOnChange(selectElement.value);
 

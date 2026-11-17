@@ -1,17 +1,17 @@
 from sqlalchemy import Subquery, select, func, and_, case
 
-from src.common.models.beatmaps import BeatmapSet, Beatmap
+from src.common.models.beatmaps import Beatmapset, Beatmap
 
 
 def get_artist_grouping_sq() -> Subquery:
-    first_char = func.substr(func.lower(BeatmapSet.artist), 1, 1).label('first_char')
+    first_char = func.substr(func.lower(Beatmapset.artist), 1, 1).label('first_char')
     
     inner_sq = (
         select(
             func.row_number().over(order_by=first_char).label('id'),
             first_char,
         )
-        .select_from(BeatmapSet)
+        .select_from(Beatmapset)
         .group_by(first_char)
         .subquery('inner_sq')
     )
@@ -20,10 +20,10 @@ def get_artist_grouping_sq() -> Subquery:
         select(
             Beatmap.id.label('beatmap_db_id'),
             inner_sq.c.id.label('grouping_id'),
-            BeatmapSet.artist, 
+            Beatmapset.artist, 
         )
         .select_from(Beatmap)
-        .join(BeatmapSet, BeatmapSet.beatmap_set_id == Beatmap.beatmap_set_id)
+        .join(Beatmapset, Beatmapset.beatmapset_id == Beatmap.beatmapset_id)
         .join(inner_sq, first_char == inner_sq.c.first_char)
     )
     

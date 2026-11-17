@@ -13,32 +13,14 @@ import src.ingestion.tasks.zzz_common as task_common
 from src.common.db import get_osu_api_data_cache_engine
 
 
-def compute_bpm(timing_points: list) -> float:
-    if len(timing_points) == 1:
-        return round(60_000 / timing_points[0]['beat_length'])
-    
-    bpm_counts = {}
-    for timing_point in timing_points:
-        bpm = round(60_000 / timing_point['beat_length'])
-        if bpm not in bpm_counts:
-            bpm_counts[bpm] = 1
-        else:
-            bpm_counts[bpm] += 1
-    bpm_counts_as_sorted_list = list(sorted(bpm_counts.items(), key=lambda item: item[1], reverse=True))
-    
-    return bpm_counts_as_sorted_list[0][0]
-
-
 def get_beatmap_mapping(beatmap_db_content: dict, import_source_hash: str) -> dict:
     return {
-        'beatmap_set_id': beatmap_db_content['beatmapset_id'],
         'beatmap_id': beatmap_db_content['id'],
+        'beatmapset_id': beatmap_db_content['beatmapset_id'],
         'md5_hash': beatmap_db_content['checksum'],
         'mode': beatmap_db_content['mode'],
-        'difficulty_name': beatmap_db_content['version'],
         'bpm': beatmap_db_content['bpm'],
-        'audio_file': '',
-        'map_file': '',
+        'difficulty_name': beatmap_db_content['version'],
         'ranked_status': beatmap_db_content['status'],
         'num_hitcircles': beatmap_db_content['count_circles'],
         'num_sliders': beatmap_db_content['count_sliders'],
@@ -47,11 +29,18 @@ def get_beatmap_mapping(beatmap_db_content: dict, import_source_hash: str) -> di
         'overall_difficulty': beatmap_db_content['accuracy'],
         'circle_size': beatmap_db_content['cs'],
         'hp_drain': beatmap_db_content['drain'],
-        'last_played': task_common.ticks_to_posix(0),
-        'last_modified': task_common.ticks_to_posix(0),
         'drain_time': beatmap_db_content['hit_length'],
         'total_time': beatmap_db_content['total_length'],
-        'local_offset': 0,
+        
+        'creator_id': beatmap_db_content['user_id'],
+        'creators': json.dumps(beatmap_db_content['owners']),
+        'max_combo': beatmap_db_content['max_combo'],
+        'play_count': beatmap_db_content['play_count'],
+        'pass_count': beatmap_db_content['passcount'],
+        'lazer_only': beatmap_db_content['lazer_only'],
+        'deleted_date': beatmap_db_content['deleted_at'],
+        
+        'import_type': 'API_DATA',
         'import_source_hash': import_source_hash,
     }
 
@@ -61,11 +50,11 @@ def get_osu_api_data_cache__beatmapsets():
     with engine.connect() as conn:
         results = conn.execute(
             text('''
-            SELECT id, content 
-            FROM beatmap_sets;
+            SELECT beatmapset_id, content 
+            FROM beatmapsets;
             ''')
         ).mappings().all()
-    return results
+    return [dict(row) for row in results]
 
 
 log_messages = {
@@ -85,20 +74,20 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
         'force_refresh': None,
     }
 
-    db_file_hash = utils.get_state__db_file_hash('osu!', session)
-    beatmap_set_data = get_osu_api_data_cache__beatmapsets()
+    beatmapset_data = get_osu_api_data_cache__beatmapsets()
+    beatmapset_data_hash = utils.md5_hash_dict(beatmapset_data)
 
     beatmap_rows = []
-    for beatmap_set in beatmap_set_data:
-        beatmaps = json.loads(beatmap_set['content'])['beatmaps']
-        for beatmap in beatmaps:
-            row = get_beatmap_mapping(beatmap, import_source_hash=db_file_hash)
-            beatmap_rows.append(row)
+    for beatmapset in beatmapset_data:
+        for beatmap in json.loads(beatmapset['content'])['beatmaps']:
+            beatmap_rows.append(
+                get_beatmap_mapping(beatmap, import_source_hash=beatmapset_data_hash)
+            )
 
     already_imported_count = session.scalar(
         select(func.count())
         .select_from(Beatmap)
-        .where(Beatmap.import_source_hash == db_file_hash)
+        .where(Beatmap.import_source_hash == beatmapset_data_hash)
     )
 
     self.vars['to_import_items'] = already_imported_count != len(beatmap_rows)
@@ -123,9 +112,9 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     self.log_info('end_task')
 
 
-def init_task__populate_beatmaps_advanced(session: Session, force_refresh: bool = False):
+def init_task__populate_beatmaps_api(session: Session, force_refresh: bool = False):
     return Task(
-        'task__populate_beatmaps_advanced',
+        'task__populate_beatmaps_api',
         fn,
         log_messages,
         session,

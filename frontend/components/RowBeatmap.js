@@ -40,9 +40,9 @@ function RowBeatmap(beatmap) {
     li.appendChild(createElementClassContent("div", "mapper", beatmap.mapper ?? ""));
 
     li.appendChild(createElementClassContent("div", "beatmap-db-id", beatmap.beatmap_db_id, true));
-    li.appendChild(createElementClassContent("div", "beatmap-set-id", beatmap.beatmap_set_id, true));
+    li.appendChild(createElementClassContent("div", "beatmap-set-id", beatmap.beatmapset_id, true));
 
-    if (beatmap.beatmap_set_id == selectedBeatmapSetId() && !disableBeatmapSets()) {
+    if (beatmap.beatmapset_id == selectedBeatmapSetId() && !disableBeatmapSets()) {
         li.classList.add("highlighted");        
     }
 

@@ -7,12 +7,12 @@ export function ModFilterHandler(parentId) {
     const filterParent = document.getElementById(parentId);
     const filterInput = filterParent.getElementsByTagName("input")[0];
 
-    const fieldValuesDefault = schemas["ScoreSqSpec"]["properties"]["mods_exact"]["items"]["anyOf"][0]["enum"];
-    const fieldValuesAlts = schemas["ScoreSqSpec"]["properties"]["mods_exact"]["items"]["anyOf"][1]["enum"];
-    const fieldValues = fieldValuesDefault.concat(fieldValuesAlts);
+    const modValuesDefault = schemas["ScoreSqSpec"]["properties"]["mods_exact"]["items"]["anyOf"][0]["enum"];
+    const modValuesAlts = schemas["ScoreSqSpec"]["properties"]["mods_exact"]["items"]["anyOf"][1]["enum"];
+    const modValues = modValuesDefault.concat(modValuesAlts);
 
-    function assertField(mod) {
-        return fieldValues.includes(mod);
+    function assertMod(mod) {
+        return modValues.includes(mod);
     }
 
     function parseFilters(filters) {
@@ -21,7 +21,7 @@ export function ModFilterHandler(parentId) {
         const result = [];
         for (let filter of filters) {
             filter = filter.toLowerCase();
-            if (!assertField(filter)) {
+            if (!assertMod(filter)) {
                 return {
                     successful: false,
                     reason: `Invalid filter field: ${filter}`,

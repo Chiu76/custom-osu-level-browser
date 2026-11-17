@@ -1,7 +1,7 @@
 from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.common.models.beatmaps import Beatmap, BeatmapSet
+from src.common.models.beatmaps import Beatmap, Beatmapset
 
 from .schemas.requests import BeatmapQueryRequest, BeatmapQueryRow
 from .schemas.specs import CoreSpecs, PresentationSpecs
@@ -38,7 +38,7 @@ class BeatmapQueryRepository:
             select(
                 Beatmap.id.label('beatmap_db_id'),
                 Beatmap.beatmap_id,
-                Beatmap.beatmap_set_id,
+                Beatmap.beatmapset_id,
                 Beatmap.md5_hash,
                 Beatmap.mode,
                 Beatmap.bpm,
@@ -51,19 +51,20 @@ class BeatmapQueryRepository:
                 Beatmap.overall_difficulty,
                 Beatmap.circle_size,
                 Beatmap.hp_drain,
-                Beatmap.last_played,
                 Beatmap.drain_time,
                 Beatmap.total_time,
-                Beatmap.local_offset,
 
-                BeatmapSet.artist,
-                BeatmapSet.title,
-                BeatmapSet.owner,
-                BeatmapSet.song_source,
-                BeatmapSet.song_tags,
+                Beatmap.last_played_date,
+
+
+                Beatmapset.artist,
+                Beatmapset.title,
+                Beatmapset.owner,
+                Beatmapset.song_source,
+                Beatmapset.song_tags,
             )
             .select_from(Beatmap)
-            .join(BeatmapSet, BeatmapSet.beatmap_set_id == Beatmap.beatmap_set_id)
+            .join(Beatmapset, Beatmapset.beatmapset_id == Beatmap.beatmapset_id)
         )
 
         return stmt

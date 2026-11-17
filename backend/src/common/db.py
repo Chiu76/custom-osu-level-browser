@@ -34,7 +34,7 @@ def get_osu_api_data_cache_engine():
     with engine.connect() as conn:
         results = conn.execute(
             text('''
-                SELECT tag, coalesce(ruleset_id, 0) as mode, beatmap_set_ids 
+                SELECT tag, coalesce(ruleset_id, 0) as mode, beatmapset_ids 
                 FROM beatmap_packs
                 ORDER BY tag
             ''')

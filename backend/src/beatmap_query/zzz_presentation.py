@@ -28,7 +28,7 @@ def apply_search(stmt: Select, core_sq: Subquery, search_spec: SearchSpec) -> Se
             or_(
                 ## todo: eventually, have the searchable columns defined somewhere else? and destructure them here only
                 core_sq.c.beatmap_id.ilike(f'%{q}%'),
-                core_sq.c.beatmap_set_id.ilike(f'%{q}%'),
+                core_sq.c.beatmapset_id.ilike(f'%{q}%'),
                 core_sq.c.difficulty_name.ilike(f'%{q}%'),
                 core_sq.c.artist.ilike(f'%{q}%'),
                 core_sq.c.title.ilike(f'%{q}%'),
@@ -70,7 +70,7 @@ def _get_default_sort_columns(core_sq: Subquery) -> list[InstrumentedAttribute]:
     return [
         get_column__sort_field('artist', core_sq),
         get_column__sort_field('title', core_sq),
-        get_column__sort_field('beatmap_set_id', core_sq),
+        get_column__sort_field('beatmapset_id', core_sq),
     ]
 
 

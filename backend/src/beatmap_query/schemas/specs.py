@@ -5,6 +5,7 @@ from .identifiers import NoneIdentifier, LocalBeatmapsIdentifier, GroupingIdenti
 from ..yyy_filter_sort_fields import FILTER_SORT_FIELDS, FILTER_SORT_FIELDS_ALTERNATIVES, FILTER_OPS
 
 from src.score_query.schemas import ScoreSqSpec
+from src.score_query.yyy_mods import MODS_FIELDS, MODS_FIELDS_ALTERNATIVES
 
 
 SourceSpec = Annotated[
@@ -14,7 +15,7 @@ SourceSpec = Annotated[
 
 
 class StarRatingSpec(BaseModel):
-    pass
+    mods: list[MODS_FIELDS | MODS_FIELDS_ALTERNATIVES]
 
 
 class AttachedScoreSpec(BaseModel):

@@ -13,12 +13,12 @@ from ..tasks.generic_import_db_file import init_task__generic_import_db_file
 from ..tasks.generic_update_state_db_file import init_task__generic_update_state_db_file 
 from ..tasks.generic_parse_imported_db_file import init_task__generic_parse_imported_db_file
 
-from ..tasks.ad_populate_beatmap_sets import init_task__populate_beatmap_sets
-from ..tasks.ad_populate_beatmap_sets_advanced import init_task__populate_beatmap_sets_advanced
+from ..tasks.ad_populate_beatmapsets import init_task__populate_beatmapsets
+from ..tasks.ad_populate_beatmapsets_api import init_task__populate_beatmapsets_api
 from ..tasks.ae_populate_beatmaps import init_task__populate_beatmaps
-from ..tasks.ae_populate_beatmaps_advanced import init_task__populate_beatmaps_advanced
-from ..tasks.aha_populate_star_ratings import init_task__populate_beatmap_star_ratings
-from ..tasks.ahb_populate_star_ratings_advanced import init_task__populate_beatmap_star_ratings_advanced
+from ..tasks.ae_populate_beatmaps_api import init_task__populate_beatmaps_api
+from ..tasks.ah_populate_star_ratings import init_task__populate_beatmap_star_ratings
+from ..tasks.ah_populate_star_ratings_api import init_task__populate_beatmap_star_ratings_api
 
 from ..tasks.afa_populate_collections import init_task__populate_collections
 from ..tasks.afb_populate_collection_items import init_task__populate_collection_items
@@ -28,9 +28,20 @@ from ..tasks.ag_populate_scores import init_task__populate_scores
 
 def full_import():
     with SessionMaker() as session:
-        run_job__osu_db_file_import(session)
-        run_job__collection_db_file_import(session)
-        run_job__scores_db_file_import(session)
+        # run_job__osu_db_file_import(session)
+        # run_job__collection_db_file_import(session)
+        # run_job__scores_db_file_import(session)
+        run_job__api_import(session)
+
+
+def run_job__api_import(session: Session):
+    job = Job('job__osu_db_file_import')
+    job.to_execute = [
+        init_task__populate_beatmapsets_api(session=session, force_refresh=False),
+        init_task__populate_beatmaps_api(session=session, force_refresh=False),
+        init_task__populate_beatmap_star_ratings_api(session=session, force_refresh=False),
+    ]
+    job.run()
 
 
 def run_job__osu_db_file_import(session: Session):
@@ -39,29 +50,29 @@ def run_job__osu_db_file_import(session: Session):
 
         job = Job('job__osu_db_file_import')
         job.to_execute = [
-            init_task__generic_import_db_file(
-                db_file_type=db_file_type,
-                db_file_path=db_file_path,
-                force_refresh=False,
-            ),
-            init_precheck__table_exists(engine=engine, table='state'),
-            init_task__generic_update_state_db_file(
-                session=session,
-                db_file_type=db_file_type,
-                db_file_path=db_file_path,
-                force_refresh=False,
-            ),
-            init_task__generic_parse_imported_db_file(
-                session=session,
-                db_file_type=db_file_type,
-                force_refresh=False,
-            ),
-            init_task__populate_beatmap_sets(session=session, force_refresh=False),
-            # init_task__populate_beatmap_sets_advanced(session=session, force_refresh=False),
-            init_task__populate_beatmaps(session=session, force_refresh=False),
-            # init_task__populate_beatmaps_advanced(session=session, force_refresh=False),
-            init_task__populate_beatmap_star_ratings(session=session, force_refresh=False),
-            init_task__populate_beatmap_star_ratings_advanced(session=session, force_refresh=False),
+            # init_task__generic_import_db_file(
+            #     db_file_type=db_file_type,
+            #     db_file_path=db_file_path,
+            #     force_refresh=False,
+            # ),
+            # init_precheck__table_exists(engine=engine, table='state'),
+            # init_task__generic_update_state_db_file(
+            #     session=session,
+            #     db_file_type=db_file_type,
+            #     db_file_path=db_file_path,
+            #     force_refresh=False,
+            # ),
+            # init_task__generic_parse_imported_db_file(
+            #     session=session,
+            #     db_file_type=db_file_type,
+            #     force_refresh=False,
+            # ),
+            # init_task__populate_beatmapsets(session=session, force_refresh=False),
+            init_task__populate_beatmapsets_api(session=session, force_refresh=False),
+            # init_task__populate_beatmaps(session=session, force_refresh=False),
+            init_task__populate_beatmaps_api(session=session, force_refresh=False),
+            # init_task__populate_beatmap_star_ratings(session=session, force_refresh=False),
+            # init_task__populate_beatmap_star_ratings_advanced(session=session, force_refresh=False),
         ]
         job.run()
 

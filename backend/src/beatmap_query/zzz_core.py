@@ -7,8 +7,10 @@ import src.beatmap_query.yyy_filter_sort_fields as filter_sort_fields
 from src.common.models.beatmaps import Beatmap, BeatmapStarRating
 
 import src.score_query.zzz_score_sq as zzz_score_sq
+from src.score_query.yyy_mods import get_mods_value
 
 from .yyy_common import exists_in_collection, date_input_to_posix
+
 
 
 def apply_core_specs(initial_stmt: Select, core_specs: CoreSpecs):
@@ -34,7 +36,7 @@ def apply_star_rating(stmt: Select, star_rating_spec: StarRatingSpec) -> Select:
     return stmt.outerjoin(BeatmapStarRating, and_(
         BeatmapStarRating.beatmap_db_id == Beatmap.id,
         BeatmapStarRating.mode == 0,
-        BeatmapStarRating.mods == 0,
+        BeatmapStarRating.mods == get_mods_value(star_rating_spec.mods),
     ))
 
 
@@ -85,7 +87,7 @@ def _get_filter_condition(stmt: Select, filter: Filter):
                 value = date_input_to_posix(filter.value)
             except ValueError as e:
                 return None
-        case 'last_played':
+        case 'last_played_date':
             try:
                 value = date_input_to_posix(filter.value)
             except ValueError as e:

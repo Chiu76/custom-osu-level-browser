@@ -24,14 +24,14 @@ export function BeatmapContentHandler() {
                 ? { type: "set", content: current }
                 : { type: "beatmap", content: current[0] }
             );
-            if (current.length > 1 && current[0].beatmap_set_id == selectedSetId) {
+            if (current.length > 1 && current[0].beatmapset_id == selectedSetId) {
                 for (const row of current) results.push({ type: "beatmap", content: row });
             }
             current = [];
         }
 
         for (const beatmap of beatmaps) {
-            if (current.length > 0 && beatmap.beatmap_set_id !== current[0].beatmap_set_id) {
+            if (current.length > 0 && beatmap.beatmapset_id !== current[0].beatmapset_id) {
                 flushCurrent();
             }
             current.push(beatmap);

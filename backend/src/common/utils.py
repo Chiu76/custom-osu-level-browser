@@ -73,3 +73,11 @@ def md5_hash(file_path: Path):
         while chunk := f.read(8192):
             file_hash.update(chunk)
     return file_hash.hexdigest()
+
+
+def md5_hash_dict(my_dict):
+    dict_hash = hashlib.md5()
+    dict_hash.update(
+        json.dumps(my_dict, sort_keys=True).encode()
+    )
+    return dict_hash.hexdigest()

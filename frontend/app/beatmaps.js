@@ -13,12 +13,18 @@ import {
     modsIncludeFilter, setModsIncludeFilter,
     modsExcludeFilter, setModsExcludeFilter,
     disableBeatmapSets, setDisableBeatmapSets,
+    starRatingMods, setStarRatingMods
 } from "./settings.js";
 
-function buildRequest(search_spec, filter_spec, sort_spec, source_specs, grouping_specs, top_by, score_required, mods_exact, mods_include, mods_exclude) {
+function buildRequest(
+    search_spec, filter_spec, sort_spec, 
+    source_specs, grouping_specs,
+    top_by, score_required, mods_exact, mods_include, mods_exclude,
+    star_rating_mods, 
+) {
     return {
         core_specs: {
-            star_rating_spec: {},
+            star_rating_spec: { mods: star_rating_mods },
             attached_score_spec: {
                 score_sq_spec: {
                     top_by: top_by,
@@ -38,7 +44,7 @@ function buildRequest(search_spec, filter_spec, sort_spec, source_specs, groupin
             grouping_specs: grouping_specs,
             sort_spec: sort_spec,
         }
-    }
+    };
 }
 
 const [request, setRequest] = createSignal();
@@ -54,7 +60,15 @@ createEffect(() => {
     const mods_exact = modsExactFilter();
     const mods_include = modsIncludeFilter();
     const mods_exclude = modsExcludeFilter();
-    const newRequest = buildRequest(search_spec, filter_spec, sort_spec, source_specs, grouping_specs, top_by, score_required, mods_exact, mods_include, mods_exclude);
+    const star_rating_mods = starRatingMods();
+
+    const newRequest = buildRequest(
+        search_spec, filter_spec, sort_spec, 
+        source_specs, grouping_specs, 
+        top_by, score_required, mods_exact, mods_include, mods_exclude,
+        star_rating_mods,
+    );
+    
     console.log("beatmaps: newRequest:", newRequest);
     setRequest(newRequest);
 });
