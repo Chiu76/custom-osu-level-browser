@@ -38,9 +38,14 @@ createEffect(() => {
     const mods_include = modsIncludeFilter();
     const mods_exclude = modsExcludeFilter();
     const beatmap_db_id = getBeatmapDbId(selectedBeatmapId());
+    
+    const prevRequest = request();
     const newRequest = buildRequest(top_by, mods_exact, mods_include, mods_exclude, beatmap_db_id);
-    console.log("groupings: newRequest:", newRequest);
-    setRequest(newRequest);
+
+    if (JSON.stringify(prevRequest) !== JSON.stringify(newRequest)) {
+        console.log("scores: newRequest:", newRequest);
+        setRequest(newRequest);
+    }
 });
 
 const scoreContentHandler = ScoreContentHandler();

@@ -61,6 +61,7 @@ createEffect(() => {
     const mods_exclude = modsExcludeFilter();
     const star_rating_mods = starRatingMods();
 
+    const prevRequest = request();
     const newRequest = buildRequest(
         search_spec, filter_spec, sort_spec, 
         source_specs, grouping_specs, 
@@ -68,8 +69,10 @@ createEffect(() => {
         star_rating_mods,
     );
     
-    console.log("beatmaps: newRequest:", newRequest);
-    setRequest(newRequest);
+    if (JSON.stringify(prevRequest) !== JSON.stringify(newRequest)) {
+        console.log("beatmaps: newRequest:", newRequest);
+        setRequest(newRequest);
+    }
 });
 
 const beatmapContentHandler = BeatmapContentHandler();

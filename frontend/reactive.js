@@ -1,55 +1,105 @@
+// code based on:
+// https://dev.to/ryansolid/a-hands-on-introduction-to-fine-grained-reactivity-3ndf
+// https://dev.to/ryansolid/building-a-reactive-library-from-scratch-1i0p
+
+
 const context = [];
 
-function subscribe(running_subscriber, subscriptions) {
-    subscriptions.add(running_subscriber);
-    running_subscriber.dependencies.add(subscriptions);
-}
-
-export function createSignal(value) {
-    const subscriptions = new Set();
-
-    const read = () => {
-        const running_subscriber = context[context.length - 1];
-        if (running_subscriber) subscribe(running_subscriber, subscriptions);
-        return value;
-    };
-
-    const write = (nextValue) => {
-        value = nextValue;
-        for (const sub of [...subscriptions]) {
-            sub.execute()
-        }
-    };
-
-    return [read, write];
-};
-
-export function createEffect(fn) {
-    const cleanup = () => {
-        for (const dep of running_subscriber.dependencies) dep.delete(running_subscriber);
-        running_subscriber.dependencies.clear();
+class Effect {
+    constructor(fn) {
+        this.fn = fn;
+        this.assoicatedSignals = new Set();
+        this.isStale = false;
+        this.memoSignalRef = undefined;
+        this.execute();
     }
 
-    const execute = () => {
-        cleanup()
-        context.push(running_subscriber);
+    cleanup() {
+        for (const signal of this.assoicatedSignals) {
+            signal.removeEffect(this);
+        }    
+        this.assoicatedSignals = new Set();
+    }
+
+    execute() {
+        this.cleanup();
+        context.push(this);
         try {
-            fn();
-        } finally {
+            this.fn();
+        }
+        finally {
             context.pop();
         }
-    };
-
-    const running_subscriber = {
-        execute,
-        dependencies: new Set()
-    };
-
-    execute();
+    }
 }
 
-export function createMemo(fn) {
-    const [s, set] = createSignal();
-    createEffect(() => set(fn()));
-    return s;
+class Signal {
+    constructor(value) {
+        this.value = value;
+        this.associatedEffects = new Set();
+        this.memoEffectRef = undefined;
+    }
+
+    get() {
+        if (context.length > 0) {
+            const runningEffect = context[context.length - 1];
+            this.associatedEffects.add(runningEffect);
+            runningEffect.assoicatedSignals.add(this);
+            if (this.memoEffectRef && this.memoEffectRef.isStale) {
+                this.memoEffectRef.isStale = false;
+                this.memoEffectRef.execute();
+            }
+        }
+        return this.value;
+    }
+
+    _set(value) {
+        this.value = value; 
+        for (const effect of this.associatedEffects) {
+            if (!effect.isStale) continue;
+            effect.isStale = false;
+            effect.execute();
+        }
+    }
+
+    set(value) {
+        this.propagateStale();
+        this._set(value);
+    }
+
+    propagateStale() {
+        for (const effect of this.associatedEffects) {
+            if (!effect.isStale) {
+                effect.isStale = true;
+                if (effect.memoSignalRef) {
+                    effect.memoSignalRef.propagateStale();
+                }
+            }
+        }
+    }
+
+    removeEffect(effect) {
+        if (this.associatedEffects.has(effect)) {
+            this.associatedEffects.delete(effect);
+        }
+    }
 }
+
+function createSignal(value) {
+    const signal = new Signal(value);
+    return [() => signal.get(), (value) => signal.set(value)];
+}
+
+function createEffect(fn) {
+    return new Effect(fn);
+}
+
+function createMemo(fn) {
+    const signal = new Signal();
+    const effect = new Effect(() => signal._set(fn()));
+    signal.memoEffectRef = effect;
+    effect.memoSignalRef = signal;
+    return () => signal.get();
+}
+
+export { createSignal, createEffect, createMemo };

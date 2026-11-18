@@ -24,12 +24,16 @@ const [request, setRequest] = createSignal();
 createEffect(() => {
     const beatmap_query_request = beatmapQuery.request();
     beatmap_query_request.presentation_specs.grouping_specs = [{ type: "none" }];
-    
     const grouping_type = groupingType();
     const q = groupingSearch();
+    
+    const prevRequest = request();
     const newRequest = buildRequest(beatmap_query_request, grouping_type, q);
-    console.log("groupings: newRequest:", newRequest);
-    setRequest(newRequest);
+    
+    if (JSON.stringify(prevRequest) !== JSON.stringify(newRequest)) {
+        console.log("groupings: newRequest:", newRequest);
+        setRequest(newRequest);
+    }
 });
 
 const groupingContentHandler = GroupingContentHandler();
