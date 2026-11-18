@@ -26,19 +26,8 @@ SessionMaker = sessionmaker(engine)
 
 
 def get_osu_api_data_cache_engine():
+    url = f'sqlite:///{os.environ["OSU_API_DATA_CACHE_DB_PATH"]}'
     return create_engine(
-        url=os.environ['OSU_API_DATA_CACHE_DATABASE_URL'],
+        url=url,
         echo=False,
     )
-
-    with engine.connect() as conn:
-        results = conn.execute(
-            text('''
-                SELECT tag, coalesce(ruleset_id, 0) as mode, beatmapset_ids 
-                FROM beatmap_packs
-                ORDER BY tag
-            ''')
-            # text('SELECT count(*) FROM beatmap_packs')
-        ).mappings().all()
-        # print(results)
-        return results[:5]

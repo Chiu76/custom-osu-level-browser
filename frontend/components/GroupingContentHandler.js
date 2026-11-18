@@ -58,7 +58,7 @@ export function GroupingContentHandler() {
                 id: el.groupingId,
             }
         });
-
+    
         if (groupings.length > 0) {
             setGroupingSpecs(groupings);
         }

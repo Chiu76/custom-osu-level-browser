@@ -1,4 +1,4 @@
-import { createSignal, createEffect } from "../reactive.js";
+import { createSignal, createEffect, createMemo } from "../reactive.js";
 import { ScoreContainerHandler } from "../components/ScoreContainerHandler.js";
 import { ScoreContentHandler } from "../components/ScoreContentHandler.js";
 import { RowScore } from "../components/RowScore.js";
@@ -31,6 +31,7 @@ function getBeatmapDbId(beatmapId) {
 }
 
 const [request, setRequest] = createSignal();
+const prevRequest = createMemo(() => request());
 
 createEffect(() => {
     const top_by = scoreSortBy();
@@ -39,10 +40,9 @@ createEffect(() => {
     const mods_exclude = modsExcludeFilter();
     const beatmap_db_id = getBeatmapDbId(selectedBeatmapId());
     
-    const prevRequest = request();
     const newRequest = buildRequest(top_by, mods_exact, mods_include, mods_exclude, beatmap_db_id);
 
-    if (JSON.stringify(prevRequest) !== JSON.stringify(newRequest)) {
+    if (JSON.stringify(prevRequest()) !== JSON.stringify(newRequest)) {
         console.log("scores: newRequest:", newRequest);
         setRequest(newRequest);
     }

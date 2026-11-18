@@ -13,8 +13,6 @@ import src.api.beatmap_query.zzz_presentation as zzz_presentation
 class BeatmapQueryRepository:
     @classmethod
     async def query(cls, request: BeatmapQueryRequest, session: AsyncSession) -> list[BeatmapQueryRow]:
-        print('test')
-
         beatmap_query_stmt = cls.get_beatmap_query_stmt(request.core_specs, request.presentation_specs)
 
         beatmap_query_stmt = beatmap_query_stmt.limit(1000)

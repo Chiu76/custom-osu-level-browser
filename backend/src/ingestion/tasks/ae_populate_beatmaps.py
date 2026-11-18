@@ -28,7 +28,7 @@ def compute_bpm(timing_points: list) -> float:
 def get_beatmap_mapping(beatmap_db_content: dict, import_source_hash: str) -> dict:
     return {
         'beatmap_id': beatmap_db_content['beatmap_id'],
-        'beatmapset_id': beatmap_db_content['beatmapset_id'],
+        'beatmapset_id': beatmap_db_content['beatmap_set_id'],
         'md5_hash': beatmap_db_content['md5_hash'],
         'mode': beatmap_db_content['gameplay_mode'],
         'bpm': compute_bpm(beatmap_db_content['timing_points']),

@@ -47,6 +47,7 @@ function buildRequest(
 }
 
 const [request, setRequest] = createSignal();
+// const [prevRequest, setPrevRequest] = createSignal();
 
 createEffect(() => {
     const search_spec = { queries: beatmapSearch() };
@@ -61,7 +62,6 @@ createEffect(() => {
     const mods_exclude = modsExcludeFilter();
     const star_rating_mods = starRatingMods();
 
-    const prevRequest = request();
     const newRequest = buildRequest(
         search_spec, filter_spec, sort_spec, 
         source_specs, grouping_specs, 
@@ -69,10 +69,10 @@ createEffect(() => {
         star_rating_mods,
     );
     
-    if (JSON.stringify(prevRequest) !== JSON.stringify(newRequest)) {
+    // if (JSON.stringify(prevRequest()) !== JSON.stringify(newRequest)) {
         console.log("beatmaps: newRequest:", newRequest);
         setRequest(newRequest);
-    }
+    // }
 });
 
 const beatmapContentHandler = BeatmapContentHandler();

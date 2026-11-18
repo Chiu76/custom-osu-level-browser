@@ -81,3 +81,75 @@ def get_overall_difficulty_grouping_sq() -> Subquery:
     )
     
     return overall_difficulty_sq
+
+
+def get_ranked_year_grouping_sq() -> Subquery:
+    ids = case(  
+        (Beatmapset.ranked_year == 2007, 0),
+        (Beatmapset.ranked_year == 2008, 1),
+        (Beatmapset.ranked_year == 2009, 2),
+        (Beatmapset.ranked_year == 2010, 3),
+        (Beatmapset.ranked_year == 2011, 4),
+        (Beatmapset.ranked_year == 2012, 5),
+        (Beatmapset.ranked_year == 2013, 6),
+        (Beatmapset.ranked_year == 2014, 7),
+        (Beatmapset.ranked_year == 2015, 8),
+        (Beatmapset.ranked_year == 2016, 9),
+        (Beatmapset.ranked_year == 2017, 10),
+        (Beatmapset.ranked_year == 2018, 11),
+        (Beatmapset.ranked_year == 2019, 12),
+        (Beatmapset.ranked_year == 2020, 13),
+        (Beatmapset.ranked_year == 2021, 14),
+        (Beatmapset.ranked_year == 2022, 15),
+        (Beatmapset.ranked_year == 2023, 16),
+        (Beatmapset.ranked_year == 2024, 17),
+        (Beatmapset.ranked_year == 2025, 18),
+        (Beatmapset.ranked_year == 2026, 19),
+    )
+
+    bins = case(  
+        (Beatmapset.ranked_year == 2007, '2007'),
+        (Beatmapset.ranked_year == 2008, '2008'),
+        (Beatmapset.ranked_year == 2009, '2009'),
+        (Beatmapset.ranked_year == 2010, '2010'),
+        (Beatmapset.ranked_year == 2011, '2011'),
+        (Beatmapset.ranked_year == 2012, '2012'),
+        (Beatmapset.ranked_year == 2013, '2013'),
+        (Beatmapset.ranked_year == 2014, '2014'),
+        (Beatmapset.ranked_year == 2015, '2015'),
+        (Beatmapset.ranked_year == 2016, '2016'),
+        (Beatmapset.ranked_year == 2017, '2017'),
+        (Beatmapset.ranked_year == 2018, '2018'),
+        (Beatmapset.ranked_year == 2019, '2019'),
+        (Beatmapset.ranked_year == 2020, '2020'),
+        (Beatmapset.ranked_year == 2021, '2021'),
+        (Beatmapset.ranked_year == 2022, '2022'),
+        (Beatmapset.ranked_year == 2023, '2023'),
+        (Beatmapset.ranked_year == 2024, '2024'),
+        (Beatmapset.ranked_year == 2025, '2025'),
+        (Beatmapset.ranked_year == 2026, '2026'),
+    )
+    
+    inner_sq = (
+        select(
+            ids.label('id'),
+            bins.label('bins'),
+        )
+        .select_from(Beatmapset)
+        .group_by(bins)
+        .subquery('inner_sq')
+    )
+    
+    ranked_year_sq = (
+        select(
+            Beatmap.id.label('beatmap_db_id'),
+            inner_sq.c.id.label('grouping_id'),
+            inner_sq.c.bins,
+            Beatmap.overall_difficulty, 
+        )
+        .select_from(Beatmap)
+        .join(Beatmapset, Beatmapset.beatmapset_id == Beatmap.beatmapset_id)
+        .join(inner_sq, inner_sq.c.bins == bins)
+    )
+
+    return ranked_year_sq

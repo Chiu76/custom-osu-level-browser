@@ -1,4 +1,4 @@
-import { createSignal, createEffect } from "../reactive.js";
+import { createSignal, createEffect, createMemo } from "../reactive.js";
 import { GroupingContainerHandler } from "../components/GroupingContainerHandler.js";
 import { GroupingContentHandler } from "../components/GroupingContentHandler.js";
 import { RowGrouping } from "../components/RowGrouping.js";
@@ -20,6 +20,7 @@ function buildRequest(beatmap_query_request, grouping_type, q) {
 }
 
 const [request, setRequest] = createSignal();
+const prevRequest = createMemo(() => request());
 
 createEffect(() => {
     const beatmap_query_request = beatmapQuery.request();
@@ -27,10 +28,9 @@ createEffect(() => {
     const grouping_type = groupingType();
     const q = groupingSearch();
     
-    const prevRequest = request();
     const newRequest = buildRequest(beatmap_query_request, grouping_type, q);
     
-    if (JSON.stringify(prevRequest) !== JSON.stringify(newRequest)) {
+    if (JSON.stringify(prevRequest()) !== JSON.stringify(newRequest)) {
         console.log("groupings: newRequest:", newRequest);
         setRequest(newRequest);
     }

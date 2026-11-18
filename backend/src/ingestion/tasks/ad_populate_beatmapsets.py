@@ -11,7 +11,7 @@ import src.ingestion.tasks.zzz_common as task_common
 
 def get_beatmapset_mapping(beatmap_db_content: dict, import_source_hash: str) -> dict:
     return {
-        'beatmapset_id': beatmap_db_content['beatmapset_id'],
+        'beatmapset_id': beatmap_db_content['beatmap_set_id'],
         'artist': beatmap_db_content['artist'],
         'artist_unicode': beatmap_db_content['artist_unicode'],
         'title': beatmap_db_content['title'],
@@ -47,7 +47,7 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     set_ids = set()
     beatmapset_rows = []
     for beatmap in beatmap_data:
-        set_id = beatmap['beatmapset_id']
+        set_id = beatmap['beatmap_set_id']
         if set_id in set_ids: continue
         mapping = get_beatmapset_mapping(beatmap, import_source_hash=osu_db_file_hash)
         beatmapset_rows.append(mapping)
