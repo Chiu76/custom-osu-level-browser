@@ -12,7 +12,10 @@ function RowGrouping(grouping) {
     li.appendChild(createElementClassContent("div", "grouping-marker hidden", "Grouping"));
     li.appendChild(createElementClassContent("div", "source-marker hidden", "Source"));
     li.appendChild(createElementClassContent("div", "name", grouping.grouping_name));
-    li.appendChild(createElementClassContent("div", "count", `${grouping.selected_count} (${grouping.total_count})`));
+    
+    if (grouping.selected_count && grouping.total_count) {
+        li.appendChild(createElementClassContent("div", "count", `${grouping.selected_count ?? ""} (${grouping.total_count ?? ""})`));
+    }
     
     if (selectedGroupings().includes(li.id)) {
         li.getElementsByClassName("grouping-marker")[0].classList.toggle("hidden");

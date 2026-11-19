@@ -11,7 +11,7 @@ function RowScore(score) {
     li.appendChild(createElementClassContent("div", "player-name", score.player_name));
     li.appendChild(createElementClassContent("div", "replay-score", `Score: ${numberWithCommas(score.replay_score)}`));
     li.appendChild(getModsElement(score.mods));
-    li.appendChild(createElementClassContent("div", "pp", score.pp ?? ""));
+    li.appendChild(createElementClassContent("div", "pp", `${Math.round(score.pp) ?? ""} PP`));
     li.appendChild(createElementClassContent("div", "max-combo", ` (${score.max_combo}x)`));
     li.appendChild(createElementClassContent("div", "played-at", posixTimestampFormatter(score.played_at)));
     li.appendChild(createElementClassContent("div", "accuracy", `${score.accuracy}%`));

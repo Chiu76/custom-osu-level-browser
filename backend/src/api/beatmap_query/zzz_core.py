@@ -8,8 +8,9 @@ import src.api.beatmap_query.yyy_filter_sort_fields as filter_sort_fields
 import src.api.score_query.zzz_score_sq as zzz_score_sq
 from src.api.score_query.yyy_mods import get_mods_value
 
-from .yyy_common import exists_in_collection, date_input_to_posix
+from .yyy_common import exists_in_collections_grouping, exists_in_artist_grouping, exists_in_overall_difficulty_grouping, exists_in_ranked_year_grouping, date_input_to_posix
 
+from src.api.grouping_query.enums import GroupingTypeEnum
 
 
 def apply_core_specs(initial_stmt: Select, core_specs: CoreSpecs):
@@ -57,9 +58,22 @@ def apply_source(stmt: Select, source_specs: list[SourceSpec]) -> Select:
     for source_spec in source_specs:
         if source_spec.type == 'local_beatmaps':
             pass
-        elif source_spec.type == 'collections':
-            collection_id = source_spec.id
-            clauses.append(exists_in_collection(Beatmap.id, collection_id))
+
+        elif source_spec.type == GroupingTypeEnum.COLLECTIONS:
+            grouping_id = source_spec.id
+            clauses.append(exists_in_collections_grouping(Beatmap.id, grouping_id))
+        
+        elif source_spec.type == GroupingTypeEnum.ARTIST:
+            grouping_id = source_spec.id
+            clauses.append(exists_in_artist_grouping(Beatmap.id, grouping_id))
+        
+        elif source_spec.type == GroupingTypeEnum.OVERALL_DIFFICULTY:
+            grouping_id = source_spec.id
+            clauses.append(exists_in_overall_difficulty_grouping(Beatmap.id, grouping_id))
+        
+        elif source_spec.type == GroupingTypeEnum.RANKED_YEAR:
+            grouping_id = source_spec.id
+            clauses.append(exists_in_ranked_year_grouping(Beatmap.id, grouping_id))
 
     if clauses:
         stmt = stmt.where(or_(*clauses))

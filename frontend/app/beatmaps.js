@@ -47,7 +47,7 @@ function buildRequest(
 }
 
 const [request, setRequest] = createSignal();
-// const [prevRequest, setPrevRequest] = createSignal();
+const prevRequest = createMemo(() => request());
 
 createEffect(() => {
     const search_spec = { queries: beatmapSearch() };
@@ -69,10 +69,10 @@ createEffect(() => {
         star_rating_mods,
     );
     
-    // if (JSON.stringify(prevRequest()) !== JSON.stringify(newRequest)) {
+    if (JSON.stringify(prevRequest()) !== JSON.stringify(newRequest)) {
         console.log("beatmaps: newRequest:", newRequest);
         setRequest(newRequest);
-    // }
+    }
 });
 
 const beatmapContentHandler = BeatmapContentHandler();

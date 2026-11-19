@@ -10,12 +10,14 @@ from .enums import GroupingTypeEnum
 from .yyy_field_groupings import get_artist_grouping_sq, get_overall_difficulty_grouping_sq, get_ranked_year_grouping_sq
 
 import src.api.grouping_query.zzz_aggregated_count as zzz_aggregated_count
+import src.api.grouping_query.zzz_grouping_query as zzz_grouping_query
 
 
 class GroupingQueryRepository:
     @classmethod
     async def query(cls, request: GroupingQueryRequest, session: AsyncSession) -> list[GroupingQueryRow]:
-        grouping_query_stmt = cls.get_grouping_query_stmt(request)
+        grouping_query_stmt = zzz_grouping_query.get_grouping_query_stmt(request)
+        # aggregated_count_sq = zzz_aggregated_count.get_aggregated_count_sq(request)
         
         # from src.common.db import engine
         # print(grouping_query_stmt.compile(engine))
@@ -23,25 +25,6 @@ class GroupingQueryRepository:
         results = session.execute(grouping_query_stmt).mappings().all()
         
         return [GroupingQueryRow.model_validate(result) for result in results]
-
-
-    @classmethod
-    def get_grouping_query_stmt(cls, request: GroupingQueryRequest) -> Select:
-        aggregated_count_sq = zzz_aggregated_count.get_aggregated_count_sq(request)
-
-        if request.grouping_type == GroupingTypeEnum.COLLECTIONS:
-            grouping_query_stmt = cls.get_grouping_query_stmt__collections(aggregated_count_sq, request)
-        
-        elif request.grouping_type == GroupingTypeEnum.ARTIST:
-            grouping_query_stmt = cls.get_grouping_query_stmt__artist(aggregated_count_sq, request)
-        
-        elif request.grouping_type == GroupingTypeEnum.OVERALL_DIFFICULTY:
-            grouping_query_stmt = cls.get_grouping_query_stmt__overall_difficulty(aggregated_count_sq, request)
-
-        elif request.grouping_type == GroupingTypeEnum.RANKED_YEAR:
-            grouping_query_stmt = cls.get_grouping_query_stmt__ranked_year(aggregated_count_sq, request)
-
-        return grouping_query_stmt
 
 
     @staticmethod

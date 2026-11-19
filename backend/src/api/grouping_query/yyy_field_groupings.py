@@ -1,18 +1,33 @@
 from sqlalchemy import Subquery, select, func, and_, case
 
 from src.common.models.beatmaps import Beatmapset, Beatmap
+from src.common.models.collections import Collection, CollectionItem
+
+
+def get_collections_grouping_sq() -> Subquery:    
+    collections_grouping_sq = (
+        select(
+            CollectionItem.beatmap_db_id.label('beatmap_db_id'),
+            Collection.id.label('grouping_id'),
+            Collection.name.label('bins'), 
+        )
+        .select_from(Collection)
+        .join(CollectionItem, CollectionItem.collection_id == Collection.id)
+    )
+    
+    return collections_grouping_sq
 
 
 def get_artist_grouping_sq() -> Subquery:
-    first_char = func.substr(func.lower(Beatmapset.artist), 1, 1).label('first_char')
+    bins = func.substr(func.lower(Beatmapset.artist), 1, 1).label('first_char')
     
     inner_sq = (
         select(
-            func.row_number().over(order_by=first_char).label('id'),
-            first_char,
+            func.row_number().over(order_by=bins).label('id'),
+            bins.label('bins'),
         )
         .select_from(Beatmapset)
-        .group_by(first_char)
+        .group_by(bins)
         .subquery('inner_sq')
     )
     
@@ -20,11 +35,11 @@ def get_artist_grouping_sq() -> Subquery:
         select(
             Beatmap.id.label('beatmap_db_id'),
             inner_sq.c.id.label('grouping_id'),
-            Beatmapset.artist, 
+            inner_sq.c.bins.label('bins'),
         )
         .select_from(Beatmap)
         .join(Beatmapset, Beatmapset.beatmapset_id == Beatmap.beatmapset_id)
-        .join(inner_sq, first_char == inner_sq.c.first_char)
+        .join(inner_sq, inner_sq.c.bins == bins)
     )
     
     return artist_grouping_sq
@@ -73,8 +88,7 @@ def get_overall_difficulty_grouping_sq() -> Subquery:
         select(
             Beatmap.id.label('beatmap_db_id'),
             inner_sq.c.id.label('grouping_id'),
-            inner_sq.c.bins,
-            Beatmap.overall_difficulty, 
+            inner_sq.c.bins.label('bins'),
         )
         .select_from(Beatmap)
         .join(inner_sq, inner_sq.c.bins == bins)
@@ -144,8 +158,7 @@ def get_ranked_year_grouping_sq() -> Subquery:
         select(
             Beatmap.id.label('beatmap_db_id'),
             inner_sq.c.id.label('grouping_id'),
-            inner_sq.c.bins,
-            Beatmap.overall_difficulty, 
+            inner_sq.c.bins.label('bins'),
         )
         .select_from(Beatmap)
         .join(Beatmapset, Beatmapset.beatmapset_id == Beatmap.beatmapset_id)

@@ -282,11 +282,6 @@
       grid-column: two/three;
       grid-row: 3/4;
     }
-    .mods {
-      grid-column: two/three;
-      grid-row: 4/5;
-      justify-self: left;
-    }
     .pp {
       grid-column: two/three;
       grid-row: 4/5;
@@ -302,6 +297,11 @@
       grid-row: 2/3;
       justify-self: right;
       font-size: 0.75rem;
+    }
+    .mods {
+      grid-column: four/five;
+      grid-row: 3/4;
+      justify-self: right;
     }
     .accuracy {
       grid-column: four/five;
