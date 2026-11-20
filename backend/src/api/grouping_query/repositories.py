@@ -27,82 +27,22 @@ class GroupingQueryRepository:
         return [GroupingQueryRow.model_validate(result) for result in results]
 
 
-    @staticmethod
-    def get_grouping_query_stmt__collections(aggregated_count_sq: Subquery, request: GroupingQueryRequest) -> Select:
-        grouping_query_stmt = (
-            select(
-                func.coalesce(request.grouping_type, request.grouping_type).label('grouping_type'),
-                Collection.id.label('grouping_id'), 
-                Collection.name.label('grouping_name'), 
-                func.coalesce(aggregated_count_sq.c.total_count, 0).label('total_count'), 
-                func.coalesce(aggregated_count_sq.c.selected_count, 0).label('selected_count'),
-            )
-            .select_from(Collection)
-            .outerjoin(aggregated_count_sq, aggregated_count_sq.c.grouping_id == Collection.id)
-            .where(Collection.name.ilike(f'%{request.q}%'))
-        )
-        return grouping_query_stmt
-
-
-    @staticmethod
-    def get_grouping_query_stmt__artist(aggregated_count_sq: Subquery, request: GroupingQueryRequest) -> Select:
-        artist_grouping_sq = get_artist_grouping_sq()
-        first_char = func.substr(func.lower(artist_grouping_sq.c.artist), 1, 1).label('first_char')
+    # @staticmethod
+    # def get_grouping_query_stmt__ranked_year(aggregated_count_sq: Subquery, request: GroupingQueryRequest) -> Select:
+    #     ranked_year_sq = get_ranked_year_grouping_sq()
         
-        grouping_query_stmt = (
-            select(
-                func.coalesce(request.grouping_type, request.grouping_type).label('grouping_type'),
-                artist_grouping_sq.c.grouping_id,
-                first_char.label('grouping_name'),
-                func.coalesce(aggregated_count_sq.c.total_count, 0).label('total_count'), 
-                func.coalesce(aggregated_count_sq.c.selected_count, 0).label('selected_count'),
-            )
-            .select_from(artist_grouping_sq)
-            .outerjoin(aggregated_count_sq, aggregated_count_sq.c.grouping_id == artist_grouping_sq.c.grouping_id)
-            .group_by(first_char)
-            .order_by(artist_grouping_sq.c.grouping_id)
-        )
+    #     grouping_query_stmt = (
+    #         select(
+    #             func.coalesce(request.grouping_type, request.grouping_type).label('grouping_type'),
+    #             ranked_year_sq.c.grouping_id,
+    #             cast(ranked_year_sq.c.bins.label('grouping_name'), String),
+    #             func.coalesce(aggregated_count_sq.c.total_count, 0).label('total_count'), 
+    #             func.coalesce(aggregated_count_sq.c.selected_count, 0).label('selected_count'),
+    #         )
+    #         .select_from(ranked_year_sq)
+    #         .outerjoin(aggregated_count_sq, aggregated_count_sq.c.grouping_id == ranked_year_sq.c.grouping_id)
+    #         .group_by(ranked_year_sq.c.bins)
+    #         .order_by(ranked_year_sq.c.grouping_id)
+    #     )
 
-        return grouping_query_stmt
-
-
-    @staticmethod
-    def get_grouping_query_stmt__overall_difficulty(aggregated_count_sq: Subquery, request: GroupingQueryRequest) -> Select:
-        overall_difficulty_sq = get_overall_difficulty_grouping_sq()
-        
-        grouping_query_stmt = (
-            select(
-                func.coalesce(request.grouping_type, request.grouping_type).label('grouping_type'),
-                overall_difficulty_sq.c.grouping_id,
-                cast(overall_difficulty_sq.c.bins.label('grouping_name'), String),
-                func.coalesce(aggregated_count_sq.c.total_count, 0).label('total_count'), 
-                func.coalesce(aggregated_count_sq.c.selected_count, 0).label('selected_count'),
-            )
-            .select_from(overall_difficulty_sq)
-            .outerjoin(aggregated_count_sq, aggregated_count_sq.c.grouping_id == overall_difficulty_sq.c.grouping_id)
-            .group_by(overall_difficulty_sq.c.bins)
-            .order_by(overall_difficulty_sq.c.grouping_id)
-        )
-
-        return grouping_query_stmt
-
-    
-    @staticmethod
-    def get_grouping_query_stmt__ranked_year(aggregated_count_sq: Subquery, request: GroupingQueryRequest) -> Select:
-        ranked_year_sq = get_ranked_year_grouping_sq()
-        
-        grouping_query_stmt = (
-            select(
-                func.coalesce(request.grouping_type, request.grouping_type).label('grouping_type'),
-                ranked_year_sq.c.grouping_id,
-                cast(ranked_year_sq.c.bins.label('grouping_name'), String),
-                func.coalesce(aggregated_count_sq.c.total_count, 0).label('total_count'), 
-                func.coalesce(aggregated_count_sq.c.selected_count, 0).label('selected_count'),
-            )
-            .select_from(ranked_year_sq)
-            .outerjoin(aggregated_count_sq, aggregated_count_sq.c.grouping_id == ranked_year_sq.c.grouping_id)
-            .group_by(ranked_year_sq.c.bins)
-            .order_by(ranked_year_sq.c.grouping_id)
-        )
-
-        return grouping_query_stmt
+    #     return grouping_query_stmt

@@ -1,3 +1,4 @@
+from typing import Callable
 from datetime import datetime
 import time
 
@@ -7,6 +8,20 @@ from sqlalchemy.orm import InstrumentedAttribute
 import src.api.grouping_query.yyy_field_groupings as yyy_field_groupings
 
 from src.common.models.collections import CollectionItem
+
+
+def exists_in_grouping(get_grouping_sq: Callable, beatmap_db_id_col: InstrumentedAttribute, grouping_id: int) -> Exists:
+    grouping_sq = get_grouping_sq()
+    return (
+        exists(
+            select(1)
+            .select_from(grouping_sq)
+            .where(and_(
+                grouping_sq.c.beatmap_db_id == beatmap_db_id_col,
+                grouping_sq.c.grouping_id == grouping_id,
+            ))
+        )
+    )
 
 
 def exists_in_collections_grouping(beatmap_db_id_col: InstrumentedAttribute, collection_id: int) -> Exists:

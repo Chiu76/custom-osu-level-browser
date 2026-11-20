@@ -8,7 +8,8 @@ import src.api.beatmap_query.yyy_filter_sort_fields as filter_sort_fields
 import src.api.score_query.zzz_score_sq as zzz_score_sq
 from src.api.score_query.yyy_mods import get_mods_value
 
-from .yyy_common import exists_in_collections_grouping, exists_in_artist_grouping, exists_in_overall_difficulty_grouping, exists_in_ranked_year_grouping, date_input_to_posix
+from .yyy_common import exists_in_grouping, date_input_to_posix
+import src.api.grouping_query.yyy_field_groupings as yyy_field_groupings
 
 from src.api.grouping_query.enums import GroupingTypeEnum
 
@@ -60,20 +61,44 @@ def apply_source(stmt: Select, source_specs: list[SourceSpec]) -> Select:
             pass
 
         elif source_spec.type == GroupingTypeEnum.COLLECTIONS:
-            grouping_id = source_spec.id
-            clauses.append(exists_in_collections_grouping(Beatmap.id, grouping_id))
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_collections_grouping_sq, 
+                Beatmap.id, 
+                source_spec.id,
+            )
+            clauses.append(exists_stmt)
         
         elif source_spec.type == GroupingTypeEnum.ARTIST:
-            grouping_id = source_spec.id
-            clauses.append(exists_in_artist_grouping(Beatmap.id, grouping_id))
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_artist_grouping_sq, 
+                Beatmap.id, 
+                source_spec.id,
+            )
+            clauses.append(exists_stmt)     
         
         elif source_spec.type == GroupingTypeEnum.OVERALL_DIFFICULTY:
-            grouping_id = source_spec.id
-            clauses.append(exists_in_overall_difficulty_grouping(Beatmap.id, grouping_id))
-        
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_overall_difficulty_grouping_sq, 
+                Beatmap.id, 
+                source_spec.id,
+            )
+            clauses.append(exists_stmt)  
+
         elif source_spec.type == GroupingTypeEnum.RANKED_YEAR:
-            grouping_id = source_spec.id
-            clauses.append(exists_in_ranked_year_grouping(Beatmap.id, grouping_id))
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_ranked_year_grouping_sq, 
+                Beatmap.id, 
+                source_spec.id,
+            )
+            clauses.append(exists_stmt)
+
+        elif source_spec.type == GroupingTypeEnum.RANKED_MONTH:
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_ranked_month_grouping_sq, 
+                Beatmap.id, 
+                source_spec.id,
+            )
+            clauses.append(exists_stmt)
 
     if clauses:
         stmt = stmt.where(or_(*clauses))

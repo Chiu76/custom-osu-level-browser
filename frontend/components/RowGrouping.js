@@ -16,6 +16,10 @@ function RowGrouping(grouping) {
     if (grouping.selected_count && grouping.total_count) {
         li.appendChild(createElementClassContent("div", "count", `${grouping.selected_count ?? ""} (${grouping.total_count ?? ""})`));
     }
+
+    if (grouping.total_count) {
+        li.appendChild(createElementClassContent("div", "count", `(${grouping.total_count ?? ""})`));
+    }
     
     if (selectedGroupings().includes(li.id)) {
         li.getElementsByClassName("grouping-marker")[0].classList.toggle("hidden");

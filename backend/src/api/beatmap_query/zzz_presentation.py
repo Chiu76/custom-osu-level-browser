@@ -4,7 +4,9 @@ from sqlalchemy.orm import InstrumentedAttribute
 from .schemas.specs import PresentationSpecs, GroupingSpec, SearchSpec, Sort, SortSpec, LocalBeatmapsIdentifier
 
 from .yyy_filter_sort_fields import get_column__sort_field
-from .yyy_common import exists_in_collections_grouping, exists_in_artist_grouping, exists_in_overall_difficulty_grouping, exists_in_ranked_year_grouping
+
+from .yyy_common import exists_in_grouping
+import src.api.grouping_query.yyy_field_groupings as yyy_field_groupings
 
 from src.api.grouping_query.enums import GroupingTypeEnum
 
@@ -49,20 +51,44 @@ def apply_grouping(stmt: Select, core_sq: Subquery, grouping_specs: list[Groupin
 
     for grouping_spec in grouping_specs:
         if grouping_spec.type == GroupingTypeEnum.COLLECTIONS:
-            collection_id = grouping_spec.id
-            clauses.append(exists_in_collections_grouping(core_sq.c.beatmap_db_id, collection_id))
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_collections_grouping_sq, 
+                core_sq.c.beatmap_db_id, 
+                grouping_spec.id,
+            )
+            clauses.append(exists_stmt)
 
         elif grouping_spec.type == GroupingTypeEnum.ARTIST:
-            grouping_id = grouping_spec.id
-            clauses.append(exists_in_artist_grouping(core_sq.c.beatmap_db_id, grouping_id))
-        
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_artist_grouping_sq, 
+                core_sq.c.beatmap_db_id, 
+                grouping_spec.id,
+            )
+            clauses.append(exists_stmt)
+                    
         elif grouping_spec.type == GroupingTypeEnum.OVERALL_DIFFICULTY:
-            grouping_id = grouping_spec.id
-            clauses.append(exists_in_overall_difficulty_grouping(core_sq.c.beatmap_db_id, grouping_id))
-        
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_overall_difficulty_grouping_sq, 
+                core_sq.c.beatmap_db_id, 
+                grouping_spec.id,
+            )
+            clauses.append(exists_stmt)   
+
         elif grouping_spec.type == GroupingTypeEnum.RANKED_YEAR:
-            grouping_id = grouping_spec.id
-            clauses.append(exists_in_ranked_year_grouping(core_sq.c.beatmap_db_id, grouping_id))
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_ranked_year_grouping_sq, 
+                core_sq.c.beatmap_db_id, 
+                grouping_spec.id,
+            )
+            clauses.append(exists_stmt)
+
+        elif grouping_spec.type == GroupingTypeEnum.RANKED_MONTH:
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_ranked_month_grouping_sq, 
+                core_sq.c.beatmap_db_id, 
+                grouping_spec.id,
+            )
+            clauses.append(exists_stmt)
 
     if clauses:
         stmt = stmt.where(or_(*clauses))

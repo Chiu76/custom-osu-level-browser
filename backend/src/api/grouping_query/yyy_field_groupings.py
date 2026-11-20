@@ -166,3 +166,58 @@ def get_ranked_year_grouping_sq() -> Subquery:
     )
 
     return ranked_year_sq
+
+
+def get_ranked_month_grouping_sq() -> Subquery:
+    ids = case(  
+        (Beatmapset.ranked_month == 1, 0),
+        (Beatmapset.ranked_month == 2, 1),
+        (Beatmapset.ranked_month == 3, 2),
+        (Beatmapset.ranked_month == 4, 3),
+        (Beatmapset.ranked_month == 5, 4),
+        (Beatmapset.ranked_month == 6, 5),
+        (Beatmapset.ranked_month == 7, 6),
+        (Beatmapset.ranked_month == 8, 7),
+        (Beatmapset.ranked_month == 9, 8),
+        (Beatmapset.ranked_month == 10, 9),
+        (Beatmapset.ranked_month == 11, 10),
+        (Beatmapset.ranked_month == 12, 11),
+    )
+
+    bins = case(  
+        (Beatmapset.ranked_month == 1, 'January'),
+        (Beatmapset.ranked_month == 2, 'February'),
+        (Beatmapset.ranked_month == 3, 'March'),
+        (Beatmapset.ranked_month == 4, 'April'),
+        (Beatmapset.ranked_month == 5, 'May'),
+        (Beatmapset.ranked_month == 6, 'June'),
+        (Beatmapset.ranked_month == 7, 'July'),
+        (Beatmapset.ranked_month == 8, 'August'),
+        (Beatmapset.ranked_month == 9, 'September'),
+        (Beatmapset.ranked_month == 10, 'October'),
+        (Beatmapset.ranked_month == 11, 'November'),
+        (Beatmapset.ranked_month == 12, 'December'),
+    )
+    
+    inner_sq = (
+        select(
+            ids.label('id'),
+            bins.label('bins'),
+        )
+        .select_from(Beatmapset)
+        .group_by(bins)
+        .subquery('inner_sq')
+    )
+    
+    ranked_year_sq = (
+        select(
+            Beatmap.id.label('beatmap_db_id'),
+            inner_sq.c.id.label('grouping_id'),
+            inner_sq.c.bins.label('bins'),
+        )
+        .select_from(Beatmap)
+        .join(Beatmapset, Beatmapset.beatmapset_id == Beatmap.beatmapset_id)
+        .join(inner_sq, inner_sq.c.bins == bins)
+    )
+
+    return ranked_year_sq
