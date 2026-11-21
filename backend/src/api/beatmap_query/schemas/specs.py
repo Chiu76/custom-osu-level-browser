@@ -45,7 +45,7 @@ class SearchSpec(BaseModel):
 
 
 GroupingSpec = Annotated[
-    NoneIdentifier | GroupingIdentifier, # | AllRankedBeatmapIdentifier | TemporalBeatmapIdentifier | PackIdentifier, 
+    NoneIdentifier | LocalBeatmapsIdentifier | GroupingIdentifier, # | AllRankedBeatmapIdentifier | TemporalBeatmapIdentifier | PackIdentifier, 
     Field(discriminator='type')
 ]
 

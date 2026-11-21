@@ -7,31 +7,35 @@ import {
     selectedSources, selectedGroupings,
     groupingSearch, 
     groupingType,
+    showSelectedCounts,
 } from "../app/settings.js";
 
 import * as beatmapQuery from "./beatmaps.js"
 
-function buildRequest(beatmap_query_request, grouping_type, q) {
+function buildRequest(beatmap_query_request, grouping_type, q, show_selected_counts) {
     return {
         beatmap_query_request: beatmap_query_request,
         grouping_type: grouping_type,
         q: q,
+        show_selected_counts: show_selected_counts,
     }
 }
 
 const [request, setRequest] = createSignal();
-const prevRequest = createMemo(() => request());
+let prevRequest = {};
 
 createEffect(() => {
-    const beatmap_query_request = beatmapQuery.request();
+    const beatmap_query_request = structuredClone(beatmapQuery.request());
     beatmap_query_request.presentation_specs.grouping_specs = [{ type: "none" }];
     const grouping_type = groupingType();
     const q = groupingSearch();
+    const show_selected_counts = showSelectedCounts();
     
-    const newRequest = buildRequest(beatmap_query_request, grouping_type, q);
+    const newRequest = buildRequest(beatmap_query_request, grouping_type, q, show_selected_counts);
     
-    if (JSON.stringify(prevRequest()) !== JSON.stringify(newRequest)) {
+    if (JSON.stringify(prevRequest) !== JSON.stringify(newRequest)) {
         console.log("groupings: newRequest:", newRequest);
+        prevRequest = structuredClone(newRequest);
         setRequest(newRequest);
     }
 });

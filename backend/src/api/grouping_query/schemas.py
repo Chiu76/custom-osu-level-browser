@@ -8,6 +8,7 @@ class GroupingQueryRequest(BaseModel):
     beatmap_query_request: BeatmapQueryRequest
     grouping_type: GroupingType
     q: str
+    show_selected_counts: bool
     
 
 class GroupingQueryRow(BaseModel):
@@ -15,7 +16,7 @@ class GroupingQueryRow(BaseModel):
     grouping_id: int
     grouping_name: str
     total_count: int
-    # selected_count: int | None
+    selected_count: int
 
 
 class GroupingQueryResponse(BaseModel):

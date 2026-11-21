@@ -38,6 +38,8 @@ const [disableBeatmapSets, setDisableBeatmapSets] = CheckboxHandler("disable-bea
 
 const [starRatingMods, setStarRatingMods] = StarRatingModsHandler().init();
 
+const [showSelectedCounts, setShowSelectedCounts] = CheckboxHandler("show-selected-counts").init();
+
 export { 
     beatmapSearch, setBeatmapSearch,
     beatmapFilter, setBeatmapFilter, 
@@ -65,4 +67,5 @@ export {
 
     disableBeatmapSets, setDisableBeatmapSets,
     starRatingMods, setStarRatingMods,
+    showSelectedCounts, setShowSelectedCounts
 };

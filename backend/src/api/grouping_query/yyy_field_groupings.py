@@ -3,6 +3,29 @@ from sqlalchemy import Subquery, select, func, and_, case
 from src.common.models.beatmaps import Beatmapset, Beatmap
 from src.common.models.collections import Collection, CollectionItem
 
+from .enums import GroupingTypeEnum
+
+import src.api.grouping_query.yyy_field_groupings as yyy_field_groupings
+
+
+def get_grouping_sq(grouping_type: GroupingTypeEnum):
+    if grouping_type == GroupingTypeEnum.COLLECTIONS:
+        grouping_sq = yyy_field_groupings.get_collections_grouping_sq()
+    
+    elif grouping_type == GroupingTypeEnum.ARTIST:
+        grouping_sq = yyy_field_groupings.get_artist_grouping_sq()
+    
+    elif grouping_type == GroupingTypeEnum.OVERALL_DIFFICULTY:
+        grouping_sq = yyy_field_groupings.get_overall_difficulty_grouping_sq()
+
+    elif grouping_type == GroupingTypeEnum.RANKED_YEAR:
+        grouping_sq = yyy_field_groupings.get_ranked_year_grouping_sq()
+    
+    elif grouping_type == GroupingTypeEnum.RANKED_MONTH:
+        grouping_sq = yyy_field_groupings.get_ranked_month_grouping_sq()
+
+    return grouping_sq
+
 
 def get_collections_grouping_sq() -> Subquery:    
     collections_grouping_sq = (
@@ -119,6 +142,7 @@ def get_ranked_year_grouping_sq() -> Subquery:
         (Beatmapset.ranked_year == 2024, 17),
         (Beatmapset.ranked_year == 2025, 18),
         (Beatmapset.ranked_year == 2026, 19),
+        (Beatmapset.ranked_year == 2027, 20),
     )
 
     bins = case(  
@@ -142,6 +166,7 @@ def get_ranked_year_grouping_sq() -> Subquery:
         (Beatmapset.ranked_year == 2024, '2024'),
         (Beatmapset.ranked_year == 2025, '2025'),
         (Beatmapset.ranked_year == 2026, '2026'),
+        (Beatmapset.ranked_year == 2026, '2027'),
     )
     
     inner_sq = (
@@ -185,18 +210,18 @@ def get_ranked_month_grouping_sq() -> Subquery:
     )
 
     bins = case(  
-        (Beatmapset.ranked_month == 1, 'January'),
-        (Beatmapset.ranked_month == 2, 'February'),
-        (Beatmapset.ranked_month == 3, 'March'),
-        (Beatmapset.ranked_month == 4, 'April'),
+        (Beatmapset.ranked_month == 1, 'Jan'),
+        (Beatmapset.ranked_month == 2, 'Feb'),
+        (Beatmapset.ranked_month == 3, 'Mar'),
+        (Beatmapset.ranked_month == 4, 'Apr'),
         (Beatmapset.ranked_month == 5, 'May'),
-        (Beatmapset.ranked_month == 6, 'June'),
-        (Beatmapset.ranked_month == 7, 'July'),
-        (Beatmapset.ranked_month == 8, 'August'),
-        (Beatmapset.ranked_month == 9, 'September'),
-        (Beatmapset.ranked_month == 10, 'October'),
-        (Beatmapset.ranked_month == 11, 'November'),
-        (Beatmapset.ranked_month == 12, 'December'),
+        (Beatmapset.ranked_month == 6, 'Jun'),
+        (Beatmapset.ranked_month == 7, 'Jul'),
+        (Beatmapset.ranked_month == 8, 'Aug'),
+        (Beatmapset.ranked_month == 9, 'Sep'),
+        (Beatmapset.ranked_month == 10, 'Oct'),
+        (Beatmapset.ranked_month == 11, 'Nov'),
+        (Beatmapset.ranked_month == 12, 'Dec'),
     )
     
     inner_sq = (

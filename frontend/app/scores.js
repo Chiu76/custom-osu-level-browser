@@ -31,7 +31,7 @@ function getBeatmapDbId(beatmapId) {
 }
 
 const [request, setRequest] = createSignal();
-const prevRequest = createMemo(() => request());
+let prevRequest = {};
 
 createEffect(() => {
     const top_by = scoreSortBy();
@@ -42,8 +42,9 @@ createEffect(() => {
     
     const newRequest = buildRequest(top_by, mods_exact, mods_include, mods_exclude, beatmap_db_id);
 
-    if (JSON.stringify(prevRequest()) !== JSON.stringify(newRequest)) {
+    if (JSON.stringify(prevRequest) !== JSON.stringify(newRequest)) {
         console.log("scores: newRequest:", newRequest);
+        prevRequest = structuredClone(newRequest);
         setRequest(newRequest);
     }
 });

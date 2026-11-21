@@ -1,5 +1,5 @@
 import { createElementClassContent } from "../utils.js";
-import { selectedGroupings, selectedSources } from "../app/settings.js";
+import { selectedGroupings, selectedSources, showSelectedCounts } from "../app/settings.js";
 
 function RowGrouping(grouping) {
     const li = createElementClassContent("li", "row grouping");
@@ -13,11 +13,10 @@ function RowGrouping(grouping) {
     li.appendChild(createElementClassContent("div", "source-marker hidden", "Source"));
     li.appendChild(createElementClassContent("div", "name", grouping.grouping_name));
     
-    if (grouping.selected_count && grouping.total_count) {
+    if (showSelectedCounts()) {
         li.appendChild(createElementClassContent("div", "count", `${grouping.selected_count ?? ""} (${grouping.total_count ?? ""})`));
     }
-
-    if (grouping.total_count) {
+    else {
         li.appendChild(createElementClassContent("div", "count", `(${grouping.total_count ?? ""})`));
     }
     
