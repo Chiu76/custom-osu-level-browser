@@ -1,7 +1,7 @@
 from sqlalchemy import Subquery, select, func, and_, case
 
 from src.common.models.beatmaps import Beatmapset, Beatmap
-from src.common.models.collections import Collection, CollectionItem
+from src.common.models.collections import Collection, CollectionItem, Pack, PackItem
 
 from .enums import GroupingTypeEnum
 
@@ -12,6 +12,9 @@ def get_grouping_sq(grouping_type: GroupingTypeEnum):
     if grouping_type == GroupingTypeEnum.COLLECTIONS:
         grouping_sq = yyy_field_groupings.get_collections_grouping_sq()
     
+    elif grouping_type == GroupingTypeEnum.PACKS:
+        grouping_sq = yyy_field_groupings.get_packs_grouping_sq()
+
     elif grouping_type == GroupingTypeEnum.ARTIST:
         grouping_sq = yyy_field_groupings.get_artist_grouping_sq()
     
@@ -39,6 +42,20 @@ def get_collections_grouping_sq() -> Subquery:
     )
     
     return collections_grouping_sq
+
+
+def get_packs_grouping_sq() -> Subquery:    
+    packs_grouping_sq = (
+        select(
+            PackItem.beatmap_db_id.label('beatmap_db_id'),
+            Pack.id.label('grouping_id'),
+            Pack.name.label('bins'), 
+        )
+        .select_from(Pack)
+        .join(PackItem, PackItem.pack_id == Pack.id)
+    )
+    
+    return packs_grouping_sq
 
 
 def get_artist_grouping_sq() -> Subquery:

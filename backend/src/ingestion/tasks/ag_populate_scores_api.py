@@ -62,11 +62,11 @@ def get_dict__beatmap_id_to_beatmap_db_id(user_beatmap_scores_data: list[dict], 
     for user_beatmap_score in user_beatmap_scores_data:
         beatmap_ids_to_import.add(user_beatmap_score['beatmap_id'])
 
-    stmt_select_beatmap_hash_and_id = (
+    stmt_select_beatmap_id_and_db_id = (
         select(Beatmap.beatmap_id, Beatmap.id)
         .where(Beatmap.beatmap_id.in_(beatmap_ids_to_import))
     )
-    beatmap_id_and_db_id = session.execute(stmt_select_beatmap_hash_and_id).all()
+    beatmap_id_and_db_id = session.execute(stmt_select_beatmap_id_and_db_id).all()
     
     return { id: db_id for id, db_id in beatmap_id_and_db_id }
 

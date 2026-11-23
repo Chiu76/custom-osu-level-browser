@@ -58,9 +58,7 @@ class PackItem(Model):
         ForeignKey('beatmaps.id', ondelete='CASCADE'),
         primary_key=True,
     )
-
-    md5_hash: Mapped[int] = mapped_column(String(32), nullable=False, index=True)
-
+    
     # import details fields
     import_type: Mapped[str] = mapped_column(String(32), nullable=False)
     import_source_hash: Mapped[str] = mapped_column(String(32), nullable=False, index=True)

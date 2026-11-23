@@ -58,6 +58,14 @@ def apply_grouping(stmt: Select, core_sq: Subquery, grouping_specs: list[Groupin
             )
             clauses.append(exists_stmt)
 
+        elif grouping_spec.type == GroupingTypeEnum.PACKS:
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_packs_grouping_sq, 
+                core_sq.c.beatmap_db_id, 
+                grouping_spec.id,
+            )
+            clauses.append(exists_stmt)
+
         elif grouping_spec.type == GroupingTypeEnum.ARTIST:
             exists_stmt = exists_in_grouping(
                 yyy_field_groupings.get_artist_grouping_sq, 

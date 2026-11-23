@@ -1,19 +1,36 @@
-from sqlalchemy import select, func
+from sqlalchemy import select, func, text
 from sqlalchemy.orm import Session
 
 from orchestrator import Task, TaskStatus
 
 import src.common.utils as utils
-from src.common.models.collections import Collection
+from src.common.models.collections import Pack
 
 import src.ingestion.tasks.zzz_common as task_common
 
+from src.common.db import get_osu_api_data_cache_engine
 
-def get_collection_mapping(collection_db_content: dict, import_source_hash: str) -> dict:
+
+def get_pack_mapping(pack_db_content: dict, import_source_hash: str) -> dict:
     return {
-        'name': collection_db_content['name'],
+        'name': pack_db_content['tag'],
+        'import_type': 'API_DATA',
         'import_source_hash': import_source_hash,
     }
+
+
+def get_osu_api_data_cache__packs():
+    engine = get_osu_api_data_cache_engine()
+    with engine.connect() as conn:
+        ## todo: remember this is hardcoded for osu!std
+        results = conn.execute(
+            text('''
+            SELECT tag, beatmapset_ids 
+            FROM beatmap_packs
+            WHERE ruleset_id is null or ruleset_id == 0;
+            ''')
+        ).mappings().all()
+    return [dict(row) for row in results]
 
 
 log_messages = {
@@ -33,28 +50,28 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
         'force_refresh': None,
     }
 
-    db_file_hash = utils.get_state__db_file_hash('collection', session)
-    collection_data = utils.load_json__db_file("collection", db_file_hash)['collections']
+    pack_data = get_osu_api_data_cache__packs()
+    pack_data_hash = utils.md5_hash_dict(pack_data)
 
-    collection_rows = []
-    for collection in collection_data:
-        mapping = get_collection_mapping(collection, import_source_hash=db_file_hash)
-        collection_rows.append(mapping)
+    pack_rows = []
+    for pack in pack_data:
+        row = get_pack_mapping(pack, import_source_hash=pack_data_hash)
+        pack_rows.append(row)
 
     already_imported_count = session.scalar(
         select(func.count())
-        .select_from(Collection)
-        .where(Collection.import_source_hash == db_file_hash)
+        .select_from(Pack)
+        .where(Pack.import_source_hash == pack_data_hash)
     )
 
-    self.vars['to_import_items'] = already_imported_count != len(collection_rows)
+    self.vars['to_import_items'] = already_imported_count != len(pack_data_hash)
     self.vars['force_refresh'] = force_refresh
 
     if self.vars['to_import_items'] or self.vars['force_refresh']:
         task_common.upsert_items(
             self=self,
-            row_contents=collection_rows,
-            target_table=Collection,
+            row_contents=pack_rows,
+            target_table=Pack,
             table_unique_keys=['name'],
             session=session,
         )
@@ -69,9 +86,9 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     self.log_info('end_task')
 
 
-def init_task__populate_collections(session: Session, force_refresh: bool = False):
+def init_task__populate_packs_api(session: Session, force_refresh: bool = False):
     return Task(
-        'task__populate_collections',
+        'task__populate_packs_api',
         fn,
         log_messages,
         session,

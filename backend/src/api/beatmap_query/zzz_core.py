@@ -67,6 +67,14 @@ def apply_source(stmt: Select, source_specs: list[SourceSpec]) -> Select:
                 source_spec.id,
             )
             clauses.append(exists_stmt)
+
+        elif source_spec.type == GroupingTypeEnum.PACKS:
+            exists_stmt = exists_in_grouping(
+                yyy_field_groupings.get_packs_grouping_sq, 
+                Beatmap.id, 
+                source_spec.id,
+            )
+            clauses.append(exists_stmt)
         
         elif source_spec.type == GroupingTypeEnum.ARTIST:
             exists_stmt = exists_in_grouping(

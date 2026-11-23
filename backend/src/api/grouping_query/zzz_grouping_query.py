@@ -9,7 +9,7 @@ from .yyy_field_groupings import get_grouping_sq
 def get_grouping_query_stmt(request: GroupingQueryRequest) -> Select:
     grouping_sq = get_grouping_sq(request.grouping_type)
 
-    grouping_query_stmt = (
+    stmt = (
         select(
             func.coalesce(request.grouping_type, request.grouping_type).label('grouping_type'),
             grouping_sq.c.grouping_id.label('grouping_id'),
@@ -23,15 +23,19 @@ def get_grouping_query_stmt(request: GroupingQueryRequest) -> Select:
 
     if request.show_selected_counts:
         selected_count_sq = get_selected_count_sq(request)
-        grouping_query_stmt = (
-            grouping_query_stmt
+        stmt = (
+            stmt
                 .add_columns(func.coalesce(selected_count_sq.c.selected_count, 0).label('selected_count'))
                 .outerjoin(selected_count_sq, selected_count_sq.c.grouping_id == grouping_sq.c.grouping_id)
         )
     else:
-        grouping_query_stmt = grouping_query_stmt.add_columns(func.coalesce(0, 0).label('selected_count'))
+        stmt = stmt.add_columns(func.coalesce(0, 0).label('selected_count'))
 
-    return grouping_query_stmt
+    if request.q != "":
+        print('hohoho')
+        stmt = stmt.where(grouping_sq.c.bins.ilike(f'%{request.q}%'))
+
+    return stmt
 
 
 def get_selected_count_sq(request: GroupingQueryRequest) -> Subquery:
