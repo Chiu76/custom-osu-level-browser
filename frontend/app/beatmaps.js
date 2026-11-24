@@ -87,6 +87,7 @@ createEffect(() => {
         .then(response => { 
             if (id !== latestId) return;
             setBeatmapQueryRows(response.rows);
+            beatmapContentHandler.setBeatmapQueryCount(response.count);
             virtualizedList?.scrollToIndex(0, "start");
         });
 })

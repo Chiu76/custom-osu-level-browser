@@ -1,8 +1,26 @@
+import { createSignal, createEffect, createMemo } from "../reactive.js";
+
 import { beatmapQuery } from "../api.js";
 import { RowBeatmapSet } from "./RowBeatmapSet.js";
 import { RowBeatmap } from "./RowBeatmap.js";
 
 export function BeatmapContentHandler() {
+    const [beatmapQueryCount, setBeatmapQueryCount] = createSignal();
+
+    createEffect(() => {
+        const count = beatmapQueryCount();
+        if (count == 2500) {
+            document.getElementById("beatmaps-count").innerHTML = `(${count}+)`;
+        }
+        else if (count > 0) {
+            document.getElementById("beatmaps-count").innerHTML = `(${count})`;
+        }
+        else {
+            document.getElementById("beatmaps-count").innerHTML = "(none)";
+        }
+    });
+
+
     function queryBeatmaps(request) {
         return beatmapQuery(request);
     }
@@ -55,5 +73,6 @@ export function BeatmapContentHandler() {
         queryBeatmaps,
         displayRowToElement,
         beatmapsToDisplayRows,
+        setBeatmapQueryCount,
     }
 }
