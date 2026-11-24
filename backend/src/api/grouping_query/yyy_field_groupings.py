@@ -1,11 +1,32 @@
-from sqlalchemy import Subquery, select, func, and_, case
+from typing import Literal
+from enum import StrEnum
+
+from sqlalchemy import Subquery, select, func, and_, case, cast, Integer
 
 from src.common.models.beatmaps import Beatmapset, Beatmap
 from src.common.models.collections import Collection, CollectionItem, Pack, PackItem
 
-from .enums import GroupingTypeEnum
-
 import src.api.grouping_query.yyy_field_groupings as yyy_field_groupings
+
+
+GroupingType = Literal[
+    'collections',
+    'packs',
+    'artist',
+    'overall_difficulty',
+    'ranked_year',
+    'ranked_month',
+    'bpm',
+]
+
+class GroupingTypeEnum(StrEnum):
+    COLLECTIONS = 'collections',
+    PACKS = 'packs',
+    ARTIST = 'artist',
+    OVERALL_DIFFICULTY = 'overall_difficulty',
+    RANKED_YEAR = 'ranked_year',
+    RANKED_MONTH = 'ranked_month',
+    BPM = 'bpm',
 
 
 def get_grouping_sq(grouping_type: GroupingTypeEnum):
@@ -26,6 +47,9 @@ def get_grouping_sq(grouping_type: GroupingTypeEnum):
     
     elif grouping_type == GroupingTypeEnum.RANKED_MONTH:
         grouping_sq = yyy_field_groupings.get_ranked_month_grouping_sq()
+
+    elif grouping_type == GroupingTypeEnum.BPM:
+        grouping_sq = yyy_field_groupings.get_bpm_grouping_sq()
 
     return grouping_sq
 
@@ -59,7 +83,7 @@ def get_packs_grouping_sq() -> Subquery:
 
 
 def get_artist_grouping_sq() -> Subquery:
-    bins = func.substr(func.lower(Beatmapset.artist), 1, 1).label('first_char')
+    bins = func.substr(func.lower(Beatmapset.artist), 1, 1)
     
     inner_sq = (
         select(
@@ -124,7 +148,7 @@ def get_overall_difficulty_grouping_sq() -> Subquery:
         .subquery('inner_sq')
     )
     
-    overall_difficulty_sq = (
+    overall_difficulty_grouping_sq = (
         select(
             Beatmap.id.label('beatmap_db_id'),
             inner_sq.c.id.label('grouping_id'),
@@ -134,7 +158,7 @@ def get_overall_difficulty_grouping_sq() -> Subquery:
         .join(inner_sq, inner_sq.c.bins == bins)
     )
     
-    return overall_difficulty_sq
+    return overall_difficulty_grouping_sq
 
 
 def get_ranked_year_grouping_sq() -> Subquery:
@@ -196,7 +220,7 @@ def get_ranked_year_grouping_sq() -> Subquery:
         .subquery('inner_sq')
     )
     
-    ranked_year_sq = (
+    ranked_year_grouping_sq = (
         select(
             Beatmap.id.label('beatmap_db_id'),
             inner_sq.c.id.label('grouping_id'),
@@ -207,7 +231,7 @@ def get_ranked_year_grouping_sq() -> Subquery:
         .join(inner_sq, inner_sq.c.bins == bins)
     )
 
-    return ranked_year_sq
+    return ranked_year_grouping_sq
 
 
 def get_ranked_month_grouping_sq() -> Subquery:
@@ -251,7 +275,7 @@ def get_ranked_month_grouping_sq() -> Subquery:
         .subquery('inner_sq')
     )
     
-    ranked_year_sq = (
+    ranked_month_grouping_sq = (
         select(
             Beatmap.id.label('beatmap_db_id'),
             inner_sq.c.id.label('grouping_id'),
@@ -262,4 +286,30 @@ def get_ranked_month_grouping_sq() -> Subquery:
         .join(inner_sq, inner_sq.c.bins == bins)
     )
 
-    return ranked_year_sq
+    return ranked_month_grouping_sq
+
+
+def get_bpm_grouping_sq() -> Subquery:
+    bins = cast(func.round((Beatmap.bpm - 5) / 10) * 10, Integer)
+    
+    inner_sq = (
+        select(
+            func.row_number().over(order_by=bins).label('id'),
+            bins.label('bins'),
+        )
+        .select_from(Beatmap)
+        .group_by(bins)
+        .subquery('inner_sq')
+    )
+    
+    bpm_grouping_sq = (
+        select(
+            Beatmap.id.label('beatmap_db_id'),
+            inner_sq.c.id.label('grouping_id'),
+            inner_sq.c.bins.label('bins'),
+        )
+        .select_from(Beatmap)
+        .join(inner_sq, inner_sq.c.bins == bins)
+    )
+
+    return bpm_grouping_sq

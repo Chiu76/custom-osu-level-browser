@@ -45,7 +45,7 @@ export function GroupingContentHandler() {
             setSourceSpecs(sources);
         }
         else {
-            setSourceSpecs([{ type: "local_beatmaps" }]);
+            setSourceSpecs([{ type: "none" }]);
         }
     });
 

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from src.api.beatmap_query.schemas.requests import BeatmapQueryRequest
-from .enums import GroupingType
+from .yyy_field_groupings import GroupingType
 
 
 class GroupingQueryRequest(BaseModel):

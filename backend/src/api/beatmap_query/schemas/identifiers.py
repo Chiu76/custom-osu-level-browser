@@ -1,17 +1,12 @@
 from typing import Literal
-from enum import StrEnum
 
 from pydantic import BaseModel
 
-from src.api.grouping_query.enums import GroupingType
+from src.api.grouping_query.yyy_field_groupings import GroupingType
 
 
 class NoneIdentifier(BaseModel):
     type: Literal['none']
-
-
-class LocalBeatmapsIdentifier(BaseModel):
-    type: Literal['local_beatmaps']
 
 
 class GroupingIdentifier(BaseModel):

@@ -26,13 +26,12 @@ def get_grouping_query_stmt(request: GroupingQueryRequest) -> Select:
         stmt = (
             stmt
                 .add_columns(func.coalesce(selected_count_sq.c.selected_count, 0).label('selected_count'))
-                .outerjoin(selected_count_sq, selected_count_sq.c.grouping_id == grouping_sq.c.grouping_id)
+                .join(selected_count_sq, selected_count_sq.c.grouping_id == grouping_sq.c.grouping_id)
         )
     else:
         stmt = stmt.add_columns(func.coalesce(0, 0).label('selected_count'))
 
     if request.q != "":
-        print('hohoho')
         stmt = stmt.where(grouping_sq.c.bins.ilike(f'%{request.q}%'))
 
     return stmt

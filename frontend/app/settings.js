@@ -15,7 +15,7 @@ const [beatmapSort, setBeatmapSort] = BeatmapSortHandler().init();
 
 const [groupingSearch, setGroupingSearch] = SearchHandler("grouping-search").init();
 
-const [sourceSpecs, setSourceSpecs] = createSignal([{ type: "local_beatmaps" }]);
+const [sourceSpecs, setSourceSpecs] = createSignal([{ type: "none" }]);
 const [groupingSpecs, setGroupingSpecs] = createSignal([{ type: "none" }]);
 
 const [groupingType, setGroupingType] = GroupingTypeHandler().init();
