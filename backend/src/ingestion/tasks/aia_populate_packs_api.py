@@ -11,12 +11,17 @@ import src.ingestion.tasks.zzz_common as task_common
 from src.common.db import get_osu_api_data_cache_engine
 
 
-def get_pack_mapping(pack_db_content: dict, import_source_hash: str) -> dict:
+def get_pack_mapping(pack_name: str, import_source_hash: str) -> dict:
     return {
-        'name': pack_db_content['tag'],
+        'name': pack_name,
         'import_type': 'API_DATA',
         'import_source_hash': import_source_hash,
     }
+
+
+def get_already_populated_pack_names(session: Session) -> set:
+    stmt_select_pack_names = select(Pack.name)
+    return set(session.scalars(stmt_select_pack_names).all())
 
 
 def get_osu_api_data_cache__packs():
@@ -53,10 +58,21 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     pack_data = get_osu_api_data_cache__packs()
     pack_data_hash = utils.md5_hash_dict(pack_data)
 
+    already_populated_pack_names = get_already_populated_pack_names(session)
+
+    print(f'{len(already_populated_pack_names)=}')
+
     pack_rows = []
     for pack in pack_data:
-        row = get_pack_mapping(pack, import_source_hash=pack_data_hash)
+        pack_name = pack['tag']
+        if pack_name in already_populated_pack_names: continue
+        row = get_pack_mapping(
+            pack_name=pack_name, 
+            import_source_hash=pack_data_hash,
+        )
         pack_rows.append(row)
+
+    print(f'{len(pack_rows)=}')
 
     already_imported_count = session.scalar(
         select(func.count())

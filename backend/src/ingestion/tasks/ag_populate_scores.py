@@ -50,12 +50,14 @@ def compute_accuracy(score: dict) -> float:
     return round(accuracy_fractional * 100, 2)
 
 
-def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) -> dict:
+def get_score_mapping(beatmap_db_id: int, player_id: int, score: dict, import_source_hash: str) -> dict:
     return {
         'beatmap_db_id': beatmap_db_id,
-        'online_score_id': score['online_score_id'],
+        'player_id': player_id,
         'mode': score['mode'],
         'mods': score['mods'],
+        'replay_score': score['replay_score'],
+        'online_score_id': score['online_score_id'],
         'num_300s': score['num_300s'],
         'num_100s': score['num_100s'],
         'num_50s': score['num_50s'],
@@ -64,7 +66,6 @@ def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) 
         'num_misses': score['num_misses'],
         'grade': compute_grade(score),
         'accuracy': compute_accuracy(score),
-        'replay_score': score['replay_score'],
         'max_combo': score['max_combo'],
         'perfect_combo': score['perfect_combo'],
         'played_at': task_common.ticks_to_posix(score['timestamp']),
@@ -96,7 +97,7 @@ log_messages = {
     'end_task': 'TASK_END: end_task',
 }
     
-def fn(self: Task, session: Session, force_refresh: bool = False):
+def fn(self: Task, user_id: int, session: Session, force_refresh: bool = False):
     self.log_info('start_task')
 
     self.vars = {
@@ -118,9 +119,14 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     for beatmap_md5_hash in score_data_per_beatmap:
         beatmap_db_id = hash_to_beatmap_db_id.get(beatmap_md5_hash)
         if not beatmap_db_id: continue
-        for score in score_data_per_beatmap[beatmap_md5_hash]:
-            mapping = get_score_mapping(beatmap_db_id, score, db_file_hash)
-            score_rows.append(mapping)
+        for score_content in score_data_per_beatmap[beatmap_md5_hash]:
+            row = get_score_mapping(
+                beatmap_db_id=beatmap_db_id,
+                player_id=user_id,
+                score_db_content=score_content,
+                import_source_hash=db_file_hash,
+            )
+            score_rows.append(row)
 
     already_imported_count = session.scalar(
         select(func.count())
@@ -136,7 +142,7 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
             self=self,
             row_contents=score_rows,
             target_table=Score,
-            table_unique_keys=['beatmap_md5_hash', 'replay_md5_hash'],
+            table_unique_keys=['beatmap_db_id', 'player_id', 'mode', 'mods', 'replay_score'],
             session=session,
         )
 
@@ -150,11 +156,12 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     self.log_info('end_task')
 
 
-def init_task__populate_scores(session: Session, force_refresh: bool = False):
+def init_task__populate_scores(user_id: int, session: Session, force_refresh: bool = False):
     return Task(
         'task__populate_scores',
         fn,
         log_messages,
+        user_id,
         session,
         force_refresh=force_refresh,
     )

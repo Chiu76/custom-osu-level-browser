@@ -9,6 +9,10 @@ from src.common.db import Model
 class Score(Model):
     __tablename__ = 'scores'
 
+    __table_args__ = (
+        UniqueConstraint('beatmap_db_id', 'player_id', 'mode', 'mods', 'replay_score'),
+    )
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
     beatmap_db_id: Mapped[int] = mapped_column(
@@ -17,6 +21,8 @@ class Score(Model):
     )
 
     online_score_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    player_id: Mapped[int] = mapped_column(Integer, nullable=False)
 
     mode: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
     mods: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -39,13 +45,13 @@ class Score(Model):
     played_at: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # API import fields
-    player_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     passed: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
     pp: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     # osu!stable import fields
     player_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     beatmap_md5_hash: Mapped[Optional[int]] = mapped_column(String(32), nullable=True)
+    replay_md5_hash: Mapped[Optional[int]] = mapped_column(String(32), nullable=True)
 
     # import details fields
     import_type: Mapped[str] = mapped_column(String(32), nullable=False)

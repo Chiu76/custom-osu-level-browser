@@ -16,30 +16,30 @@ from src.api.score_query.yyy_mods import get_mods_value
 from src.common.db import get_osu_api_data_cache_engine
 
 
-def get_score_mapping(beatmap_db_id: int, score: dict, import_source_hash: str) -> dict:
+def get_score_mapping(beatmap_db_id: int, player_id: int, score_db_content: dict, import_source_hash: str) -> dict:
     return {
         'beatmap_db_id': beatmap_db_id,
-        'online_score_id': score['id'],
-        'mode': score['mode'],
-        'mods': get_mods_value(score['mods']),
-        'num_300s': score['statistics']['count_300'],
-        'num_100s': score['statistics']['count_100'],
-        'num_50s': score['statistics']['count_50'],
-        'num_gekis': score['statistics']['count_geki'],
-        'num_katus': score['statistics']['count_katu'],
-        'num_misses': score['statistics']['count_miss'],
-        'grade': score['rank'],
-        'accuracy': round(score['accuracy'] * 100, 2),
-        'replay_score': score['score'],
-        'max_combo': score['max_combo'],
-        'perfect_combo': score['perfect'],
-        'played_at': task_common.osu_api_timestamp_to_posix(score['created_at']),
+        'player_id': player_id,
+        'mode': score_db_content['mode'],
+        'mods': get_mods_value(score_db_content['mods']),
+        'replay_score': score_db_content['score'],
+        'online_score_id': score_db_content['id'],
+        'num_300s': score_db_content['statistics']['count_300'],
+        'num_100s': score_db_content['statistics']['count_100'],
+        'num_50s': score_db_content['statistics']['count_50'],
+        'num_gekis': score_db_content['statistics']['count_geki'],
+        'num_katus': score_db_content['statistics']['count_katu'],
+        'num_misses': score_db_content['statistics']['count_miss'],
+        'grade': score_db_content['rank'],
+        'accuracy': round(score_db_content['accuracy'] * 100, 2),
+        'max_combo': score_db_content['max_combo'],
+        'perfect_combo': score_db_content['perfect'],
+        'played_at': task_common.osu_api_timestamp_to_posix(score_db_content['created_at']),
 
-        'player_id': score['user_id'],
-        'passed': score['passed'],
-        'pp': score['pp'],
+        'passed': score_db_content['passed'],
+        'pp': score_db_content['pp'],
         
-        'import_type': 'STABLE_LOCAL_DATA',
+        'import_type': 'API_DATA',
         'import_source_hash': import_source_hash,
     }
 
@@ -91,16 +91,20 @@ def fn(self: Task, user_id: int, session: Session, force_refresh: bool = False):
     user_beatmap_scores_data = get_osu_api_data_cache__user_beatmap_scores(user_id)
     user_beatmap_scores_data_hash = utils.md5_hash_dict(user_beatmap_scores_data)
 
-    ## todo: keep track of how many scores are not imported due to possible possible beatmap hash without a db id
     beatmap_id_to_beatmap_db_id = get_dict__beatmap_id_to_beatmap_db_id(user_beatmap_scores_data, session)
     
     score_rows = []
     for user_beatmap_scores in user_beatmap_scores_data:
         beatmap_db_id = beatmap_id_to_beatmap_db_id.get(user_beatmap_scores['beatmap_id'])
         if not beatmap_db_id: continue
-        for score in json.loads(user_beatmap_scores['content']):
-            mapping = get_score_mapping(beatmap_db_id, score, user_beatmap_scores_data_hash)
-            score_rows.append(mapping)
+        for score_content in json.loads(user_beatmap_scores['content']):
+            row = get_score_mapping(
+                beatmap_db_id=beatmap_db_id,
+                player_id=user_id,
+                score_db_content=score_content,
+                import_source_hash=user_beatmap_scores_data_hash,
+            )
+            score_rows.append(row)
 
     already_imported_count = session.scalar(
         select(func.count())
@@ -116,7 +120,7 @@ def fn(self: Task, user_id: int, session: Session, force_refresh: bool = False):
             self=self,
             row_contents=score_rows,
             target_table=Score,
-            table_unique_keys=['id'],
+            table_unique_keys=['beatmap_db_id', 'player_id', 'mode', 'mods', 'replay_score'],
             session=session,
         )
 

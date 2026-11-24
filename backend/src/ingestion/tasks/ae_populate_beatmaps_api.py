@@ -1,6 +1,6 @@
 import json
 
-from sqlalchemy import select, func, text
+from sqlalchemy import select, func, text, distinct
 from sqlalchemy.orm import Session
 
 from orchestrator import Task, TaskStatus
@@ -44,6 +44,11 @@ def get_beatmap_mapping(beatmap_db_content: dict, import_source_hash: str) -> di
     }
 
 
+def get_already_populated_beatmap_ids(session: Session) -> set:
+    stmt_select_beatmap_ids = select(distinct(Beatmap.beatmap_id))
+    return set(session.scalars(stmt_select_beatmap_ids).all())
+
+
 def get_osu_api_data_cache__beatmapsets():
     engine = get_osu_api_data_cache_engine()
     with engine.connect() as conn:
@@ -76,13 +81,24 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     beatmapset_data = get_osu_api_data_cache__beatmapsets()
     beatmapset_data_hash = utils.md5_hash_dict(beatmapset_data)
 
+    already_populated_beatmap_ids = get_already_populated_beatmap_ids(session)
+
+    print(f'{len(already_populated_beatmap_ids)=}')
+
     beatmap_rows = []
     for beatmapset in beatmapset_data:
-        for beatmap in json.loads(beatmapset['content'])['beatmaps']:
-            if beatmap['mode'] != 0: continue
-            beatmap_rows.append(
-                get_beatmap_mapping(beatmap, import_source_hash=beatmapset_data_hash)
+        for beatmap_content in json.loads(beatmapset['content'])['beatmaps']:
+            beatmap_id = int(beatmap_content['id'])
+            if beatmap_id in already_populated_beatmap_ids: continue
+            ## todo: hardcoded osu!std only section
+            if beatmap_content['mode'] != 0: continue
+            row = get_beatmap_mapping(
+                beatmap_db_content=beatmap_content, 
+                import_source_hash=beatmapset_data_hash,
             )
+            beatmap_rows.append(row)
+
+    print(f'{len(beatmap_rows)=}')
 
     already_imported_count = session.scalar(
         select(func.count())

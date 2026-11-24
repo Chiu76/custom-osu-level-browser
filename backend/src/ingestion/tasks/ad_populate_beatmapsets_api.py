@@ -1,6 +1,6 @@
 import json
 
-from sqlalchemy import select, func, text
+from sqlalchemy import select, func, text, distinct
 from sqlalchemy.orm import Session
 
 from orchestrator import Task, TaskStatus
@@ -14,7 +14,7 @@ import src.ingestion.tasks.zzz_common as task_common
 
 def get_beatmapset_mapping(beatmapset_db_content: dict, import_source_hash: str) -> dict:
     return {
-        'beatmapset_id': beatmapset_db_content['beatmaps'][0]['beatmapset_id'],
+        'beatmapset_id': beatmapset_db_content['id'],
         'artist': beatmapset_db_content['artist'],
         'artist_unicode': beatmapset_db_content['artist_unicode'],
         'title': beatmapset_db_content['title'],
@@ -38,6 +38,11 @@ def get_beatmapset_mapping(beatmapset_db_content: dict, import_source_hash: str)
         'import_type': 'API_DATA',
         'import_source_hash': import_source_hash,
     }
+
+
+def get_already_populated_beatmapset_ids(session: Session) -> set:
+    stmt_select_beatmapset_ids = select(distinct(Beatmapset.beatmapset_id))
+    return set(session.scalars(stmt_select_beatmapset_ids).all())
 
 
 def get_osu_api_data_cache__beatmapsets():
@@ -72,17 +77,27 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     beatmapset_data = get_osu_api_data_cache__beatmapsets()
     beatmapset_data_hash = utils.md5_hash_dict(beatmapset_data)
 
+    already_populated_beatmapset_ids = get_already_populated_beatmapset_ids(session)
+
+    print(f'{len(already_populated_beatmapset_ids)=}')
+
     beatmapset_rows = []
     for beatmapset in beatmapset_data:
+        beatmapset_id = int(beatmapset['beatmapset_id'])
+        beatmapset_content = json.loads(beatmapset['content'])
+        if beatmapset_id in already_populated_beatmapset_ids: continue
+        ## todo: hardcoded osu!std only section
         had_a_std_beatmap = False
-        for beatmap in json.loads(beatmapset['content'])['beatmaps']:
+        for beatmap in beatmapset_content['beatmaps']:
             if beatmap['mode'] == 0: had_a_std_beatmap = True
         if had_a_std_beatmap:
             row = get_beatmapset_mapping(
-                beatmapset_db_content=json.loads(beatmapset['content']),
+                beatmapset_db_content=beatmapset_content,
                 import_source_hash=beatmapset_data_hash,
             )
             beatmapset_rows.append(row)
+
+    print(f'{len(beatmapset_rows)=}')
 
     already_imported_count = session.scalar(
         select(func.count())

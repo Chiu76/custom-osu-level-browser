@@ -23,6 +23,30 @@ def get_pack_item_mapping(pack_id: int, beatmap_db_id: int, import_source_hash: 
     }
 
 
+## todo: think how skipping the already added pack items should work, like the other API imports
+def get_already_populated_pack_items(session: Session) -> set[tuple[int, int]]:
+    stmt_select_pack_names = select(PackItem.pack_id, PackItem.beatmap_db_id)
+    return set(session.execute(stmt_select_pack_names).all())
+
+
+def get_dict__name_to_pack_id(session: Session) -> dict:
+    pack_name_and_id = session.execute(select(Pack.name, Pack.id)).all()
+    return { name: pack_id for name, pack_id in pack_name_and_id }
+
+
+def get_dict__beatmapset_id_to_beatmap_db_ids(session: Session) -> dict:
+    set_to_db_ids = {}
+
+    beatmap_db_id_and_set_id = session.execute(select(Beatmap.id, Beatmap.beatmapset_id)).all()
+
+    for db_id, set_id in beatmap_db_id_and_set_id:
+        if set_to_db_ids.get(set_id) == None: 
+            set_to_db_ids[set_id] = []
+        set_to_db_ids[set_id].append(db_id)
+    
+    return set_to_db_ids
+
+
 def get_osu_api_data_cache__packs():
     engine = get_osu_api_data_cache_engine()
     with engine.connect() as conn:
@@ -35,25 +59,6 @@ def get_osu_api_data_cache__packs():
             ''')
         ).mappings().all()
     return [dict(row) for row in results]
-
-
-def get_dict__name_to_pack_id(session: Session):
-    pack_name_and_id = session.execute(select(Pack.name, Pack.id)).all()
-    return { name: pack_id for name, pack_id in pack_name_and_id }
-
-
-def get_dict__beatmapset_id_to_beatmap_db_ids(session: Session):
-    beatmapset_id_to_beatmap_db_ids = {}
-
-    beatmap_db_id_and_set_id = session.execute(select(Beatmap.id, Beatmap.beatmapset_id)).all()
-
-    for db_id, set_id in beatmap_db_id_and_set_id:
-        if beatmapset_id_to_beatmap_db_ids.get(set_id) == None:
-            beatmapset_id_to_beatmap_db_ids[set_id] = [db_id]
-        else:
-            beatmapset_id_to_beatmap_db_ids[set_id].append(db_id)
-    
-    return beatmapset_id_to_beatmap_db_ids
 
 
 log_messages = {
@@ -78,6 +83,10 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
 
     name_to_pack_id = get_dict__name_to_pack_id(session)
     beatmapset_id_to_beatmap_db_ids = get_dict__beatmapset_id_to_beatmap_db_ids(session)
+
+    already_populated_pack_items = get_already_populated_pack_items(session)
+
+    print(f'{len(already_populated_pack_items)=}')
     
     pack_rows = []
     for pack in pack_data:
@@ -86,8 +95,15 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
             beatmap_db_ids = beatmapset_id_to_beatmap_db_ids.get(beatmapset_id)
             if not beatmap_db_ids: continue
             for beatmap_db_id in beatmap_db_ids:
-                row = get_pack_item_mapping(pack_id, beatmap_db_id, import_source_hash=pack_data_hash)
+                if (pack_id, beatmap_db_id) in already_populated_pack_items: continue
+                row = get_pack_item_mapping(
+                    pack_id=pack_id, 
+                    beatmap_db_id=beatmap_db_id, 
+                    import_source_hash=pack_data_hash,
+                )
                 pack_rows.append(row)
+
+    print(f'{len(pack_rows)=}')
 
     already_imported_count = session.scalar(
         select(func.count())

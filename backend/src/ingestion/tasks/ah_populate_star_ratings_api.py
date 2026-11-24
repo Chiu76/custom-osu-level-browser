@@ -1,4 +1,4 @@
-from sqlalchemy import select, func, text
+from sqlalchemy import select, func, text, distinct
 from sqlalchemy.orm import Session
 
 from orchestrator import Task, TaskStatus
@@ -32,6 +32,11 @@ def get_beatmap_star_rating_mapping(
         'import_type': 'API_DATA',
         'import_source_hash': import_source_hash,
     }
+
+
+def get_already_populated_beatmap_db_ids(session: Session) -> set:
+    stmt_select_beatmap_db_ids = select(distinct(BeatmapStarRating.beatmap_db_id))
+    return set(session.scalars(stmt_select_beatmap_db_ids).all())
 
 
 def get_dict__beatmap_id_to_db_id(session: Session) -> dict:
@@ -73,11 +78,15 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
     beatmap_star_ratings_data_hash = utils.md5_hash_dict(beatmap_star_ratings_data)
 
     beatmap_id_to_db_id = get_dict__beatmap_id_to_db_id(session)
+    already_populated_beatmap_db_ids = get_already_populated_beatmap_db_ids(session)
+
+    print(f'{len(already_populated_beatmap_db_ids)=}')
 
     beatmap_star_ratings_rows = []
     for beatmap in beatmap_star_ratings_data:
         beatmap_db_id = beatmap_id_to_db_id.get(beatmap['beatmap_id'])
         if not beatmap_db_id: continue
+        if beatmap_db_id in already_populated_beatmap_db_ids: continue
         row = get_beatmap_star_rating_mapping(
             beatmap_db_id,
             beatmap['ruleset_id'],
@@ -89,6 +98,8 @@ def fn(self: Task, session: Session, force_refresh: bool = False):
             import_source_hash=beatmap_star_ratings_data_hash
         )
         beatmap_star_ratings_rows.append(row)
+
+    print(f'{len(beatmap_star_ratings_rows)=}')
 
     already_imported_count = session.scalar(
         select(func.count())

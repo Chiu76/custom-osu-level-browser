@@ -41,12 +41,12 @@ def full_import(user_id: int):
 def run_job__api_import(user_id: int, session: Session):
     job = Job('job__osu_db_file_import')
     job.to_execute = [
-        # init_task__populate_beatmapsets_api(session=session, force_refresh=False),
-        # init_task__populate_beatmaps_api(session=session, force_refresh=False),
+        init_task__populate_beatmapsets_api(session=session, force_refresh=False),
+        init_task__populate_beatmaps_api(session=session, force_refresh=False),
         init_task__populate_packs_api(session=session, force_refresh=False),
         init_task__populate_pack_items_api(session=session, force_refresh=False),
-        # init_task__populate_beatmap_star_ratings_api(session=session, force_refresh=False),
-        # init_task__populate_scores_api(user_id=user_id, session=session, force_refresh=False),
+        init_task__populate_beatmap_star_ratings_api(session=session, force_refresh=False),
+        init_task__populate_scores_api(user_id=user_id, session=session, force_refresh=False),
     ]
     job.run()
 
