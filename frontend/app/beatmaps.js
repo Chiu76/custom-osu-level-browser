@@ -8,7 +8,7 @@ import {
     groupingType, setGroupingType,
     sourceSpecs, groupingSpecs,
     attachedScoreTopBy, setAttachedScoreTopBy,
-    scoreRequired, setScoreRequired,
+    showBeatmaps,
     modsExactFilter, setModsExactFilter,	
     modsIncludeFilter, setModsIncludeFilter,
     modsExcludeFilter, setModsExcludeFilter,
@@ -19,7 +19,7 @@ import {
 function buildRequest(
     search_spec, filter_spec, sort_spec, 
     source_specs, grouping_specs,
-    top_by, score_required, mods_exact, mods_include, mods_exclude,
+    top_by, show_beatmaps, mods_exact, mods_include, mods_exclude,
     star_rating_mods, 
 ) {
     return {
@@ -33,7 +33,7 @@ function buildRequest(
                     mods_include: mods_include,
                     mods_exclude: mods_exclude,
                 },
-                score_required: score_required,
+                show_beatmaps: show_beatmaps,
             },
             source_specs: source_specs,
             filter_spec: filter_spec,
@@ -56,7 +56,7 @@ createEffect(() => {
     const source_specs = sourceSpecs();
     const grouping_specs = groupingSpecs();
     const top_by = attachedScoreTopBy();
-    const score_required = scoreRequired();
+    const show_beatmaps = showBeatmaps();
     const mods_exact = modsExactFilter();
     const mods_include = modsIncludeFilter();
     const mods_exclude = modsExcludeFilter();
@@ -65,7 +65,7 @@ createEffect(() => {
     const newRequest = buildRequest(
         search_spec, filter_spec, sort_spec, 
         source_specs, grouping_specs, 
-        top_by, score_required, mods_exact, mods_include, mods_exclude,
+        top_by, show_beatmaps, mods_exact, mods_include, mods_exclude,
         star_rating_mods,
     );
     

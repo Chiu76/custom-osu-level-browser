@@ -42,12 +42,20 @@ def apply_attached_score(stmt: Select, attached_score_spec: AttachedScoreSpec) -
     
     stmt = stmt.add_columns(*score_sq.c)
     
-    if attached_score_spec.score_required:
-        stmt_join_or_outerjoin = stmt.join  
-    else:
-        stmt_join_or_outerjoin = stmt.outerjoin
-    
-    return stmt_join_or_outerjoin(score_sq, score_sq.c.beatmap_db_id == Beatmap.id)
+    if attached_score_spec.show_beatmaps == 'all':
+        stmt = stmt.outerjoin(score_sq, score_sq.c.beatmap_db_id == Beatmap.id)
+
+    elif attached_score_spec.show_beatmaps == 'with-score':
+        stmt = stmt.join(score_sq, score_sq.c.beatmap_db_id == Beatmap.id)
+        
+    elif attached_score_spec.show_beatmaps == 'without-score':
+        stmt = (
+            stmt
+                .outerjoin(score_sq, score_sq.c.beatmap_db_id == Beatmap.id)
+                .where(score_sq.c.beatmap_db_id == None)
+        )
+
+    return stmt
 
 
 def apply_source(stmt: Select, source_specs: list[SourceSpec]) -> Select:

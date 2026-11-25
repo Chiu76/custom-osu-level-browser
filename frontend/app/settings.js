@@ -6,6 +6,7 @@ import { SearchHandler } from "../components/SearchHandler.js";
 import { GroupingTypeHandler } from "../components/GroupingTypeHandler.js";
 import { ScoreTopByHandler } from "../components/ScoreTopByHandler.js";
 import { CheckboxHandler } from "../components/CheckboxHandler.js";
+import { ShowBeatmapsHandler } from "../components/ShowBeatmapsHandler.js";
 import { ModFilterHandler } from "../components/ModFilterHandler.js";
 import { StarRatingModsHandler } from "../components/StarRatingModsHandler.js";
 
@@ -28,7 +29,7 @@ const [selectedGroupings, setSelectedGroupings] = createSignal([]);
 
 const [scoreSortBy, setScoreSortBy] = ScoreTopByHandler("score-sort-by").init();
 const [attachedScoreTopBy, setAttachedScoreTopBy] = ScoreTopByHandler("attached-score-top-by").init();
-const [scoreRequired, setScoreRequired] = CheckboxHandler("score-required").init();
+const [showBeatmaps, setShowBeatmaps] = ShowBeatmapsHandler().init();
 
 const [modsExactFilter, setModsExactFilter] = ModFilterHandler("mods-exact-filter").init();
 const [modsIncludeFilter, setModsIncludeFilter] = ModFilterHandler("mods-include-filter").init();
@@ -59,7 +60,7 @@ export {
 
     scoreSortBy, setScoreSortBy,
     attachedScoreTopBy, setAttachedScoreTopBy,
-    scoreRequired, setScoreRequired,
+    showBeatmaps, setShowBeatmaps,
 
     modsExactFilter, setModsExactFilter,	
     modsIncludeFilter, setModsIncludeFilter,

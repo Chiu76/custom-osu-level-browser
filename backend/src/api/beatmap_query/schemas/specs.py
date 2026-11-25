@@ -20,7 +20,7 @@ class StarRatingSpec(BaseModel):
 
 class AttachedScoreSpec(BaseModel):
     score_sq_spec: ScoreSqSpec
-    score_required: bool = False
+    show_beatmaps: Literal['all', 'with-score', 'without-score']
 
 
 class Filter(BaseModel):
