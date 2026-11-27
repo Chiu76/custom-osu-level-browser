@@ -78,7 +78,19 @@ def split_by_dash_or_none(value):
     return None
 
 
-def get_value_start_end_or_none(filter):
+def parse_value_or_none(filter):
+    if filter.field in ['submitted_date', 'ranked_date', 'played_at']:
+        try:
+            value = date_input_to_posix(filter.value)
+        except ValueError as e:
+            return None
+    else:
+        value = filter.value
+
+    return value
+
+
+def parse_values_start_end_or_none(filter):
     values = split_by_dash_or_none(filter.value)
     
     if not values or len(values) != 2:
@@ -107,26 +119,46 @@ def _get_filter_condition(stmt: Select, filter: Filter):
     # already validated by FastAPI, so no default case or final return
     match filter.op:
         case '!=':
-            return field_column.not_ilike(f'%{filter.value}%')
+            value = parse_value_or_none(filter)
+            if value is not None:
+                return field_column.not_ilike(f'%{filter.value}%')
+
         case '==':
-            return field_column == filter.value
+            value = parse_value_or_none(filter)
+            if value is not None:
+                return field_column == filter.value
+
         case '<=':
-            return field_column <= filter.value
+            value = parse_value_or_none(filter)
+            if value is not None:
+                return field_column <= filter.value
+
         case '<':
-            return field_column < filter.value
+            value = parse_value_or_none(filter)
+            if value is not None:
+                return field_column < filter.value
+
         case '>=':
-            return field_column >= filter.value
+            value = parse_value_or_none(filter)
+            if value is not None:
+                return field_column >= filter.value
+
         case '>':
-            return field_column > filter.value
-        ## todo: because of this, equality for numbers does not work properly
+            value = parse_value_or_none(filter)
+            if value is not None:
+                return field_column > value
+
         case '=':
-            value_start_end = get_value_start_end_or_none(filter)
-            if value_start_end is not None:
+            values_start_end = parse_values_start_end_or_none(filter)
+            if values_start_end is not None:
                 return and_(
-                    field_column >= value_start_end[0], 
-                    field_column < value_start_end[1],
+                    field_column >= values_start_end[0],
+                    field_column < values_start_end[1],
                 )
-            return field_column.ilike(f'%{filter.value}%')
+            
+            value = parse_value_or_none(filter)
+            if value is not None:
+                return field_column.ilike(f'%{value}%')
 
 
 def apply_filter(stmt: Select, filter_spec: FilterSpec) -> Select:
