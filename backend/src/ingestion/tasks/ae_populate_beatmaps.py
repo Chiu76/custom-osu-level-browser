@@ -43,9 +43,7 @@ def get_beatmap_mapping(beatmap_db_content: dict, import_source_hash: str) -> di
         'hp_drain': round(beatmap_db_content['hp_drain'], 1),
         'drain_time': beatmap_db_content['drain_time'],
         'total_time': beatmap_db_content['total_time'],
-        
-        'last_played_date': task_common.ticks_to_posix(beatmap_db_content['last_played']),
-        
+            
         'import_type': 'STABLE_LOCAL_DATA',
         'import_source_hash': import_source_hash,
     }

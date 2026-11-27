@@ -7,7 +7,7 @@ from src.common.models.beatmaps import Beatmap, Beatmapset, BeatmapStarRating
 from src.common.models.scores import Score
 
 
-FILTER_OPS = Literal['!=', '<', '<=', '>', '>=', '=']
+FILTER_OPS = Literal['==', '!=', '<=','<', '>=', '>', '=']
 
 
 FILTER_SORT_FIELDS = Literal[
@@ -33,8 +33,6 @@ FILTER_SORT_FIELDS = Literal[
     'play_count',
     'pass_count',
     'lazer_only',
-    
-    'last_played_date',
     
     
     'artist',
@@ -89,8 +87,6 @@ FILTER_SORT_FIELDS_ALTERNATIVES = Literal[
     'od',
     'cs',
     'hp',
-
-    'last_played',
 
 
     'source',
@@ -154,8 +150,6 @@ def get_beatmap_filter_columns() -> dict[str, InstrumentedAttribute]:
         'pass_count': Beatmap.pass_count,
         'lazer_only': Beatmap.lazer_only,
 
-        'last_played_date': Beatmap.last_played_date,
-
 
         'star_rating': BeatmapStarRating.star_rating,
         'star_rating_aim': BeatmapStarRating.star_rating_aim,
@@ -174,8 +168,6 @@ def get_beatmap_filter_columns() -> dict[str, InstrumentedAttribute]:
         'od': Beatmap.overall_difficulty,
         'cs': Beatmap.circle_size,
         'hp': Beatmap.hp_drain,
-
-        'last_played': Beatmap.last_played_date,
 
 
         'sr': BeatmapStarRating.star_rating,
@@ -222,8 +214,6 @@ def get_beatmap_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribu
         'pass_count': core_sq.c.pass_count,
         'lazer_only': core_sq.c.lazer_only,
 
-        'last_played_date': core_sq.c.last_played_date,
-
 
         'star_rating': core_sq.c.star_rating,
         'star_rating_aim': core_sq.c.star_rating_aim,
@@ -242,8 +232,6 @@ def get_beatmap_sort_columns(core_sq: Subquery) -> dict[str, InstrumentedAttribu
         'od': core_sq.c.overall_difficulty,
         'cs': core_sq.c.circle_size,
         'hp': core_sq.c.hp_drain,
-
-        'last_played': core_sq.c.last_played_date,
 
 
         'sr': core_sq.c.star_rating,

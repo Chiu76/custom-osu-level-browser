@@ -22,11 +22,11 @@ def exists_in_grouping(grouping_type: GroupingTypeEnum, beatmap_db_id_col: Instr
     )
 
 
-def date_input_to_posix(value):
+def date_input_to_posix(date_input):
     dt = None
     for format in ['%Y.%m.%d', '%Y.%m', '%Y']:
         try:
-            dt = datetime.strptime(value, format)
+            dt = datetime.strptime(date_input, format)
         except ValueError:
             pass
     if dt is None:

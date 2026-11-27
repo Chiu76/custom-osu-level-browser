@@ -35,7 +35,7 @@ export function BeatmapSearchFilterHandler() {
         const resultFilter = [];
 
         for (let value of values) {
-            value = value.toLowerCase();
+            value = value.toLowerCase().replaceAll("\\", " ");
             // no operator in the user input -> parse it as a search string 
             if (!assertOp(value)) {
                 resultSearch.push(value);

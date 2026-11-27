@@ -61,8 +61,6 @@ class BeatmapQueryRepository:
                 Beatmap.pass_count,
                 Beatmap.lazer_only,
 
-                Beatmap.last_played_date,
-
 
                 Beatmapset.artist,
                 Beatmapset.title,

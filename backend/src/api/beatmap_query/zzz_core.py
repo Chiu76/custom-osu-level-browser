@@ -78,52 +78,55 @@ def split_by_dash_or_none(value):
     return None
 
 
+def get_value_start_end_or_none(filter):
+    values = split_by_dash_or_none(filter.value)
+    
+    if not values or len(values) != 2:
+        return None
+    
+    if filter.field in ['submitted_date', 'ranked_date', 'played_at']:
+        try:
+            value_start = date_input_to_posix(values[0])
+            value_end = date_input_to_posix(values[1])
+        except ValueError as e:
+            return None
+    else:
+        value_start = values[0]
+        value_end = values[1]
+
+    return [value_start, value_end]
+
+
 def _get_filter_condition(stmt: Select, filter: Filter):
     field_column = filter_sort_fields.get_column__filter_field(field=filter.field, core_stmt=stmt)
-
-    # print(filter)
-
+    
     if field_column is None:
         return None
-
-    match filter.field:
-        case 'played_at':
-            try:
-                value = date_input_to_posix(filter.value)
-            except ValueError as e:
-                return None
-        case 'ranked_date':
-            try:
-                value = date_input_to_posix(filter.value)
-            except ValueError as e:
-                return None
-        case 'last_played_date':
-            try:
-                value = date_input_to_posix(filter.value)
-            except ValueError as e:
-                return None
-        case _:
-            value = filter.value
 
     # case for each possible op
     # already validated by FastAPI, so no default case or final return
     match filter.op:
         case '!=':
-            return field_column.not_ilike(f'%{value}%')
-        case '<':
-            return field_column < value
+            return field_column.not_ilike(f'%{filter.value}%')
+        case '==':
+            return field_column == filter.value
         case '<=':
-            return field_column <= value
-        case '>':
-            return field_column > value
+            return field_column <= filter.value
+        case '<':
+            return field_column < filter.value
         case '>=':
-            return field_column >= value
+            return field_column >= filter.value
+        case '>':
+            return field_column > filter.value
         ## todo: because of this, equality for numbers does not work properly
         case '=':
-            split_values = split_by_dash_or_none(filter.value)
-            if split_values and len(split_values) == 2:
-                return and_(field_column >= split_values[0], field_column < split_values[1])
-            return field_column.ilike(f'%{value}%')
+            value_start_end = get_value_start_end_or_none(filter)
+            if value_start_end is not None:
+                return and_(
+                    field_column >= value_start_end[0], 
+                    field_column < value_start_end[1],
+                )
+            return field_column.ilike(f'%{filter.value}%')
 
 
 def apply_filter(stmt: Select, filter_spec: FilterSpec) -> Select:

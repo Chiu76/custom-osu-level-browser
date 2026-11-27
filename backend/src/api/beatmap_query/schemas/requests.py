@@ -28,8 +28,6 @@ class BeatmapQueryRow(BaseModel):
     drain_time: int
     total_time: int
 
-    last_played_date: int | None
-
     
     artist: str
     title: str

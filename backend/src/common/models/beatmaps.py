@@ -82,7 +82,6 @@ class Beatmap(Model):
     lazer_only: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
 
     # osu!stable import fields
-    last_played_date: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     # import details fields
     import_type: Mapped[str] = mapped_column(String(32), nullable=False)
