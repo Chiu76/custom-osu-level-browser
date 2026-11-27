@@ -1,10 +1,12 @@
 import { createSignal } from "../reactive.js";
 import { schemas } from "../utils.js";
 
-export function ModFilterHandler(parentId) {
-    const [modFilter, setModFilter] = createSignal([]);
+export function ModFilterHandler() {
+    const [modsExactFilter, setModsExactFilter] = createSignal([]);
+    const [modsIncludeFilter, setModsIncludeFilter] = createSignal([]);
+    const [modsExcludeFilter, setModsExcludeFilter] = createSignal([]);
 
-    const filterParent = document.getElementById(parentId);
+    const filterParent = document.getElementById("attached-score-mod-filter");
     const filterInput = filterParent.getElementsByTagName("input")[0];
 
     const modValuesDefault = schemas["ScoreSqSpec"]["properties"]["mods_exact"]["items"]["anyOf"][0]["enum"];
@@ -16,24 +18,48 @@ export function ModFilterHandler(parentId) {
     }
 
     function parseFilters(filters) {
-        // assumes input is an array of filter strings, such as:
-        // ["hd", "doubletime"]
-        const result = [];
+        // assumes input is an array of filter strings, optionally with a +/- before them, such as:
+        // ["hd", "dOuBlEtImE", "-Ht", "+ez"]
+        const resultExact = [];
+        const resultInclude = [];
+        const resultExclude = [];
+
         for (let filter of filters) {
+            let modifier;
             filter = filter.toLowerCase();
+
+            if (filter.startsWith("+") || filter.startsWith("-")) {
+                modifier = filter.substr(0, 1);
+                filter = filter.slice(1);
+                console.log(modifier, filter);
+            }
+
             if (!assertMod(filter)) {
                 return {
                     successful: false,
                     reason: `Invalid filter field: ${filter}`,
-                    result: [],
+                    resultExact: [],
+                    resultInclude: [],
+                    resultExcude: [],
                 }
             }
-            result.push(filter);
+
+            if (modifier === undefined) {
+                resultExact.push(filter)
+            }
+            else if (modifier === "+") {
+                resultInclude.push(filter);
+            }
+            else if (modifier === "-") {
+                resultExclude.push(filter);
+            }
         }
         return {
             successful: true,
             reason: "",
-            result: result,
+            resultExact: resultExact,
+            resultInclude: resultInclude,
+            resultExclude: resultExclude,
         }
     }
 
@@ -50,7 +76,9 @@ export function ModFilterHandler(parentId) {
             console.log("filterParsedResult: ", filterParsedResult.reason, filterParsedResult);
             return;
         }
-        setModFilter(filterParsedResult.result);
+        setModsExactFilter(filterParsedResult.resultExact);
+        setModsIncludeFilter(filterParsedResult.resultInclude);
+        setModsExcludeFilter(filterParsedResult.resultExclude);
     }
 
     function init() {
@@ -60,7 +88,7 @@ export function ModFilterHandler(parentId) {
             timeout = setTimeout(() => onInput(event.target.value), 250);
         });
 
-        return [modFilter, setModFilter];
+        return [modsExactFilter, modsIncludeFilter, modsExcludeFilter];
     }
 
     return {

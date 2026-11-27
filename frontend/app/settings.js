@@ -31,9 +31,7 @@ const [scoreSortBy, setScoreSortBy] = ScoreTopByHandler("score-sort-by").init();
 const [attachedScoreTopBy, setAttachedScoreTopBy] = ScoreTopByHandler("attached-score-top-by").init();
 const [showBeatmaps, setShowBeatmaps] = ShowBeatmapsHandler().init();
 
-const [modsExactFilter, setModsExactFilter] = ModFilterHandler("mods-exact-filter").init();
-const [modsIncludeFilter, setModsIncludeFilter] = ModFilterHandler("mods-include-filter").init();
-const [modsExcludeFilter, setModsExcludeFilter] = ModFilterHandler("mods-exclude-filter").init();
+const [modsExactFilter, modsIncludeFilter, modsExcludeFilter] = ModFilterHandler().init();
 
 const [disableBeatmapSets, setDisableBeatmapSets] = CheckboxHandler("disable-beatmap-sets").init();
 
@@ -62,9 +60,7 @@ export {
     attachedScoreTopBy, setAttachedScoreTopBy,
     showBeatmaps, setShowBeatmaps,
 
-    modsExactFilter, setModsExactFilter,	
-    modsIncludeFilter, setModsIncludeFilter,
-    modsExcludeFilter, setModsExcludeFilter,
+    modsExactFilter, modsIncludeFilter, modsExcludeFilter,
 
     disableBeatmapSets, setDisableBeatmapSets,
     starRatingMods, setStarRatingMods,

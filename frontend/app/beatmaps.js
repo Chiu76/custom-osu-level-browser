@@ -5,15 +5,12 @@ import { BeatmapContainerHandler } from "../components/BeatmapContainerHandler.j
 import { 
     beatmapSearch, beatmapFilter, beatmapSort,
     selectedBeatmapId, selectedBeatmapSetId,
-    groupingType, setGroupingType,
     sourceSpecs, groupingSpecs,
-    attachedScoreTopBy, setAttachedScoreTopBy,
+    attachedScoreTopBy,
     showBeatmaps,
-    modsExactFilter, setModsExactFilter,	
-    modsIncludeFilter, setModsIncludeFilter,
-    modsExcludeFilter, setModsExcludeFilter,
-    disableBeatmapSets, setDisableBeatmapSets,
-    starRatingMods, setStarRatingMods
+    modsExactFilter, modsIncludeFilter, modsExcludeFilter,
+    disableBeatmapSets,
+    starRatingMods,
 } from "./settings.js";
 
 function buildRequest(

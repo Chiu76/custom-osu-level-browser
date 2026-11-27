@@ -11,24 +11,20 @@
         <div class="settings">
             <h2>Settings</h2>
             <div class="score-settings">
-                <div id="mods-exact-filter">
-                    <span>Mods exact: </span>
-                    <input
-                        placeholder="Filter for exact mods.."
-                    />
+                <div id="attached-score-settings">
+                    <div id="attached-score-mod-filter">
+                        <span>Attached score mods filter: </span>
+                        <input
+                            placeholder="Filter by mods.."
+                        />
+                    </div>
+                    <div id="attached-score-top-by">
+                        <span>Attached score top-by criteria: </span>
+                        <select></select>
+                        <span class="dir"></span>
+                    </div>
                 </div>
-                <div id="mods-include-filter">
-                    <span>Mods include: </span>
-                    <input
-                        placeholder="Filter for included mods.."
-                    />
-                </div>
-                <div id="mods-exclude-filter">
-                    <span>Mods exclude: </span>
-                    <input
-                        placeholder="Filter for excluded mods.."
-                    />
-                </div>
+                
                 <div id="score-sort-by">
                     <span>Sort scores by: </span>
                     <select></select>
@@ -73,15 +69,8 @@
                     <span> Disable grouping into sets: </span>
                     <input type="checkbox">
                 </div>
-                <div id="attached-score-settings">
-                    <span id="show-beatmaps">
-                        <span> Show beatmaps: </span>
-                    </span>
-                    <span id="attached-score-top-by">
-                        <span>Attached score top-by criteria: </span>
-                        <select></select>
-                        <span class="dir"></span>
-                    </span>
+                <div id="show-beatmaps">
+                    <span> Show beatmaps: </span>
                 </div>
                 <div id="star-rating-settings">
                     <span id="star-rating-mods">
