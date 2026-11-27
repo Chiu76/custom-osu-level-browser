@@ -121,27 +121,27 @@ def _get_filter_condition(stmt: Select, filter: Filter):
         case '!=':
             value = parse_value_or_none(filter)
             if value is not None:
-                return field_column.not_ilike(f'%{filter.value}%')
+                return field_column.not_ilike(f'%{value}%')
 
         case '==':
             value = parse_value_or_none(filter)
             if value is not None:
-                return field_column == filter.value
+                return field_column == value
 
         case '<=':
             value = parse_value_or_none(filter)
             if value is not None:
-                return field_column <= filter.value
+                return field_column <= value
 
         case '<':
             value = parse_value_or_none(filter)
             if value is not None:
-                return field_column < filter.value
+                return field_column < value
 
         case '>=':
             value = parse_value_or_none(filter)
             if value is not None:
-                return field_column >= filter.value
+                return field_column >= value
 
         case '>':
             value = parse_value_or_none(filter)
